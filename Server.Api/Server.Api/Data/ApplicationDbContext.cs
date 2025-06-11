@@ -11,4 +11,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Department> Departments { get; set; } = default!;
+    public DbSet<OutgoingDocument> OutgoingDocuments { get; set; } = default!;
+    public DbSet<OutgoingAttachment> OutgoingAttachments { get; set; } = default!;
 }
