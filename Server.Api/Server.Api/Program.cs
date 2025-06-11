@@ -5,6 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
+using GovServices.Server.Data;
+using GovServices.Server.Interfaces;
+using GovServices.Server.Services;
+using GovServices.Server.Middleware;
+using GovServices.Server.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,17 +103,3 @@ app.MapControllers();
 
 app.Run();
 
-// Placeholder classes to satisfy references
-public class ApplicationDbContext : DbContext { public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { } }
-public interface IExampleService { }
-public class ExampleService : IExampleService { }
-public class AuditMiddleware
-{
-    private readonly RequestDelegate _next;
-    public AuditMiddleware(RequestDelegate next) => _next = next;
-    public async Task InvokeAsync(HttpContext context) => await _next(context);
-}
-public class ExampleBackgroundService : BackgroundService
-{
-    protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
-}
