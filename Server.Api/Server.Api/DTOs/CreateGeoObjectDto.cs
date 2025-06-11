@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class CreateGeoObjectDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class CreateGeoObjectDto
+    {
+        public string Name { get; set; }
+        public string WktGeometry { get; set; }
+        public string Properties { get; set; }
+    }
 }

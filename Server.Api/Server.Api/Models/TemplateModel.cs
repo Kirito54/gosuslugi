@@ -1,6 +1,11 @@
-namespace Server.Api.Models;
-
-public class TemplateModel
+namespace GovServices.Server.Models
 {
-    public Guid Id { get; set; }
+    public class TemplateModel
+    {
+        public int ApplicationId { get; set; }
+        public string ApplicantName { get; set; }
+        public string ServiceName { get; set; }
+        public string StepName { get; set; }
+        public DateTime Date { get; set; }
+    }
 }

@@ -1,6 +1,11 @@
-namespace Server.Api.DTOs;
-
-public class UserDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class UserDto
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public string FullName { get; set; }
+        public List<string> Roles { get; set; }
+        public string DepartmentName { get; set; }
+    }
 }

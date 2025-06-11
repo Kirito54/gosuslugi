@@ -1,6 +1,8 @@
-namespace Server.Api.DTOs;
-
-public class ChangePasswordDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class ChangePasswordDto
+    {
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
 }
