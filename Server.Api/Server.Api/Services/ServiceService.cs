@@ -9,65 +9,57 @@ namespace GovServices.Server.Services;
 
 public class ServiceService : IServiceService
 {
-    private readonly ApplicationDbContext _db;
+    private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public ServiceService(ApplicationDbContext db, IMapper mapper)
+    public ServiceService(ApplicationDbContext context, IMapper mapper)
     {
-        _db = db;
+        _context = context;
         _mapper = mapper;
     }
 
-    public async Task<List<ServiceDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<ServiceDto>> GetAllAsync()
     {
-        var services = await _db.Set<Service>()
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        var services = await _context.Services.ToListAsync();
         return _mapper.Map<List<ServiceDto>>(services);
     }
 
-    public async Task<ServiceDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<ServiceDto> GetByIdAsync(int id)
     {
-        var service = await _db.Set<Service>()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-        return service == null ? null : _mapper.Map<ServiceDto>(service);
+        var entity = await _context.Services.FindAsync(id);
+        if (entity is null)
+            throw new KeyNotFoundException($"Service с id {id} не найден");
+        return _mapper.Map<ServiceDto>(entity);
     }
 
-    public async Task<ServiceDto> CreateAsync(ServiceDto dto, CancellationToken cancellationToken = default)
+    public async Task<ServiceDto> CreateAsync(CreateServiceDto dto)
     {
         var entity = _mapper.Map<Service>(dto);
         entity.CreatedAt = DateTime.UtcNow;
         entity.UpdatedAt = DateTime.UtcNow;
-
-        _db.Set<Service>().Add(entity);
-        await _db.SaveChangesAsync(cancellationToken);
-
+        _context.Services.Add(entity);
+        await _context.SaveChangesAsync();
         return _mapper.Map<ServiceDto>(entity);
     }
 
-    public async Task<bool> UpdateAsync(ServiceDto dto, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(int id, UpdateServiceDto dto)
     {
-        var entity = await _db.Set<Service>().FirstOrDefaultAsync(s => s.Id == dto.Id, cancellationToken);
-        if (entity == null)
-            return false;
-
+        var entity = await _context.Services.FindAsync(id);
+        if (entity is null)
+            throw new KeyNotFoundException($"Service с id {id} не найден");
         entity.Name = dto.Name;
         entity.Description = dto.Description;
         entity.UpdatedAt = DateTime.UtcNow;
-
-        await _db.SaveChangesAsync(cancellationToken);
-        return true;
+        _context.Services.Update(entity);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(int id)
     {
-        var entity = await _db.Set<Service>().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-        if (entity == null)
-            return false;
-
-        _db.Remove(entity);
-        await _db.SaveChangesAsync(cancellationToken);
-        return true;
+        var entity = await _context.Services.FindAsync(id);
+        if (entity is null)
+            throw new KeyNotFoundException($"Service с id {id} не найден");
+        _context.Services.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 }

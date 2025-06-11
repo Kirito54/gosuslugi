@@ -11,4 +11,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Department> Departments { get; set; } = default!;
+    public DbSet<Service> Services { get; set; } = default!;
 }
