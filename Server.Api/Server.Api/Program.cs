@@ -73,6 +73,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // DI for services
 builder.Services.AddScoped<IExampleService, ExampleService>();
+builder.Services.AddScoped<ITemplateService, TemplateService>();
 
 // Middleware Audit
 builder.Services.AddScoped<AuditMiddleware>();
