@@ -3,6 +3,7 @@ using GovServices.Server.Data;
 using GovServices.Server.DTOs;
 using GovServices.Server.Entities;
 using GovServices.Server.Interfaces;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,7 +56,8 @@ public class OutgoingService : IOutgoingService
             ApplicationId = dto.ApplicationId,
             FileName = fileName,
             FilePath = filePath,
-            Date = DateTime.UtcNow
+            Date = DateTime.UtcNow,
+            Attachments = new List<OutgoingAttachment>()
         };
 
         _context.OutgoingDocuments.Add(outDoc);
@@ -72,19 +74,18 @@ public class OutgoingService : IOutgoingService
                     await attachment.CopyToAsync(stream);
                 }
 
-                _context.OutgoingAttachments.Add(new OutgoingAttachment
+                var attachEntity = new OutgoingAttachment
                 {
                     OutgoingDocumentId = outDoc.Id,
                     FileName = attachName,
                     FilePath = attachPath
-                });
+                };
+                outDoc.Attachments.Add(attachEntity);
+                _context.OutgoingAttachments.Add(attachEntity);
             }
             await _context.SaveChangesAsync();
         }
 
-        outDoc = await _context.OutgoingDocuments
-            .Include(d => d.Attachments)
-            .FirstAsync(d => d.Id == outDoc.Id);
         return _mapper.Map<OutgoingDocumentDto>(outDoc);
     }
 
