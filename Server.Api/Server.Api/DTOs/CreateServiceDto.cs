@@ -1,6 +1,8 @@
-namespace Server.Api.DTOs;
-
-public class CreateServiceDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class CreateServiceDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }

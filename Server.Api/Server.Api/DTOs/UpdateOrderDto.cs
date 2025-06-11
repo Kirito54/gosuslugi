@@ -1,6 +1,8 @@
-namespace Server.Api.DTOs;
-
-public class UpdateOrderDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class UpdateOrderDto
+    {
+        public string Text { get; set; }
+        public string SignerUserId { get; set; }
+    }
 }

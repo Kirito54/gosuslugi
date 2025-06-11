@@ -1,6 +1,8 @@
-namespace Server.Api.DTOs;
-
-public class LoginRequestDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class LoginRequestDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }

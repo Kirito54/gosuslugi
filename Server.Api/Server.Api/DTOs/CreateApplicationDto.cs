@@ -1,6 +1,8 @@
-namespace Server.Api.DTOs;
-
-public class CreateApplicationDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class CreateApplicationDto
+    {
+        public int ServiceId { get; set; }
+        public Dictionary<string, object> FormData { get; set; }
+    }
 }

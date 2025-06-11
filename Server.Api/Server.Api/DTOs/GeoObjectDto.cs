@@ -1,6 +1,10 @@
-namespace Server.Api.DTOs;
-
-public class GeoObjectDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class GeoObjectDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string GeoJson { get; set; }
+        public string Properties { get; set; }
+    }
 }

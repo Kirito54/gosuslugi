@@ -1,6 +1,7 @@
-namespace Server.Api.DTOs;
-
-public class CreateRosreestrRequestDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class CreateRosreestrRequestDto
+    {
+        public int ApplicationId { get; set; }
+    }
 }

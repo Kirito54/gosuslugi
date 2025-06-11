@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class AuthResultDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class AuthResultDto
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+        public DateTime Expiration { get; set; }
+    }
 }

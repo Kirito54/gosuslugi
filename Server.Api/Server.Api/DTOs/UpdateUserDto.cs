@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class UpdateUserDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class UpdateUserDto
+    {
+        public string FullName { get; set; }
+        public int DepartmentId { get; set; }
+        public List<string> RoleIds { get; set; }
+    }
 }

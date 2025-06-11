@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class UpdateApplicationDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class UpdateApplicationDto
+    {
+        public int CurrentStepId { get; set; }
+        public string Status { get; set; }
+        public string AssignedToUserId { get; set; }
+    }
 }

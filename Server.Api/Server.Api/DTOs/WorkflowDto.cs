@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class WorkflowDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class WorkflowDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }

@@ -1,6 +1,9 @@
-namespace Server.Api.DTOs;
-
-public class CreateTemplateDto
+namespace GovServices.Server.DTOs
 {
-    public Guid Id { get; set; }
+    public class CreateTemplateDto
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Content { get; set; }
+    }
 }
