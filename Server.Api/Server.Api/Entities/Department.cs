@@ -1,8 +1,9 @@
-namespace Server.Api.Entities;
-
-public class Department
+namespace GovServices.Server.Entities
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+    public class Department
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
+    }
 }

@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Identity;
-
-namespace Server.Api.Entities;
-
-public class ApplicationUser : IdentityUser
+namespace GovServices.Server.Entities
 {
-    public Guid? DepartmentId { get; set; }
-    public Department? Department { get; set; }
+    public class ApplicationUser : IdentityUser
+    {
+        public string FullName { get; set; }
+        public int? DepartmentId { get; set; }
+        public Department Department { get; set; }
+        public DateTime PasswordLastChangedAt { get; set; }
+        public ICollection<Application> AssignedApplications { get; set; }
+    }
 }

@@ -1,6 +1,10 @@
-namespace Server.Api.Entities;
-
-public class PasswordChangeLog
+namespace GovServices.Server.Entities
 {
-    public Guid Id { get; set; }
+    public class PasswordChangeLog
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string Type { get; set; } // "Changed" или "ReminderSent"
+        public DateTime Timestamp { get; set; }
+    }
 }

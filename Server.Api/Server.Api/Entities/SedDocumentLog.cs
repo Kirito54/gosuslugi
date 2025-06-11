@@ -1,6 +1,12 @@
-namespace Server.Api.Entities;
-
-public class SedDocumentLog
+namespace GovServices.Server.Entities
 {
-    public Guid Id { get; set; }
+    public class SedDocumentLog
+    {
+        public int Id { get; set; }
+        public int ApplicationId { get; set; }
+        public Application Application { get; set; }
+        public string DocumentNumber { get; set; }
+        public string Action { get; set; }
+        public DateTime Timestamp { get; set; }
+    }
 }
