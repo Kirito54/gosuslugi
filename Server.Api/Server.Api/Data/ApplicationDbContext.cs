@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Server.Api.Entities;
+using GovServices.Server.Entities;
 
-namespace Server.Api.Data;
+namespace GovServices.Server.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
