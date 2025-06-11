@@ -1,6 +1,10 @@
-namespace Server.Api.Entities;
-
-public class DocumentMetadata
+namespace GovServices.Server.Entities
 {
-    public Guid Id { get; set; }
+    public class DocumentMetadata
+    {
+        public int Id { get; set; }
+        public int DocumentId { get; set; }
+        public Document Document { get; set; }
+        public string MetadataJson { get; set; }
+    }
 }
