@@ -1,5 +1,35 @@
 @page "/users"
-<PageTitle>Users</PageTitle>
+@inject IUserApiClient ApiClient
 
-<h1>Users</h1>
+<div class="container p-4">
+    <h1>Пользователи</h1>
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="()=>edit.Show(new CreateUserDto())">Добавить пользователя</SfButton>
+    <SfGrid DataSource="@items" AllowPaging="true" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(UserDto.Id) HeaderText="ID" Width="120" />
+            <GridColumn Field=@nameof(UserDto.Email) HeaderText="Email" Width="200" />
+            <GridColumn Field=@nameof(UserDto.FullName) HeaderText="ФИО" Width="200" />
+            <GridColumn HeaderText="Роли" Width="200">
+                <Template>
+                    @string.Join(", ", (context as UserDto).Roles)
+                </Template>
+            </GridColumn>
+            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as UserDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as UserDto).Id))" />
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+    <UserEdit @ref="edit" OnSaved="LoadData" />
+</div>
 
+@code {
+    List<UserDto> items = new();
+    UserEdit edit;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+    async Task LoadData() => items = await ApiClient.GetAllAsync();
+    async Task Delete(string id){ if(await Js.InvokeAsync<bool>("confirm", $"Удалить пользователя {id}?")){ await ApiClient.DeleteAsync(id); await LoadData(); } }
+}

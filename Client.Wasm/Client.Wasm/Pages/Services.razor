@@ -1,5 +1,50 @@
 @page "/services"
-<PageTitle>Services</PageTitle>
+@inject IServiceApiClient ApiClient
 
-<h1>Services</h1>
+<div class="container p-4">
+    <h1>Услуги</h1>
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="OpenNew">Добавить услугу</SfButton>
+    <SfGrid DataSource="@services" AllowPaging="true" PageSettings="new PageSettings { PageSize = 10 }" Toolbar="@toolbarOptions" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(ServiceDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+            <GridColumn Field=@nameof(ServiceDto.Name) HeaderText="Название" Width="200" />
+            <GridColumn Field=@nameof(ServiceDto.Description) HeaderText="Описание" Width="*" />
+            <GridColumn Field=@nameof(ServiceDto.CreatedAt) HeaderText="Создана" Format="d" TextAlign="TextAlign.Center" Width="120" />
+            <GridColumn Field=@nameof(ServiceDto.UpdatedAt) HeaderText="Обновлена" Format="d" TextAlign="TextAlign.Center" Width="120" />
+            <GridColumn HeaderText="Действия" Width="150" TextAlign="TextAlign.Center">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args => Edit((context as ServiceDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args => Delete((context as ServiceDto).Id))"></SfButton>
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
 
+    <ServiceEdit @ref="editDialog" OnSaved="Reload" />
+</div>
+
+@code {
+    List<ServiceDto> services;
+    string[] toolbarOptions = new[] { "Search" };
+    ServiceEdit editDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    async Task Reload() => services = await ApiClient.GetAllAsync();
+
+    void OpenNew() => editDialog.Show(new CreateServiceDto());
+
+    void Edit(int id) => editDialog.Load(id);
+
+    async Task Delete(int id)
+    {
+        if (await Js.InvokeAsync<bool>("confirm", $"Удалить услугу {id}?"))
+        {
+            await ApiClient.DeleteAsync(id);
+            await Reload();
+        }
+    }
+}
