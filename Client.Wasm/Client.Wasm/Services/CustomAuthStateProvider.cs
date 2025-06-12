@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Components.ProtectedBrowserStorage;
 using Client.Wasm.Helpers;
 
 namespace Client.Wasm.Services;

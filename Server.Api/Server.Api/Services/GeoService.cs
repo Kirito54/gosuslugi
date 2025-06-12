@@ -6,6 +6,7 @@ using GovServices.Server.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace GovServices.Server.Services;
 
@@ -58,7 +59,7 @@ public class GeoService : IGeoService
         var queryGeom = reader.Read(wkt);
 
         var objs = await _context.Set<GeoObject>()
-            .Where(g => EF.Functions.ST_Intersects(g.Geometry, queryGeom))
+            .Where(g => g.Geometry.Intersects(queryGeom))
             .ToListAsync();
 
         return _mapper.Map<List<GeoObjectDto>>(objs);
