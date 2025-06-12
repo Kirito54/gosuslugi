@@ -9,8 +9,9 @@
 
 <div class="container p-4">
     <h1>Услуги</h1>
-    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="OpenNew">Добавить услугу</SfButton>
-    <SfGrid DataSource="@services" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.GridPageSettings { PageSize = 10 })" Toolbar="@toolbarOptions" Width="100%">
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => OpenNew() )">Добавить услугу</SfButton>
+    <SfGrid TItem="ServiceDto" DataSource="@services" AllowPaging="true" Toolbar="@toolbarOptions" Width="100%">
+        <GridPageSettings PageSize="10" />
         <GridColumns>
             <GridColumn Field=@nameof(ServiceDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(ServiceDto.Name) HeaderText="Название" Width="200" />
@@ -19,8 +20,8 @@
             <GridColumn Field=@nameof(ServiceDto.UpdatedAt) HeaderText="Обновлена" Format="d" TextAlign="TextAlign.Center" Width="120" />
             <GridColumn HeaderText="Действия" Width="150" TextAlign="TextAlign.Center">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => Edit((context as ServiceDto).Id))"></SfButton>
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => Delete((context as ServiceDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => Edit((context as ServiceDto).Id) )"></SfButton>
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as ServiceDto).Id) )"></SfButton>
                 </Template>
             </GridColumn>
         </GridColumns>

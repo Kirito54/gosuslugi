@@ -26,7 +26,7 @@
                 <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
             </SfCardContent>
         </SfCard>
-        <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@(()=>NavigationManager.NavigateTo("/applications"))">Назад</SfButton>
+        <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@( (MouseEventArgs e) => NavigationManager.NavigateTo("/applications") )">Назад</SfButton>
     }
 </div>
 

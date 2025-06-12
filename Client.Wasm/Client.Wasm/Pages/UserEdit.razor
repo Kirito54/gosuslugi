@@ -9,31 +9,28 @@
 <SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
     <EditForm Model="model" OnValidSubmit="Save">
         <DataAnnotationsValidator />
-        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).Email)" Placeholder="Email" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).FullName)" Placeholder="ФИО" CssClass="mb-3 w-100" />
-        <SfNumericTextBox TValue="int" @bind-Value="@(((dynamic)model).DepartmentId)" Placeholder="ID отдела" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="model.FullName" Placeholder="ФИО" CssClass="mb-3 w-100" />
+        <SfNumericTextBox TValue="int" @bind-Value="model.DepartmentId" Placeholder="ID отдела" CssClass="mb-3 w-100" />
         <SfTextBox TValue="string" @bind-Value="roles" Placeholder="Роли (через запятую)" CssClass="mb-3 w-100" />
         <div class="text-right">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
 
 @code {
     SfDialog dlg;
-    dynamic model;
-    CreateUserDto createModel = new();
-    UpdateUserDto updateModel = new();
+    CreateUserDto model = new();
     bool isNew;
     string hdr;
-    string id;
+    string id = string.Empty;
     string roles = string.Empty;
 
     public void Show(CreateUserDto dto)
     {
-        createModel = new CreateUserDto { RoleIds = new List<string>() };
-        model = createModel;
+        model = new CreateUserDto { RoleIds = new List<string>() };
         hdr = "Новый пользователь";
         isNew = true;
         dlg.Show();
@@ -44,8 +41,7 @@
         var u = await ApiClient.GetByIdAsync(userId);
         id = userId;
         roles = string.Join(',', u.Roles);
-        updateModel = new UpdateUserDto { FullName = u.FullName, DepartmentId = 0, RoleIds = u.Roles };
-        model = updateModel;
+        model = new CreateUserDto { Email = u.Email, FullName = u.FullName, DepartmentId = 0, RoleIds = u.Roles };
         hdr = "Редактировать пользователя";
         isNew = false;
         dlg.Show();
@@ -56,13 +52,12 @@
         var list = roles.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(r => r.Trim()).ToList();
         if (isNew)
         {
-            createModel.RoleIds = list;
-            await ApiClient.CreateAsync(createModel);
+            model.RoleIds = list;
+            await ApiClient.CreateAsync(model);
         }
         else
         {
-            updateModel.RoleIds = list;
-            await ApiClient.UpdateAsync(id, updateModel);
+            await ApiClient.UpdateAsync(id, new UpdateUserDto { FullName = model.FullName, DepartmentId = model.DepartmentId, RoleIds = list });
         }
         dlg.Hide();
         if (OnSaved.HasDelegate)

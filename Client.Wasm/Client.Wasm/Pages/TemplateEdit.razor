@@ -9,29 +9,26 @@
 <SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
     <EditForm Model="model" OnValidSubmit="Save">
         <DataAnnotationsValidator />
-        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).Name)" Placeholder="Название" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).Type)" Placeholder="Тип" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" Multiline="true" @bind-Value="@(((dynamic)model).Content)" Placeholder="Содержимое" CssClass="mb-3 w-100" Rows="6" />
+        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="model.Type" Placeholder="Тип" CssClass="mb-3 w-100" />
+        <InputTextArea @bind-Value="model.Content" class="form-control mb-3" rows="6" placeholder="Содержимое" />
         <div class="text-right">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
 
 @code {
     SfDialog dlg;
-    dynamic model;
-    CreateTemplateDto createModel = new();
-    UpdateTemplateDto updateModel = new();
+    TemplateDto model = new();
     bool isNew;
     int editId;
     string hdr;
 
     public void Show(CreateTemplateDto dto)
     {
-        createModel = new CreateTemplateDto();
-        model = createModel;
+        model = new TemplateDto();
         hdr = "Новый шаблон";
         isNew = true;
         dlg.Show();
@@ -40,8 +37,7 @@
     public async void Load(int id)
     {
         var t = await ApiClient.GetByIdAsync(id);
-        updateModel = new UpdateTemplateDto { Name = t.Name, Type = t.Type, Content = t.Content };
-        model = updateModel;
+        model = new TemplateDto { Id = t.Id, Name = t.Name, Type = t.Type, Content = t.Content };
         editId = id;
         hdr = $"Редактировать шаблон #{id}";
         isNew = false;
@@ -51,9 +47,9 @@
     async Task Save()
     {
         if (isNew)
-            await ApiClient.CreateAsync(createModel);
+            await ApiClient.CreateAsync(new CreateTemplateDto { Name = model.Name, Type = model.Type, Content = model.Content });
         else
-            await ApiClient.UpdateAsync(editId, updateModel);
+            await ApiClient.UpdateAsync(editId, new UpdateTemplateDto { Name = model.Name, Type = model.Type, Content = model.Content });
         dlg.Hide();
         if (OnSaved.HasDelegate)
         {
