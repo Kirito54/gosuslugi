@@ -4,8 +4,14 @@ namespace GovServices.Server.Services;
 
 public class OcrService : IOcrService
 {
-    public Task<string> RecognizeAsync(string filePath)
+    public async Task<string> RecognizeAsync(string filePath)
     {
-        return Task.FromResult(string.Empty);
+        return await Task.Run(() =>
+        {
+            using var engine = new Tesseract.TesseractEngine("./tessdata", "rus", Tesseract.EngineMode.Default);
+            using var img = Tesseract.Pix.LoadFromFile(filePath);
+            using var page = engine.Process(img);
+            return page.GetText();
+        });
     }
 }
