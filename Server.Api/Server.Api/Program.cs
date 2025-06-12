@@ -79,6 +79,7 @@ builder.Services.AddScoped<AuditMiddleware>();
 
 // Background services
 builder.Services.AddHostedService<ExampleBackgroundService>();
+builder.Services.AddHostedService<PasswordReminderService>();
 
 var app = builder.Build();
 
