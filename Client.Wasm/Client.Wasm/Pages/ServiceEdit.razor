@@ -1,6 +1,10 @@
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
-@inject IServiceApiClient ApiClient
 @inject IJSRuntime Js
+@inject NavigationManager NavigationManager
+@inject IServiceApiClient ApiClient
 
 <SfDialog @ref="dialog" Width="400px" IsModal="true" ShowCloseIcon="true" Header="@header">
     <EditForm Model="model" OnValidSubmit="HandleSave">
@@ -40,7 +44,10 @@
         else
             await ApiClient.UpdateAsync(model.Id, new UpdateServiceDto { Name = model.Name, Description = model.Description });
         dialog.Hide();
-        OnSaved?.Invoke();
+        if (OnSaved.HasDelegate)
+        {
+            await OnSaved.InvokeAsync();
+        }
     }
 
     [Parameter] public EventCallback OnSaved { get; set; }

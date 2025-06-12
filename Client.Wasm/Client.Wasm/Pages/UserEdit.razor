@@ -1,12 +1,17 @@
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 @inject IUserApiClient ApiClient
 
 <SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
     <EditForm Model="model" OnValidSubmit="Save">
         <DataAnnotationsValidator />
-        <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.FullName" Placeholder="ФИО" CssClass="mb-3 w-100" />
-        <SfNumericTextBox TValue="int" @bind-Value="model.DepartmentId" Placeholder="ID отдела" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).Email)" Placeholder="Email" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="@(((dynamic)model).FullName)" Placeholder="ФИО" CssClass="mb-3 w-100" />
+        <SfNumericTextBox TValue="int" @bind-Value="@(((dynamic)model).DepartmentId)" Placeholder="ID отдела" CssClass="mb-3 w-100" />
         <SfTextBox TValue="string" @bind-Value="roles" Placeholder="Роли (через запятую)" CssClass="mb-3 w-100" />
         <div class="text-right">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
@@ -17,7 +22,7 @@
 
 @code {
     SfDialog dlg;
-    object model;
+    dynamic model;
     CreateUserDto createModel = new();
     UpdateUserDto updateModel = new();
     bool isNew;
@@ -60,7 +65,10 @@
             await ApiClient.UpdateAsync(id, updateModel);
         }
         dlg.Hide();
-        OnSaved?.Invoke();
+        if (OnSaved.HasDelegate)
+        {
+            await OnSaved.InvokeAsync();
+        }
     }
 
     [Parameter] public EventCallback OnSaved { get; set; }

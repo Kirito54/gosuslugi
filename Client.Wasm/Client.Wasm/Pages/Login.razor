@@ -1,5 +1,11 @@
 @page "/login"
 @inject AuthService AuthService
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
+@using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 @using System.ComponentModel.DataAnnotations
 
 <div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
@@ -20,11 +26,10 @@
 </div>
 
 @code {
-    class LoginModel { [Required] public string Email { get; set; } [Required] public string Password { get; set; } }
-    LoginModel model = new();
+    LoginRequestDto model = new();
     async Task HandleLogin()
     {
-        await AuthService.LoginAsync(model.Email, model.Password);
+        await AuthService.LoginAsync(model);
         NavigationManager.NavigateTo("/");
     }
 }

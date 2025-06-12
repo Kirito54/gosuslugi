@@ -1,5 +1,11 @@
 @page "/users"
 @inject IUserApiClient ApiClient
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
+@using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 
 <div class="container p-4">
     <h1>Пользователи</h1>

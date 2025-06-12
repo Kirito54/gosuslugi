@@ -1,4 +1,9 @@
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 @inject IWorkflowApiClient ApiClient
 
 <SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
@@ -42,7 +47,10 @@
         else
             await ApiClient.UpdateAsync(model);
         dlg.Hide();
-        OnSaved?.Invoke();
+        if (OnSaved.HasDelegate)
+        {
+            await OnSaved.InvokeAsync();
+        }
     }
 
     [Parameter] public EventCallback OnSaved { get; set; }
