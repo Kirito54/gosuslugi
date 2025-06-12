@@ -17,9 +17,9 @@
             <GridColumn Field=@nameof(TemplateDto.Type) HeaderText="Тип" Width="120" />
             <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="200">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as TemplateDto).Id))" />
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-download" OnClick="@(args=>generator.Show((context as TemplateDto).Id))" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as TemplateDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => edit.Load((context as TemplateDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-download" OnClick="@(() => generator.Show((context as TemplateDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => Delete((context as TemplateDto).Id))" />
                 </Template>
             </GridColumn>
         </GridColumns>

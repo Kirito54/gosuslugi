@@ -22,8 +22,8 @@
             </GridColumn>
             <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as UserDto).Id))" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as UserDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => edit.Load((context as UserDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => Delete((context as UserDto).Id))" />
                 </Template>
             </GridColumn>
         </GridColumns>

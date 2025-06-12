@@ -10,15 +10,15 @@
 <div class="container p-4">
     <h1>Маршруты</h1>
     <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="()=>edit.Show()">Новый маршрут</SfButton>
-    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.PageSettings { PageSize = 10 })" Width="100%">
+    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.GridPageSettings { PageSize = 10 })" Width="100%">
         <GridColumns>
             <GridColumn Field=@nameof(WorkflowDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(WorkflowDto.Name) HeaderText="Название" Width="*"/>
             <GridColumn Field=@nameof(WorkflowDto.Description) HeaderText="Описание" Width="2*"/>
             <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as WorkflowDto).Id))" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as WorkflowDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => edit.Load((context as WorkflowDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => Delete((context as WorkflowDto).Id))" />
                 </Template>
             </GridColumn>
         </GridColumns>
