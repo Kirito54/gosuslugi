@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.17" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Syncfusion.Blazor" Version="22.1.0.47" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.ProtectedBrowserStorage" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
