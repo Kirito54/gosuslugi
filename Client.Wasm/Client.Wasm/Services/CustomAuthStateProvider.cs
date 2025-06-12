@@ -36,6 +36,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     public async Task SetTokenAsync(string token)
     {
         await _storage.SetAsync("authToken", token);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
