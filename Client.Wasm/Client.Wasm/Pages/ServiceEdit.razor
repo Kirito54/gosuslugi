@@ -13,7 +13,7 @@
         <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
         <div class="text-right">
             <SfButton CssClass="e-primary me-2" Type="Submit">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="() => dialog.Hide()">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dialog.Hide() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
