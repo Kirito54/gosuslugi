@@ -1,5 +1,33 @@
 @page "/templates"
-<PageTitle>Templates</PageTitle>
+@inject ITemplateApiClient ApiClient
 
-<h1>Templates</h1>
+<div class="container p-4">
+    <h1>Шаблоны</h1>
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="()=>edit.Show(new CreateTemplateDto())">Новый шаблон</SfButton>
+    <SfGrid DataSource="@items" AllowPaging="true" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(TemplateDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+            <GridColumn Field=@nameof(TemplateDto.Name) HeaderText="Название" Width="200" />
+            <GridColumn Field=@nameof(TemplateDto.Type) HeaderText="Тип" Width="120" />
+            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="200">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as TemplateDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-download" OnClick="@(args=>generator.Show((context as TemplateDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as TemplateDto).Id))" />
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+    <TemplateEdit @ref="edit" OnSaved="LoadData" />
+    <TemplateGenerate @ref="generator" />
+</div>
 
+@code {
+    List<TemplateDto> items = new();
+    TemplateEdit edit;
+    TemplateGenerate generator;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+    async Task LoadData() => items = await ApiClient.GetAllAsync();
+    async Task Delete(int id){ if(await Js.InvokeAsync<bool>("confirm", $"Удалить шаблон {id}?")){ await ApiClient.DeleteAsync(id); await LoadData(); } }
+}

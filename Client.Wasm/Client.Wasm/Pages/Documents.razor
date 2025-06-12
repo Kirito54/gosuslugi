@@ -1,5 +1,23 @@
-@page "/documents"
-<PageTitle>Documents</PageTitle>
+@page "/documents/{applicationId:int}"
+@inject IDocumentApiClient ApiClient
 
-<h1>Documents</h1>
+<div class="container p-4">
+    <h1>Документы</h1>
+    <SfGrid DataSource="@docs" AllowPaging="true" PageSettings="new PageSettings{PageSize=10}" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(DocumentDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+            <GridColumn Field=@nameof(DocumentDto.FileName) HeaderText="Файл" Width="*" />
+            <GridColumn Field=@nameof(DocumentDto.UploadedAt) HeaderText="Загружен" Format="d" Width="120" />
+        </GridColumns>
+    </SfGrid>
+</div>
 
+@code {
+    [Parameter] public int applicationId { get; set; }
+    List<DocumentDto> docs = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        docs = await ApiClient.GetByApplicationIdAsync(applicationId);
+    }
+}

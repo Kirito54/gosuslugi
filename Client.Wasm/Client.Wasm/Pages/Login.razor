@@ -1,5 +1,30 @@
 @page "/login"
-<PageTitle>Login</PageTitle>
+@inject AuthService AuthService
+@using System.ComponentModel.DataAnnotations
 
-<h1>Login</h1>
+<div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
+    <SfCard CssClass="e-shadow-2" Style="width: 400px;">
+        <div class="card-header text-center">
+            <h2>Вход в систему</h2>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@model" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
+                <SfTextBox TValue="string" @bind-Value="model.Password" Placeholder="Пароль" InputType="InputType.Password" CssClass="mb-4 w-100" />
+                <SfButton Type="Submit" CssClass="e-primary w-100">Войти</SfButton>
+            </EditForm>
+        </div>
+    </SfCard>
+</div>
 
+@code {
+    class LoginModel { [Required] public string Email { get; set; } [Required] public string Password { get; set; } }
+    LoginModel model = new();
+    async Task HandleLogin()
+    {
+        await AuthService.LoginAsync(model.Email, model.Password);
+        NavigationManager.NavigateTo("/");
+    }
+}

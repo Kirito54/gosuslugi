@@ -1,5 +1,57 @@
-@page "/templates/edit"
-<PageTitle>Edit Template</PageTitle>
+@using Client.Wasm.DTOs
+@inject ITemplateApiClient ApiClient
 
-<h1>Edit Template</h1>
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
+    <EditForm Model="model" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="model.Type" Placeholder="Тип" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Content" Placeholder="Содержимое" CssClass="mb-3 w-100" Rows="6" />
+        <div class="text-right">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
 
+@code {
+    SfDialog dlg;
+    object model;
+    CreateTemplateDto createModel = new();
+    UpdateTemplateDto updateModel = new();
+    bool isNew;
+    int editId;
+    string hdr;
+
+    public void Show(CreateTemplateDto dto)
+    {
+        createModel = new CreateTemplateDto();
+        model = createModel;
+        hdr = "Новый шаблон";
+        isNew = true;
+        dlg.Show();
+    }
+
+    public async void Load(int id)
+    {
+        var t = await ApiClient.GetByIdAsync(id);
+        updateModel = new UpdateTemplateDto { Name = t.Name, Type = t.Type, Content = t.Content };
+        model = updateModel;
+        editId = id;
+        hdr = $"Редактировать шаблон #{id}";
+        isNew = false;
+        dlg.Show();
+    }
+
+    async Task Save()
+    {
+        if (isNew)
+            await ApiClient.CreateAsync(createModel);
+        else
+            await ApiClient.UpdateAsync(editId, updateModel);
+        dlg.Hide();
+        OnSaved?.Invoke();
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}

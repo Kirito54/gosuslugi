@@ -1,5 +1,49 @@
-@page "/workflows/edit"
-<PageTitle>Edit Workflow</PageTitle>
+@using Client.Wasm.DTOs
+@inject IWorkflowApiClient ApiClient
 
-<h1>Edit Workflow</h1>
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
+    <EditForm Model="model" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="4" />
+        <div class="text-right">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
 
+@code {
+    SfDialog dlg;
+    WorkflowDto model = new();
+    string hdr;
+    bool isNew;
+
+    public void Show()
+    {
+        model = new WorkflowDto();
+        hdr = "Новый маршрут";
+        isNew = true;
+        dlg.Show();
+    }
+
+    public async void Load(int id)
+    {
+        model = await ApiClient.GetByIdAsync(id);
+        hdr = $"Редактировать маршрут #{id}";
+        isNew = false;
+        dlg.Show();
+    }
+
+    async Task Save()
+    {
+        if (isNew)
+            await ApiClient.CreateAsync(model);
+        else
+            await ApiClient.UpdateAsync(model);
+        dlg.Hide();
+        OnSaved?.Invoke();
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}

@@ -1,5 +1,30 @@
 @page "/workflows"
-<PageTitle>Workflows</PageTitle>
+@inject IWorkflowApiClient ApiClient
 
-<h1>Workflows</h1>
+<div class="container p-4">
+    <h1>Маршруты</h1>
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="()=>edit.Show(new CreateWorkflowDto())">Новый маршрут</SfButton>
+    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="new PageSettings{PageSize=10}" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(WorkflowDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+            <GridColumn Field=@nameof(WorkflowDto.Name) HeaderText="Название" Width="*"/>
+            <GridColumn Field=@nameof(WorkflowDto.Description) HeaderText="Описание" Width="2*"/>
+            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as WorkflowDto).Id))" />
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as WorkflowDto).Id))" />
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+    <WorkflowEdit @ref="edit" OnSaved="LoadData"/>
+</div>
 
+@code {
+    List<WorkflowDto> items;
+    WorkflowEdit edit;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+    async Task LoadData() => items = await ApiClient.GetAllAsync();
+    async Task Delete(int id){ if(await Js.InvokeAsync<bool>("confirm",$"Удалить маршрут {id}?")){ await ApiClient.DeleteAsync(id); await LoadData(); }}
+}

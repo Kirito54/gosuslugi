@@ -1,5 +1,24 @@
 @page "/geoobjects"
-<PageTitle>GeoObjects</PageTitle>
+@inject IGeoApiClient ApiClient
+@inject IJSRuntime Js
 
-<h1>GeoObjects</h1>
+<div class="container p-4">
+    <h1>Геообъекты</h1>
+    <SfCard>
+        <div id="map" style="height:400px"></div>
+    </SfCard>
+</div>
 
+@code {
+    List<GeoObjectDto> objects = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objects = await ApiClient.GetAllAsync();
+            await Js.InvokeVoidAsync("initializeMap");
+            await Js.InvokeVoidAsync("addGeoObjects", objects);
+        }
+    }
+}

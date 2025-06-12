@@ -1,5 +1,55 @@
-@page "/applications/edit"
-<PageTitle>Edit Application</PageTitle>
+@using Client.Wasm.DTOs
+@inject IApplicationApiClient ApiClient
 
-<h1>Edit Application</h1>
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@header">
+    <EditForm Model="model" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <SfNumericTextBox TValue="int" @bind-Value="model.ServiceId" Placeholder="ID услуги" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" Multiline="true" @bind-Value="formData" Placeholder="Данные формы (JSON)" CssClass="mb-3 w-100" Rows="4" />
+        <div class="text-right">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
 
+@code {
+    SfDialog dlg;
+    CreateApplicationDto model = new();
+    UpdateApplicationDto updateModel = new();
+    bool isNew;
+    string header;
+    string formData = "{}";
+    int editId;
+
+    public void Show(CreateApplicationDto dto)
+    {
+        model = new CreateApplicationDto();
+        formData = "{}";
+        header = "Новая заявка";
+        isNew = true;
+        dlg.Show();
+    }
+
+    public async void Load(int id)
+    {
+        var app = await ApiClient.GetByIdAsync(id);
+        editId = id;
+        updateModel = new UpdateApplicationDto { CurrentStepId = app.CurrentStepId, Status = app.Status, AssignedToUserId = app.AssignedToUserId };
+        header = $"Редактировать заявку #{id}";
+        isNew = false;
+        dlg.Show();
+    }
+
+    async Task Save()
+    {
+        if (isNew)
+            await ApiClient.CreateAsync(new CreateApplicationDto { ServiceId = model.ServiceId, FormData = new Dictionary<string, object>() });
+        else
+            await ApiClient.UpdateAsync(editId, updateModel);
+        dlg.Hide();
+        OnSaved?.Invoke();
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}

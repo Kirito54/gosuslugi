@@ -1,5 +1,41 @@
-@page "/orders/edit"
-<PageTitle>Edit Order</PageTitle>
+@using Client.Wasm.DTOs
 
-<h1>Edit Order</h1>
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
+    <EditForm Model="model" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <SfTextBox TValue="string" @bind-Value="model.Number" Placeholder="Номер" CssClass="mb-3 w-100" />
+        <SfDatePicker TValue="DateTime?" @bind-Value="model.Date" Placeholder="Дата" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Text" Placeholder="Текст" CssClass="mb-3 w-100" Rows="3" />
+        <div class="text-right">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="()=>dlg.Hide()">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
 
+@code {
+    SfDialog dlg;
+    OrderDto model = new();
+    string hdr;
+
+    public void Show(OrderDto dto)
+    {
+        model = new OrderDto();
+        hdr = "Новый приказ";
+        dlg.Show();
+    }
+
+    public void Load(int id)
+    {
+        hdr = $"Редактировать приказ #{id}";
+        dlg.Show();
+    }
+
+    void Save()
+    {
+        dlg.Hide();
+        OnSaved?.Invoke();
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}

@@ -1,5 +1,47 @@
 @page "/applications"
-<PageTitle>Applications</PageTitle>
+@inject IApplicationApiClient ApiClient
 
-<h1>Applications</h1>
+<div class="container p-4">
+    <h1>Заявки</h1>
+    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="OpenNew">Новая заявка</SfButton>
+    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="new PageSettings{PageSize=10}" Toolbar="@toolbar" Width="100%">
+        <GridColumns>
+            <GridColumn Field=@nameof(ApplicationDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+            <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="Номер" Width="120" />
+            <GridColumn Field=@nameof(ApplicationDto.ServiceName) HeaderText="Услуга" Width="200" />
+            <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="120" />
+            <GridColumn Field=@nameof(ApplicationDto.UpdatedAt) HeaderText="Обновлено" Format="d" Width="120" />
+            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="180">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-open" OnClick="@(args=>Details((context as ApplicationDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>Edit((context as ApplicationDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as ApplicationDto).Id))"></SfButton>
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
 
+    <ApplicationEdit @ref="edit" OnSaved="LoadData" />
+</div>
+
+@code {
+    List<ApplicationDto> items = new();
+    string[] toolbar = new[] { "Search" };
+    ApplicationEdit edit;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+    async Task LoadData() => items = await ApiClient.GetAllAsync();
+
+    void OpenNew() => edit.Show(new CreateApplicationDto());
+    void Edit(int id) => edit.Load(id);
+    void Details(int id) => NavigationManager.NavigateTo($"/applications/details/{id}");
+
+    async Task Delete(int id)
+    {
+        if (await Js.InvokeAsync<bool>("confirm", $"Удалить заявку {id}?") )
+        {
+            await ApiClient.DeleteAsync(id);
+            await LoadData();
+        }
+    }
+}

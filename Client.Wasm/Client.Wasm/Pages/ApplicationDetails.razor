@@ -1,5 +1,35 @@
-@page "/applications/details"
-<PageTitle>Application Details</PageTitle>
+@page "/applications/details/{id:int}"
+@inject IApplicationApiClient ApiClient
 
-<h1>Application Details</h1>
+<div class="container p-4">
+    <h1>Детали заявки</h1>
+    @if (app == null)
+    {
+        <p>Загрузка...</p>
+    }
+    else
+    {
+        <SfCard CssClass="mb-3">
+            <SfCardHeader>
+                <h2>@app.Number</h2>
+            </SfCardHeader>
+            <SfCardContent>
+                <p><b>Услуга:</b> @app.ServiceName</p>
+                <p><b>Статус:</b> @app.Status</p>
+                <p><b>Создана:</b> @app.CreatedAt.ToShortDateString()</p>
+                <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
+            </SfCardContent>
+        </SfCard>
+        <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@(()=>NavigationManager.NavigateTo("/applications"))">Назад</SfButton>
+    }
+</div>
 
+@code {
+    [Parameter] public int id { get; set; }
+    ApplicationDto app;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        app = await ApiClient.GetByIdAsync(id);
+    }
+}
