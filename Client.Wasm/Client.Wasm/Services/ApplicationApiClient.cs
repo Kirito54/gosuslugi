@@ -1,0 +1,65 @@
+namespace Client.Wasm.Services;
+
+using System.Net.Http.Json;
+using Client.Wasm.DTOs;
+
+public interface IApplicationApiClient
+{
+    Task<List<ApplicationDto>> GetAllAsync();
+    Task<ApplicationDto?> GetByIdAsync(int id);
+    Task<ApplicationDto> CreateAsync(CreateApplicationDto dto);
+    Task UpdateAsync(int id, UpdateApplicationDto dto);
+    Task DeleteAsync(int id);
+    Task AdvanceAsync(int applicationId, object contextData);
+    Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId);
+}
+
+public class ApplicationApiClient : IApplicationApiClient
+{
+    private readonly HttpClient _http;
+
+    public ApplicationApiClient(HttpClient http)
+    {
+        _http = http;
+    }
+
+    public async Task<List<ApplicationDto>> GetAllAsync()
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>("api/applications") ?? new();
+    }
+
+    public async Task<ApplicationDto?> GetByIdAsync(int id)
+    {
+        return await _http.GetFromJsonAsync<ApplicationDto>($"api/applications/{id}");
+    }
+
+    public async Task<ApplicationDto> CreateAsync(CreateApplicationDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/applications", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<ApplicationDto>())!;
+    }
+
+    public async Task UpdateAsync(int id, UpdateApplicationDto dto)
+    {
+        var res = await _http.PutAsJsonAsync($"api/applications/{id}", dto);
+        res.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        var res = await _http.DeleteAsync($"api/applications/{id}");
+        res.EnsureSuccessStatusCode();
+    }
+
+    public async Task AdvanceAsync(int applicationId, object contextData)
+    {
+        var res = await _http.PostAsJsonAsync($"api/applications/{applicationId}/advance", contextData);
+        res.EnsureSuccessStatusCode();
+    }
+
+    public async Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationLogDto>>($"api/applications/{applicationId}/logs") ?? new();
+    }
+}
