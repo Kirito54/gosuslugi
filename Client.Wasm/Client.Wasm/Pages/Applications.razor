@@ -10,7 +10,7 @@
 <div class="container p-4">
     <h1>Заявки</h1>
     <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="OpenNew">Новая заявка</SfButton>
-    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.PageSettings { PageSize = 10 })" Toolbar="@toolbar" Width="100%">
+    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.GridPageSettings { PageSize = 10 })" Toolbar="@toolbar" Width="100%">
         <GridColumns>
             <GridColumn Field=@nameof(ApplicationDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="Номер" Width="120" />
@@ -19,9 +19,9 @@
             <GridColumn Field=@nameof(ApplicationDto.UpdatedAt) HeaderText="Обновлено" Format="d" Width="120" />
             <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="180">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-open" OnClick="@(args=>Details((context as ApplicationDto).Id))"></SfButton>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>Edit((context as ApplicationDto).Id))"></SfButton>
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(args=>Delete((context as ApplicationDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-open" OnClick="@(() => Details((context as ApplicationDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => Edit((context as ApplicationDto).Id))"></SfButton>
+                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => Delete((context as ApplicationDto).Id))"></SfButton>
                 </Template>
             </GridColumn>
         </GridColumns>

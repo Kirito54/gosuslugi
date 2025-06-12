@@ -16,7 +16,7 @@
             <GridColumn Field=@nameof(OrderDto.Date) HeaderText="Дата" Format="d" Width="120" />
             <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="120">
                 <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(args=>edit.Load((context as OrderDto).Id))" />
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => edit.Load((context as OrderDto).Id))" />
                 </Template>
             </GridColumn>
         </GridColumns>
