@@ -13,4 +13,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Department> Departments { get; set; } = default!;
     public DbSet<Service> Services { get; set; } = default!;
     public DbSet<GeoObject> GeoObjects { get; set; } = default!;
+    public DbSet<PasswordChangeLog> PasswordChangeLogs { get; set; } = default!;
 }
