@@ -1,9 +1,15 @@
 @page "/outgoing/{applicationId:int}"
 @inject IOutgoingApiClient ApiClient
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
+@using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 
 <div class="container p-4">
     <h1>Исходящие документы</h1>
-    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="new PageSettings{PageSize=10}" Width="100%">
+    <SfGrid DataSource="@items" AllowPaging="true" PageSettings="@(new Syncfusion.Blazor.Grids.PageSettings { PageSize = 10 })" Width="100%">
         <GridColumns>
             <GridColumn Field=@nameof(OutgoingDocumentDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(OutgoingDocumentDto.FileName) HeaderText="Файл" Width="*" />

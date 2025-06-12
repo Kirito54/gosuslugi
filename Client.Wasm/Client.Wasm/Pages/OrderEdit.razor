@@ -1,4 +1,9 @@
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
 
 <SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
     <EditForm Model="model" OnValidSubmit="Save">
@@ -31,10 +36,13 @@
         dlg.Show();
     }
 
-    void Save()
+    async Task Save()
     {
         dlg.Hide();
-        OnSaved?.Invoke();
+        if (OnSaved.HasDelegate)
+        {
+            await OnSaved.InvokeAsync();
+        }
     }
 
     [Parameter] public EventCallback OnSaved { get; set; }
