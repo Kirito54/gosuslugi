@@ -1,15 +1,12 @@
 @page "/login"
 @inject AuthService AuthService
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 @using System.ComponentModel.DataAnnotations
 
 <div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
-    <SfCard CssClass="e-shadow-2" Style="width: 400px;">
+    <div class="card shadow-sm" style="width: 400px;">
         <div class="card-header text-center">
             <h2>Вход в систему</h2>
         </div>
@@ -17,12 +14,12 @@
             <EditForm Model="@model" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
-                <SfTextBox TValue="string" @bind-Value="model.Password" Placeholder="Пароль" InputType="InputType.Password" CssClass="mb-4 w-100" />
-                <SfButton Type="Submit" CssClass="e-primary w-100">Войти</SfButton>
+                <InputText class="form-control mb-3" @bind-Value="model.Email" placeholder="Email" />
+                <InputText class="form-control mb-4" @bind-Value="model.Password" type="password" placeholder="Пароль" />
+                <button type="submit" class="btn btn-primary w-100">Войти</button>
             </EditForm>
         </div>
-    </SfCard>
+    </div>
 </div>
 
 @code {

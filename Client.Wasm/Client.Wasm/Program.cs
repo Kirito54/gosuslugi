@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
-using Syncfusion.Blazor;
 using Client.Wasm;
 using Client.Wasm.Services;
 
@@ -26,7 +25,6 @@ builder.Services.AddScoped<Client.Wasm.Services.ITemplateApiClient, Client.Wasm.
 builder.Services.AddScoped<Client.Wasm.Services.IUserApiClient, Client.Wasm.Services.UserApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
 
-builder.Services.AddSyncfusionBlazor();
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddAuthorizationCore();

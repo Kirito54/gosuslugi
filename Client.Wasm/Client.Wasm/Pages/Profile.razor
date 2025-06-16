@@ -1,18 +1,15 @@
 @attribute [Authorize]
 @page "/profile"
 
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 <div class="container p-4">
     <h1>Профиль</h1>
     <EditForm Model="model">
-        <SfTextBox TValue="string" @bind-Value="model.FullName" Placeholder="ФИО" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
-        <SfButton CssClass="e-primary">Сохранить</SfButton>
+        <InputText class="form-control mb-3" @bind-Value="model.FullName" placeholder="ФИО" />
+        <InputText class="form-control mb-3" @bind-Value="model.Email" placeholder="Email" />
+        <button class="btn btn-primary">Сохранить</button>
     </EditForm>
 </div>
 

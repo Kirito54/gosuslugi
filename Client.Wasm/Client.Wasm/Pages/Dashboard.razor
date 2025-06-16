@@ -1,9 +1,6 @@
 @attribute [Authorize]
 @page "/dashboard"
 
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
@@ -11,22 +8,22 @@
     <h1>Дашборд</h1>
     <div class="row">
         <div class="col-md-4 mb-3">
-            <SfCard CssClass="text-center">
-                <SfCardHeader><h2>Заявки</h2></SfCardHeader>
-                <SfCardContent><h1 class="display-4">123</h1></SfCardContent>
-            </SfCard>
+            <div class="card text-center shadow-sm mb-4">
+                <div class="card-header"><h2>Заявки</h2></div>
+                <div class="card-body"><h1 class="display-4">123</h1></div>
+            </div>
         </div>
         <div class="col-md-4 mb-3">
-            <SfCard CssClass="text-center">
-                <SfCardHeader><h2>Документы</h2></SfCardHeader>
-                <SfCardContent><h1 class="display-4">45</h1></SfCardContent>
-            </SfCard>
+            <div class="card text-center shadow-sm mb-4">
+                <div class="card-header"><h2>Документы</h2></div>
+                <div class="card-body"><h1 class="display-4">45</h1></div>
+            </div>
         </div>
         <div class="col-md-4 mb-3">
-            <SfCard CssClass="text-center">
-                <SfCardHeader><h2>Пользователи</h2></SfCardHeader>
-                <SfCardContent><h1 class="display-4">8</h1></SfCardContent>
-            </SfCard>
+            <div class="card text-center shadow-sm mb-4">
+                <div class="card-header"><h2>Пользователи</h2></div>
+                <div class="card-body"><h1 class="display-4">8</h1></div>
+            </div>
         </div>
     </div>
 </div>
