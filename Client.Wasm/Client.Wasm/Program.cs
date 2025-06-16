@@ -10,7 +10,21 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// HttpClient для API
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// Регистрация клиентских сервисов
+builder.Services.AddScoped<Client.Wasm.Services.AuthService>();
+builder.Services.AddScoped<Client.Wasm.Services.IServiceApiClient, Client.Wasm.Services.ServiceApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IWorkflowApiClient, Client.Wasm.Services.WorkflowApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IApplicationApiClient, Client.Wasm.Services.ApplicationApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IDocumentApiClient, Client.Wasm.Services.DocumentApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IOrderApiClient, Client.Wasm.Services.OrderApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IOutgoingApiClient, Client.Wasm.Services.OutgoingApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IGeoApiClient, Client.Wasm.Services.GeoApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.ITemplateApiClient, Client.Wasm.Services.TemplateApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.IUserApiClient, Client.Wasm.Services.UserApiClient>();
+builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
 
 builder.Services.AddSyncfusionBlazor();
 builder.Services.AddBlazoredLocalStorage();
