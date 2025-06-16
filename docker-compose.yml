@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   db:
-    image: postgres:15-alpine
+    # Используем официальную сборку PostGIS для поддержки расширения postgis
+    image: postgis/postgis:15-3.4-alpine
     environment:
       POSTGRES_DB: gov_services
       POSTGRES_USER: postgres
