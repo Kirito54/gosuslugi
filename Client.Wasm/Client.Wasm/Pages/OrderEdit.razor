@@ -1,54 +1,65 @@
 @attribute [Authorize]
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
-<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@hdr">
-    <EditForm Model="model" OnValidSubmit="Save">
-        <DataAnnotationsValidator />
-        <SfTab>
-            <TabItems>
-                <TabItem HeaderText="Основное">
-                    <SfTextBox TValue="string" @bind-Value="model.Number" Placeholder="Номер" CssClass="mb-3 w-100" />
-                    <SfDatePicker TValue="DateTime" @bind-Value="model.Date" Placeholder="Дата" CssClass="mb-3 w-100" />
-                    <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Text" Placeholder="Текст" CssClass="mb-3 w-100" Rows="3" />
-                </TabItem>
-                <TabItem HeaderText="Дополнительно">
-                    <!-- дополнительные поля -->
-                </TabItem>
-            </TabItems>
-        </SfTab>
-        <div class="text-right mt-3">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
+@if (visible)
+{
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@hdr</h5>
+                    <button type="button" class="btn-close" @onclick="Hide"></button>
+                </div>
+                <EditForm Model="model" OnValidSubmit="Save">
+                    <DataAnnotationsValidator />
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#main">Основное</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-4 border border-top-0 rounded-bottom">
+                        <div class="tab-pane fade show active" id="main">
+                            <InputText class="form-control mb-3" @bind-Value="model.Number" placeholder="Номер" />
+                            <InputDate class="form-control mb-3" @bind-Value="model.Date" />
+                            <InputTextArea class="form-control mb-3" @bind-Value="model.Text" placeholder="Текст" rows="3" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary me-2">Сохранить</button>
+                        <button type="button" class="btn btn-outline-secondary" @onclick="Hide">Отмена</button>
+                    </div>
+                </EditForm>
+            </div>
         </div>
-    </EditForm>
-</SfDialog>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
 
 @code {
-    SfDialog dlg;
+    bool visible;
     OrderDto model = new();
-    string hdr;
+    string hdr = string.Empty;
 
     public void Show(OrderDto dto)
     {
         model = new OrderDto();
         hdr = "Новый приказ";
-        dlg.Show();
+        visible = true;
     }
 
     public void Load(int id)
     {
         hdr = $"Редактировать приказ #{id}";
-        dlg.Show();
+        visible = true;
     }
+
+    void Hide() => visible = false;
 
     async Task Save()
     {
-        dlg.Hide();
+        visible = false;
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();

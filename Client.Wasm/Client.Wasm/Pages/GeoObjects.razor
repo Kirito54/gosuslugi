@@ -1,18 +1,17 @@
 @attribute [Authorize]
 @page "/geoobjects"
 @inject IGeoApiClient ApiClient
-@using Syncfusion.Blazor.Grids
-@using Syncfusion.Blazor.Inputs
-@using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
     <h1>Геообъекты</h1>
-    <SfCard>
-        <div id="map" style="height:400px"></div>
-    </SfCard>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div id="map" style="height:400px"></div>
+        </div>
+    </div>
 </div>
 
 @code {
