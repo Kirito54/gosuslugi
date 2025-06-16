@@ -74,8 +74,6 @@ builder.Services.AddSwaggerGen(c =>
 // DI for services
 builder.Services.AddScoped<IExampleService, ExampleService>();
 
-// Middleware Audit
-builder.Services.AddScoped<AuditMiddleware>();
 
 // Background services
 builder.Services.AddHostedService<ExampleBackgroundService>();
@@ -94,6 +92,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
