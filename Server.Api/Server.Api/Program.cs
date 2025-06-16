@@ -8,6 +8,8 @@ using System.Text;
 using GovServices.Server.Data;
 using GovServices.Server.Interfaces;
 using GovServices.Server.Services;
+using GovServices.Server.Services.Templates;
+using GovServices.Server.Services.Integrations;
 using GovServices.Server.Middleware;
 using GovServices.Server.BackgroundServices;
 
@@ -74,10 +76,32 @@ builder.Services.AddSwaggerGen(c =>
 // DI for services
 builder.Services.AddScoped<IExampleService, ExampleService>();
 
+// Регистрация сервисов бизнес-логики
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IWorkflowService, WorkflowService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOutgoingService, OutgoingService>();
+builder.Services.AddScoped<IGeoService, GeoService>();
+builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOcrService, OcrService>();
+
+// Регистрация IEmailService (и реализация EmailService)
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<ISedIntegrationService, SedIntegrationService>();
+builder.Services.AddScoped<IRosreestrIntegrationService, RosreestrIntegrationService>();
+builder.Services.AddScoped<IEcpService, EcpService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+
 
 // Background services
 builder.Services.AddHostedService<ExampleBackgroundService>();
 builder.Services.AddHostedService<PasswordReminderService>();
+builder.Services.AddHostedService<StatusNotificationService>();
 
 var app = builder.Build();
 
