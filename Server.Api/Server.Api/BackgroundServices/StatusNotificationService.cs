@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using GovServices.Server.Data;
 using GovServices.Server.Interfaces;
+using Npgsql;
 
 namespace GovServices.Server.BackgroundServices;
 
@@ -21,8 +22,9 @@ public class StatusNotificationService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            using (var scope = _services.CreateScope())
+            try
             {
+                using var scope = _services.CreateScope();
                 var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 var email = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
@@ -45,6 +47,10 @@ public class StatusNotificationService : BackgroundService
                             $"Вашей заявке {app.Number} назначен новый статус: {app.Status}");
                     }
                 }
+            }
+            catch (PostgresException ex) when (ex.SqlState == "42P01")
+            {
+                // Table does not exist yet. Skip iteration.
             }
 
             lastCheck = DateTime.UtcNow;

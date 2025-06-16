@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using GovServices.Server.Data;
 using GovServices.Server.Entities;
 using GovServices.Server.Interfaces;
+using Npgsql;
 
 namespace GovServices.Server.BackgroundServices;
 
@@ -24,37 +25,45 @@ public class PasswordReminderService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var scope = _services.CreateScope();
-            var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var email = scope.ServiceProvider.GetRequiredService<IEmailService>();
-
-            var cutoff = DateTime.UtcNow.AddDays(-30);
-            var weekAgo = DateTime.UtcNow.AddDays(-7);
-
-            var users = await ctx.Set<ApplicationUser>()
-                .Where(u => u.PasswordLastChangedAt <= cutoff)
-                .ToListAsync(stoppingToken);
-
-            foreach (var u in users)
+            try
             {
-                var lastRem = await ctx.PasswordChangeLogs
-                    .Where(l => l.UserId == u.Id && l.Type == "ReminderSent")
-                    .OrderByDescending(l => l.Timestamp)
-                    .FirstOrDefaultAsync(stoppingToken);
+                using var scope = _services.CreateScope();
+                var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var email = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-                if (lastRem == null || lastRem.Timestamp <= weekAgo)
+                var cutoff = DateTime.UtcNow.AddDays(-30);
+                var weekAgo = DateTime.UtcNow.AddDays(-7);
+
+                var users = await ctx.Set<ApplicationUser>()
+                    .Where(u => u.PasswordLastChangedAt <= cutoff)
+                    .ToListAsync(stoppingToken);
+
+                foreach (var u in users)
                 {
-                    await email.SendPasswordReminderAsync(u);
-                    ctx.PasswordChangeLogs.Add(new PasswordChangeLog
+                    var lastRem = await ctx.PasswordChangeLogs
+                        .Where(l => l.UserId == u.Id && l.Type == "ReminderSent")
+                        .OrderByDescending(l => l.Timestamp)
+                        .FirstOrDefaultAsync(stoppingToken);
+
+                    if (lastRem == null || lastRem.Timestamp <= weekAgo)
                     {
-                        UserId = u.Id,
-                        Type = "ReminderSent",
-                        Timestamp = DateTime.UtcNow
-                    });
+                        await email.SendPasswordReminderAsync(u);
+                        ctx.PasswordChangeLogs.Add(new PasswordChangeLog
+                        {
+                            UserId = u.Id,
+                            Type = "ReminderSent",
+                            Timestamp = DateTime.UtcNow
+                        });
+                    }
                 }
+
+                await ctx.SaveChangesAsync(stoppingToken);
+            }
+            catch (PostgresException ex) when (ex.SqlState == "42P01")
+            {
+                // Table does not exist yet. Skip iteration.
             }
 
-            await ctx.SaveChangesAsync(stoppingToken);
             await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
         }
     }
