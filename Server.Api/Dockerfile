@@ -1,17 +1,28 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+# Stage 1: сборка
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Открываем рабочую директорию сразу на уровень проекта
+WORKDIR /src/Server.Api
+
+# Копируем только csproj (он лежит в вложенной папке Server.Api/Server.Api)
+COPY Server.Api/Server.Api/Server.Api.csproj ./
+
+# Восстанавливаем зависимости
+RUN dotnet restore Server.Api.csproj
+
+# Копируем всё содержимое проекта (только файлы из Server.Api/Server.Api)
+COPY Server.Api/Server.Api/ ./
+
+# Публикуем в папку /app/publish
+RUN dotnet publish Server.Api.csproj -c Release -o /app/publish
+
+# Stage 2: рантайм
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+
+# Копируем результат публикации
+COPY --from=build /app/publish ./
+
+ENV ASPNETCORE_ENVIRONMENT=Production
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
-COPY ["Server.Api/Server.Api.csproj", "Server.Api/"]
-RUN dotnet restore "Server.Api/Server.Api.csproj"
-COPY . .
-WORKDIR "/src/Server.Api"
-RUN dotnet build -c Release -o /app/build
-RUN dotnet publish -c Release -o /app/publish
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Server.Api.dll"]

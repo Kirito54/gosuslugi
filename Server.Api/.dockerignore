@@ -1,3 +1,4 @@
 bin/
 obj/
-AppSettings.json
+appsettings.Development.json
+*.vs/
