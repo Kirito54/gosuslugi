@@ -49,16 +49,14 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // --- Настройка DbContext с подключением к PostgreSQL ---
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(defaultConn))
 {
-    var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-    if (string.IsNullOrEmpty(conn))
-        throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured.");
-    options.UseNpgsql(conn, npgsql =>
-    {
-        npgsql.UseNetTopologySuite();
-    });
-});
+    throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured in appsettings.json.");
+}
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
+);
 
 // Identity + JWT configuration
 builder.Services.AddAuthentication(options =>
