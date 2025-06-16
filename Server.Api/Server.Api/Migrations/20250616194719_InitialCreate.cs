@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -30,6 +31,24 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserName = table.Column<string>(type: "text", nullable: false),
+                    ActionType = table.Column<string>(type: "text", nullable: false),
+                    EntityType = table.Column<string>(type: "text", nullable: false),
+                    EntityId = table.Column<string>(type: "text", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DurationMs = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
@@ -43,7 +62,37 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Service",
+                name: "GeoObjects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Geometry = table.Column<Geometry>(type: "geometry", nullable: false),
+                    Properties = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeoObjects", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PasswordChangeLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Services",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -55,11 +104,26 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Service", x => x.Id);
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Workflow",
+                name: "Templates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Templates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Workflows",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -69,7 +133,7 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Workflow", x => x.Id);
+                    table.PrimaryKey("PK_Workflows", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,7 +191,7 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkflowStep",
+                name: "WorkflowSteps",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -138,11 +202,11 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkflowStep", x => x.Id);
+                    table.PrimaryKey("PK_WorkflowSteps", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkflowStep_Workflow_WorkflowId",
+                        name: "FK_WorkflowSteps_Workflows_WorkflowId",
                         column: x => x.WorkflowId,
-                        principalTable: "Workflow",
+                        principalTable: "Workflows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -233,7 +297,7 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Application",
+                name: "Applications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -245,33 +309,32 @@ namespace Server.Api.Migrations
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AssignedToUserId = table.Column<string>(type: "text", nullable: false),
-                    AssignedToId = table.Column<string>(type: "text", nullable: false)
+                    AssignedToId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Application", x => x.Id);
+                    table.PrimaryKey("PK_Applications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Application_AspNetUsers_AssignedToId",
+                        name: "FK_Applications_AspNetUsers_AssignedToId",
                         column: x => x.AssignedToId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Application_Service_ServiceId",
+                        name: "FK_Applications_Services_ServiceId",
                         column: x => x.ServiceId,
-                        principalTable: "Service",
+                        principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Application_WorkflowStep_CurrentStepId",
+                        name: "FK_Applications_WorkflowSteps_CurrentStepId",
                         column: x => x.CurrentStepId,
-                        principalTable: "WorkflowStep",
+                        principalTable: "WorkflowSteps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkflowTransition",
+                name: "WorkflowTransitions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -282,23 +345,23 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkflowTransition", x => x.Id);
+                    table.PrimaryKey("PK_WorkflowTransitions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkflowTransition_WorkflowStep_FromStepId",
+                        name: "FK_WorkflowTransitions_WorkflowSteps_FromStepId",
                         column: x => x.FromStepId,
-                        principalTable: "WorkflowStep",
+                        principalTable: "WorkflowSteps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WorkflowTransition_WorkflowStep_ToStepId",
+                        name: "FK_WorkflowTransitions_WorkflowSteps_ToStepId",
                         column: x => x.ToStepId,
-                        principalTable: "WorkflowStep",
+                        principalTable: "WorkflowSteps",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApplicationLog",
+                name: "ApplicationLogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -310,15 +373,15 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicationLog", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationLogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ApplicationLog_Application_ApplicationId",
+                        name: "FK_ApplicationLogs_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ApplicationLog_AspNetUsers_UserId",
+                        name: "FK_ApplicationLogs_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -326,7 +389,7 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -336,27 +399,26 @@ namespace Server.Api.Migrations
                     FilePath = table.Column<string>(type: "text", nullable: false),
                     UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UploadedByUserId = table.Column<string>(type: "text", nullable: false),
-                    UploadedById = table.Column<string>(type: "text", nullable: false)
+                    UploadedById = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_Application_ApplicationId",
+                        name: "FK_Documents_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Document_AspNetUsers_UploadedById",
+                        name: "FK_Documents_AspNetUsers_UploadedById",
                         column: x => x.UploadedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -367,26 +429,25 @@ namespace Server.Api.Migrations
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     SignerUserId = table.Column<string>(type: "text", nullable: false),
-                    SignerId = table.Column<string>(type: "text", nullable: false)
+                    SignerId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Order_Application_ApplicationId",
+                        name: "FK_Orders_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_SignerId",
+                        name: "FK_Orders_AspNetUsers_SignerId",
                         column: x => x.SignerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "OutgoingDocument",
+                name: "OutgoingDocuments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -398,17 +459,17 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutgoingDocument", x => x.Id);
+                    table.PrimaryKey("PK_OutgoingDocuments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OutgoingDocument_Application_ApplicationId",
+                        name: "FK_OutgoingDocuments_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RosreestrRequest",
+                name: "RosreestrRequests",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -421,17 +482,17 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RosreestrRequest", x => x.Id);
+                    table.PrimaryKey("PK_RosreestrRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RosreestrRequest_Application_ApplicationId",
+                        name: "FK_RosreestrRequests_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SedDocumentLog",
+                name: "SedDocumentLogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -443,17 +504,17 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SedDocumentLog", x => x.Id);
+                    table.PrimaryKey("PK_SedDocumentLogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SedDocumentLog_Application_ApplicationId",
+                        name: "FK_SedDocumentLogs_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DocumentMetadata",
+                name: "DocumentMetadatas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -463,17 +524,17 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DocumentMetadata", x => x.Id);
+                    table.PrimaryKey("PK_DocumentMetadatas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocumentMetadata_Document_DocumentId",
+                        name: "FK_DocumentMetadatas_Documents_DocumentId",
                         column: x => x.DocumentId,
-                        principalTable: "Document",
+                        principalTable: "Documents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OutgoingAttachment",
+                name: "OutgoingAttachments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -484,39 +545,39 @@ namespace Server.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutgoingAttachment", x => x.Id);
+                    table.PrimaryKey("PK_OutgoingAttachments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OutgoingAttachment_OutgoingDocument_OutgoingDocumentId",
+                        name: "FK_OutgoingAttachments_OutgoingDocuments_OutgoingDocumentId",
                         column: x => x.OutgoingDocumentId,
-                        principalTable: "OutgoingDocument",
+                        principalTable: "OutgoingDocuments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Application_AssignedToId",
-                table: "Application",
-                column: "AssignedToId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Application_CurrentStepId",
-                table: "Application",
-                column: "CurrentStepId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Application_ServiceId",
-                table: "Application",
-                column: "ServiceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicationLog_ApplicationId",
-                table: "ApplicationLog",
+                name: "IX_ApplicationLogs_ApplicationId",
+                table: "ApplicationLogs",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicationLog_UserId",
-                table: "ApplicationLog",
+                name: "IX_ApplicationLogs_UserId",
+                table: "ApplicationLogs",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_AssignedToId",
+                table: "Applications",
+                column: "AssignedToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_CurrentStepId",
+                table: "Applications",
+                column: "CurrentStepId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_ServiceId",
+                table: "Applications",
+                column: "ServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -561,64 +622,64 @@ namespace Server.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ApplicationId",
-                table: "Document",
-                column: "ApplicationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Document_UploadedById",
-                table: "Document",
-                column: "UploadedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DocumentMetadata_DocumentId",
-                table: "DocumentMetadata",
+                name: "IX_DocumentMetadatas_DocumentId",
+                table: "DocumentMetadatas",
                 column: "DocumentId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_ApplicationId",
-                table: "Order",
+                name: "IX_Documents_ApplicationId",
+                table: "Documents",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_SignerId",
-                table: "Order",
+                name: "IX_Documents_UploadedById",
+                table: "Documents",
+                column: "UploadedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ApplicationId",
+                table: "Orders",
+                column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_SignerId",
+                table: "Orders",
                 column: "SignerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OutgoingAttachment_OutgoingDocumentId",
-                table: "OutgoingAttachment",
+                name: "IX_OutgoingAttachments_OutgoingDocumentId",
+                table: "OutgoingAttachments",
                 column: "OutgoingDocumentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OutgoingDocument_ApplicationId",
-                table: "OutgoingDocument",
+                name: "IX_OutgoingDocuments_ApplicationId",
+                table: "OutgoingDocuments",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RosreestrRequest_ApplicationId",
-                table: "RosreestrRequest",
+                name: "IX_RosreestrRequests_ApplicationId",
+                table: "RosreestrRequests",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SedDocumentLog_ApplicationId",
-                table: "SedDocumentLog",
+                name: "IX_SedDocumentLogs_ApplicationId",
+                table: "SedDocumentLogs",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkflowStep_WorkflowId",
-                table: "WorkflowStep",
+                name: "IX_WorkflowSteps_WorkflowId",
+                table: "WorkflowSteps",
                 column: "WorkflowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkflowTransition_FromStepId",
-                table: "WorkflowTransition",
+                name: "IX_WorkflowTransitions_FromStepId",
+                table: "WorkflowTransitions",
                 column: "FromStepId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkflowTransition_ToStepId",
-                table: "WorkflowTransition",
+                name: "IX_WorkflowTransitions_ToStepId",
+                table: "WorkflowTransitions",
                 column: "ToStepId");
         }
 
@@ -626,7 +687,7 @@ namespace Server.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationLog");
+                name: "ApplicationLogs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -644,49 +705,61 @@ namespace Server.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DocumentMetadata");
+                name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "DocumentMetadatas");
 
             migrationBuilder.DropTable(
-                name: "OutgoingAttachment");
+                name: "GeoObjects");
 
             migrationBuilder.DropTable(
-                name: "RosreestrRequest");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "SedDocumentLog");
+                name: "OutgoingAttachments");
 
             migrationBuilder.DropTable(
-                name: "WorkflowTransition");
+                name: "PasswordChangeLogs");
+
+            migrationBuilder.DropTable(
+                name: "RosreestrRequests");
+
+            migrationBuilder.DropTable(
+                name: "SedDocumentLogs");
+
+            migrationBuilder.DropTable(
+                name: "Templates");
+
+            migrationBuilder.DropTable(
+                name: "WorkflowTransitions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "OutgoingDocument");
+                name: "OutgoingDocuments");
 
             migrationBuilder.DropTable(
-                name: "Application");
+                name: "Applications");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Service");
+                name: "Services");
 
             migrationBuilder.DropTable(
-                name: "WorkflowStep");
+                name: "WorkflowSteps");
 
             migrationBuilder.DropTable(
                 name: "Departments");
 
             migrationBuilder.DropTable(
-                name: "Workflow");
+                name: "Workflows");
         }
     }
 }

@@ -4,6 +4,7 @@ using GovServices.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -17,7 +18,7 @@ namespace Server.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
@@ -32,7 +33,6 @@ namespace Server.Api.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AssignedToId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AssignedToUserId")
@@ -67,7 +67,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Application");
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationLog", b =>
@@ -98,7 +98,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApplicationLog");
+                    b.ToTable("ApplicationLogs");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationUser", b =>
@@ -177,6 +177,41 @@ namespace Server.Api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("DurationMs")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EntityId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -217,7 +252,6 @@ namespace Server.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UploadedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UploadedByUserId")
@@ -230,7 +264,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.DocumentMetadata", b =>
@@ -253,7 +287,32 @@ namespace Server.Api.Migrations
                     b.HasIndex("DocumentId")
                         .IsUnique();
 
-                    b.ToTable("DocumentMetadata");
+                    b.ToTable("DocumentMetadatas");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.GeoObject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Geometry>("Geometry")
+                        .IsRequired()
+                        .HasColumnType("geometry");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Properties")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeoObjects");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Order", b =>
@@ -279,7 +338,6 @@ namespace Server.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SignerId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SignerUserId")
@@ -296,7 +354,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("SignerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.OutgoingAttachment", b =>
@@ -322,7 +380,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("OutgoingDocumentId");
 
-                    b.ToTable("OutgoingAttachment");
+                    b.ToTable("OutgoingAttachments");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.OutgoingDocument", b =>
@@ -351,7 +409,31 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("OutgoingDocument");
+                    b.ToTable("OutgoingDocuments");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PasswordChangeLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordChangeLogs");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequest", b =>
@@ -384,7 +466,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("RosreestrRequest");
+                    b.ToTable("RosreestrRequests");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.SedDocumentLog", b =>
@@ -413,7 +495,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("SedDocumentLog");
+                    b.ToTable("SedDocumentLogs");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Service", b =>
@@ -440,7 +522,32 @@ namespace Server.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Service");
+                    b.ToTable("Services");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Templates");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Workflow", b =>
@@ -461,7 +568,7 @@ namespace Server.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Workflow");
+                    b.ToTable("Workflows");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.WorkflowStep", b =>
@@ -486,7 +593,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("WorkflowId");
 
-                    b.ToTable("WorkflowStep");
+                    b.ToTable("WorkflowSteps");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.WorkflowTransition", b =>
@@ -513,7 +620,7 @@ namespace Server.Api.Migrations
 
                     b.HasIndex("ToStepId");
 
-                    b.ToTable("WorkflowTransition");
+                    b.ToTable("WorkflowTransitions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -652,9 +759,7 @@ namespace Server.Api.Migrations
                 {
                     b.HasOne("GovServices.Server.Entities.ApplicationUser", "AssignedTo")
                         .WithMany("AssignedApplications")
-                        .HasForeignKey("AssignedToId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AssignedToId");
 
                     b.HasOne("GovServices.Server.Entities.WorkflowStep", "CurrentStep")
                         .WithMany()
@@ -713,9 +818,7 @@ namespace Server.Api.Migrations
 
                     b.HasOne("GovServices.Server.Entities.ApplicationUser", "UploadedBy")
                         .WithMany()
-                        .HasForeignKey("UploadedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UploadedById");
 
                     b.Navigation("Application");
 
@@ -741,9 +844,7 @@ namespace Server.Api.Migrations
 
                     b.HasOne("GovServices.Server.Entities.ApplicationUser", "Signer")
                         .WithMany()
-                        .HasForeignKey("SignerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SignerId");
 
                     b.Navigation("Application");
 
