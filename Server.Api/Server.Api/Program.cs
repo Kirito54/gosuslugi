@@ -130,6 +130,11 @@ builder.Services.AddHostedService<StatusNotificationService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    await DataSeeder.SeedAsync(scope.ServiceProvider);
+}
+
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
