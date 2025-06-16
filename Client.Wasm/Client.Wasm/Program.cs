@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Client.Wasm;
 using Client.Wasm.Services;
+using Syncfusion.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -26,6 +27,7 @@ builder.Services.AddScoped<Client.Wasm.Services.IUserApiClient, Client.Wasm.Serv
 builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
 
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddSyncfusionBlazor();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<CustomAuthStateProvider>();

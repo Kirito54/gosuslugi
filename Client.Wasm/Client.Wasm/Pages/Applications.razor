@@ -11,7 +11,7 @@
 <div class="container p-4">
     <h1>Заявки</h1>
     <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => OpenNew() )">Новая заявка</SfButton>
-    <SfGrid TItem="ApplicationDto" DataSource="@items" AllowPaging="true" Toolbar="@toolbar" Width="100%">
+    <SfGrid TItem="ApplicationDto" DataSource="@items" AllowPaging="true" Toolbar="@toolbar" Width="100%" CssClass="e-bootstrap5">
         <GridPageSettings PageSize="10" />
         <GridColumns>
             <GridColumn Field=@nameof(ApplicationDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />

@@ -6,20 +6,20 @@
 @using System.ComponentModel.DataAnnotations
 
 <div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
-    <div class="card shadow-sm" style="width: 400px;">
-        <div class="card-header text-center">
-            <h2>Вход в систему</h2>
-        </div>
-        <div class="card-body">
+    <SfCard CssClass="e-bootstrap5" Style="width:400px;">
+        <CardHeader>
+            <h2 class="text-center">Вход в систему</h2>
+        </CardHeader>
+        <CardContent>
             <EditForm Model="@model" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
-                <InputText class="form-control mb-3" @bind-Value="model.Email" placeholder="Email" />
-                <InputText class="form-control mb-4" @bind-Value="model.Password" type="password" placeholder="Пароль" />
-                <button type="submit" class="btn btn-primary w-100">Войти</button>
+                <SfTextBox CssClass="mb-3" @bind-Value="model.Email" Placeholder="Email" />
+                <SfTextBox CssClass="mb-4" @bind-Value="model.Password" Type="InputType.Password" Placeholder="Пароль" />
+                <SfButton CssClass="e-primary w-100" Type="Submit">Войти</SfButton>
             </EditForm>
-        </div>
-    </div>
+        </CardContent>
+    </SfCard>
 </div>
 
 @code {

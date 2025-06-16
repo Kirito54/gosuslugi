@@ -10,7 +10,7 @@
     }
     else
     {
-        <SfGrid DataSource="forecasts" Width="100%">
+        <SfGrid DataSource="forecasts" Width="100%" CssClass="e-bootstrap5">
             <GridColumns>
                 <GridColumn Field=@nameof(WeatherForecast.Date) HeaderText="Дата" Format="d" Width="120" />
                 <GridColumn Field=@nameof(WeatherForecast.TemperatureC) HeaderText="C" Width="100" />

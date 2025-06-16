@@ -6,30 +6,20 @@
 @inject NavigationManager NavigationManager
 <div class="container p-4">
     <h1>Приказы</h1>
-    <button class="btn btn-primary mb-3" @onclick="(() => edit.Show(new OrderDto()))">Добавить приказ</button>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Номер</th>
-                <th>Дата</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var o in orders)
-            {
-                <tr>
-                    <td class="text-center">@o.Id</td>
-                    <td>@o.Number</td>
-                    <td>@o.Date.ToShortDateString()</td>
-                    <td class="text-center">
-                        <button class="btn btn-outline-secondary btn-sm" @onclick="(() => edit.Load(o.Id))">✎</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <SfButton CssClass="e-primary mb-3" OnClick="(() => edit.Show(new OrderDto()))">Добавить приказ</SfButton>
+    <SfGrid DataSource="@orders" AllowPaging="true" CssClass="e-bootstrap5">
+        <GridPageSettings PageSize="10" />
+        <GridColumns>
+            <GridColumn Field=@nameof(OrderDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" />
+            <GridColumn Field=@nameof(OrderDto.Number) HeaderText="Номер" Width="120" />
+            <GridColumn Field=@nameof(OrderDto.Date) HeaderText="Дата" Format="d" Width="120" />
+            <GridColumn HeaderText="" Width="120" TextAlign="TextAlign.Center">
+                <Template>
+                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as OrderDto).Id) )"></SfButton>
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
     <OrderEdit @ref="edit" OnSaved="Reload" />
 </div>
 
