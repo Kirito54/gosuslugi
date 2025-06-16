@@ -12,8 +12,32 @@ using GovServices.Server.Services.Templates;
 using GovServices.Server.Services.Integrations;
 using GovServices.Server.Middleware;
 using GovServices.Server.BackgroundServices;
+using GovServices.Server.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Инфраструктурные сервисы ---
+// Data Protection для ProtectedBrowserStorage и других компонентов
+builder.Services.AddDataProtection();
+
+// HttpClientFactory для интеграций
+builder.Services.AddHttpClient();
+
+// ASP.NET Identity (UserManager, SignInManager, RoleManager)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+// DinkToPdf конвертер для генерации PDF из шаблонов
+builder.Services.AddSingleton(typeof(DinkToPdf.Contracts.IConverter),
+    new DinkToPdf.SynchronizedConverter(new DinkToPdf.PdfTools()));
+
+// --- Регистрация бизнес-сервисов ---
 
 // Serilog configuration
 Log.Logger = new LoggerConfiguration()
@@ -30,10 +54,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         o => o.UseNetTopologySuite()));
 
 // Identity + JWT configuration
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
