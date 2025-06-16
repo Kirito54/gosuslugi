@@ -11,7 +11,7 @@
 <div class="container p-4">
     <h1>Маршруты</h1>
     <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show() )">Новый маршрут</SfButton>
-    <SfGrid TItem="WorkflowDto" DataSource="@items" AllowPaging="true" Width="100%">
+    <SfGrid TItem="WorkflowDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
         <GridPageSettings PageSize="10" />
         <GridColumns>
             <GridColumn Field=@nameof(WorkflowDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />

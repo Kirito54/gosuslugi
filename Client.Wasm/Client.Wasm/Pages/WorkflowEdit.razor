@@ -23,7 +23,7 @@
         </SfTab>
         <div class="text-right mt-3">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.HideAsync() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
@@ -39,7 +39,7 @@
         model = new WorkflowDto();
         hdr = "Новый маршрут";
         isNew = true;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     public async void Load(int id)
@@ -47,7 +47,7 @@
         model = await ApiClient.GetByIdAsync(id);
         hdr = $"Редактировать маршрут #{id}";
         isNew = false;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     async Task Save()
@@ -56,7 +56,7 @@
             await ApiClient.CreateAsync(model);
         else
             await ApiClient.UpdateAsync(model);
-        dlg.Hide();
+        _ = dlg.HideAsync();
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();

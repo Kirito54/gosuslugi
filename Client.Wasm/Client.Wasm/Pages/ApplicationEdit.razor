@@ -23,7 +23,7 @@
         </SfTab>
         <div class="text-right mt-3">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.HideAsync() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
@@ -43,7 +43,7 @@
         formData = "{}";
         header = "Новая заявка";
         isNew = true;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     public async void Load(int id)
@@ -53,7 +53,7 @@
         updateModel = new UpdateApplicationDto { CurrentStepId = app.CurrentStepId, Status = app.Status, AssignedToUserId = app.AssignedToUserId };
         header = $"Редактировать заявку #{id}";
         isNew = false;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     async Task Save()
@@ -62,7 +62,7 @@
             await ApiClient.CreateAsync(new CreateApplicationDto { ServiceId = model.ServiceId, FormData = new Dictionary<string, object>() });
         else
             await ApiClient.UpdateAsync(editId, updateModel);
-        dlg.Hide();
+        _ = dlg.HideAsync();
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();

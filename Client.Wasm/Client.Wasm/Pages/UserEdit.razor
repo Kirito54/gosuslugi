@@ -25,7 +25,7 @@
         </SfTab>
         <div class="text-right mt-3">
             <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.Hide() )">Отмена</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.HideAsync() )">Отмена</SfButton>
         </div>
     </EditForm>
 </SfDialog>
@@ -43,7 +43,7 @@
         model = new CreateUserDto { RoleIds = new List<string>() };
         hdr = "Новый пользователь";
         isNew = true;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     public async void Load(string userId)
@@ -54,7 +54,7 @@
         model = new CreateUserDto { Email = u.Email, FullName = u.FullName, DepartmentId = 0, RoleIds = u.Roles };
         hdr = "Редактировать пользователя";
         isNew = false;
-        dlg.Show();
+        _ = dlg.ShowAsync();
     }
 
     async Task Save()
@@ -69,7 +69,7 @@
         {
             await ApiClient.UpdateAsync(id, new UpdateUserDto { FullName = model.FullName, DepartmentId = model.DepartmentId, RoleIds = list });
         }
-        dlg.Hide();
+        _ = dlg.HideAsync();
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();

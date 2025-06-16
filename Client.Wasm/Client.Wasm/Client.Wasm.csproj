@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.17" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Syncfusion.Blazor" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="24.1.41" />
   </ItemGroup>
 
 </Project>
