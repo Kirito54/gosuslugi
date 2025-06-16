@@ -48,10 +48,17 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// DbContext configuration (PostgreSQL + PostGIS)
+// --- Настройка DbContext с подключением к PostgreSQL ---
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        o => o.UseNetTopologySuite()));
+{
+    var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrEmpty(conn))
+        throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured.");
+    options.UseNpgsql(conn, npgsql =>
+    {
+        npgsql.UseNetTopologySuite();
+    });
+});
 
 // Identity + JWT configuration
 builder.Services.AddAuthentication(options =>
