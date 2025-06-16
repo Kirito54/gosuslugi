@@ -1,31 +1,42 @@
-﻿@inherits LayoutComponentBase
-@using Microsoft.AspNetCore.Components.Authorization
+@inherits LayoutComponentBase
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
 @inject IAuthService AuthService
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+
+<header class="bg-primary text-white d-flex justify-content-between align-items-center p-2">
+    <div class="d-flex align-items-center">
+        <img src="logo.png" alt="Logo" style="height:40px" class="me-3" />
     </div>
+    <SfMenu Items="@MenuItems" CssClass="flex-grow-1"></SfMenu>
+    <AuthorizeView>
+        <Authorized>
+            <SfButton CssClass="e-flat text-white" OnClick="Logout">Logout</SfButton>
+        </Authorized>
+        <NotAuthorized>
+            <NavLink href="login" class="text-white">Login</NavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</header>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-            <AuthorizeView>
-                <Authorized>
-                    <button class="btn btn-link" @onclick="Logout">Logout</button>
-                </Authorized>
-                <NotAuthorized>
-                    <NavLink href="login" class="btn btn-link">Login</NavLink>
-                </NotAuthorized>
-            </AuthorizeView>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+<div class="content p-4">
+    @Body
 </div>
 
+<footer class="text-center py-3">
+    &copy; 2024 Госуслуги
+</footer>
+
 @code {
+    List<MenuItem> MenuItems = new()
+    {
+        new MenuItem { Text = "Services", Url = "/services" },
+        new MenuItem { Text = "Workflows", Url = "/workflows" },
+        new MenuItem { Text = "Applications", Url = "/applications" },
+        new MenuItem { Text = "Documents", Url = "/documents/0" },
+        new MenuItem { Text = "Templates", Url = "/templates" },
+        new MenuItem { Text = "Users", Url = "/users" }
+    };
+
     private async Task Logout()
     {
         await AuthService.LogoutAsync();

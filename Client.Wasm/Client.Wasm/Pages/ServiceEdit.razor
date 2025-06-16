@@ -1,3 +1,4 @@
+@attribute [Authorize]
 @using Syncfusion.Blazor.Grids
 @using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.Navigations
@@ -9,9 +10,18 @@
 <SfDialog @ref="dialog" Width="400px" IsModal="true" ShowCloseIcon="true" Header="@header">
     <EditForm Model="model" OnValidSubmit="HandleSave">
         <DataAnnotationsValidator />
-        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
-        <div class="text-right">
+        <SfTab>
+            <TabItems>
+                <TabItem HeaderText="Основное">
+                    <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+                    <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
+                </TabItem>
+                <TabItem HeaderText="Дополнительно">
+                    <!-- дополнительные поля -->
+                </TabItem>
+            </TabItems>
+        </SfTab>
+        <div class="text-right mt-3">
             <SfButton CssClass="e-primary me-2" Type="Submit">Сохранить</SfButton>
             <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dialog.Hide() )">Отмена</SfButton>
         </div>
