@@ -1,5 +1,6 @@
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
 }
 
 h1:focus {
@@ -7,13 +8,13 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: #0D4E8C;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #FF8C00;
+    border-color: #FF8C00;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -101,3 +102,9 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.bg-primary {
+    background-color: #0D4E8C !important;
+}
+
+.e-primary{background-color:#FF8C00;border-color:#FF8C00;}
