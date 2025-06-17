@@ -3,35 +3,21 @@
 @inject NavigationManager NavigationManager
 
 <div class="login-page">
-  <SfCard CssClass="login-card">
+  <div class="login-container">
     <img src="images/logo.png" alt="Логотип" class="login-logo" />
-    <div class="login-title">ГУ ДИЗО</div>
-    <EditForm Model="@model" OnValidSubmit="HandleLogin">
-      <DataAnnotationsValidator />
-      <div class="mb-3">
-        <SfTextBox @bind-Value="model.Email"
-                  Placeholder="Эл. почта"
-                  CssClass="w-100"
-                  FloatLabelType="FloatLabelType.Auto" />
-        <ValidationMessage For="@(() => model.Email)" />
-      </div>
-      <div class="mb-3">
-        <SfTextBox @bind-Value="model.Password"
-                  Placeholder="Пароль"
-                  InputType="InputType.Password"
-                  CssClass="w-100"
-                  FloatLabelType="FloatLabelType.Auto" />
-        <ValidationMessage For="@(() => model.Password)" />
-      </div>
-      <SfButton Type="Submit" CssClass="e-primary w-100 mb-2">Войти</SfButton>
-      <div class="text-center">
-        <a href="/forgot-password">Забыли пароль?</a>
-      </div>
+    <h3 class="login-title">ГУ ДИЗО</h3>
+
+    <EditForm Model="@Model" OnValidSubmit="OnLogin">
+      <SfTextBox Placeholder="Эл. почта" @bind-Value="Model.Email" CssClass="mb-3 w-100" />
+      <SfTextBox Placeholder="Пароль" @bind-Value="Model.Password" Type="InputType.Password" CssClass="mb-3 w-100" />
+      <SfButton Type="Submit" CssClass="e-primary w-100">Войти</SfButton>
     </EditForm>
-    <div class="login-footer">
-      © 2025 ГУ ДИЗО
+
+    <div class="text-center mt-3">
+      <a href="#">Забыли пароль?</a>
+      <div class="text-muted mt-2">© 2025 ГУ ДИЗО</div>
     </div>
-  </SfCard>
+  </div>
 </div>
 
 @code {
@@ -46,14 +32,14 @@
     public string Password { get; set; }
   }
 
-  LoginModel model = new();
+  LoginModel Model = new();
 
-  async Task HandleLogin()
+  async Task OnLogin()
   {
     var dto = new Client.Wasm.DTOs.LoginRequestDto
     {
-        Email = model.Email,
-        Password = model.Password
+        Email = Model.Email,
+        Password = Model.Password
     };
     var success = await AuthService.LoginAsync(dto);
     if (success)
