@@ -81,9 +81,11 @@ builder.Services.AddAuthorization();
 // CORS configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowWasmDev", policy =>
+    options.AddPolicy("SmartCors", policy =>
     {
-        policy.WithOrigins("https://localhost:7197")
+        policy.SetIsOriginAllowed(origin =>
+                origin.StartsWith("http://localhost") ||
+                origin.StartsWith("https://localhost"))
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -152,7 +154,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseCors("AllowWasmDev");
+app.UseCors("SmartCors");
 
 app.UseAuthentication();
 app.UseAuthorization();
