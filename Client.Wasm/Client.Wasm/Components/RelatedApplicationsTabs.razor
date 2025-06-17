@@ -1,0 +1,73 @@
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@inject Services.IApplicationApiClient Api
+@inject NavigationManager Nav
+
+@if (appId != 0)
+{
+    <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
+        <SfTab>
+            <TabItems>
+                <TabItem HeaderText="Другие заявления заявителя">
+                    <ContentTemplate>
+                        <SfGrid DataSource="@byApplicant" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
+                            <GridPageSettings PageSize="5" />
+                            <GridColumns>
+                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
+                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
+                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
+                            </GridColumns>
+                        </SfGrid>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem HeaderText="Заявления с этим представителем">
+                    <ContentTemplate>
+                        <SfGrid DataSource="@byRepresentative" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
+                            <GridPageSettings PageSize="5" />
+                            <GridColumns>
+                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
+                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
+                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
+                            </GridColumns>
+                        </SfGrid>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem HeaderText="По пересечению координат">
+                    <ContentTemplate>
+                        <SfGrid DataSource="@byGeo" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
+                            <GridPageSettings PageSize="5" />
+                            <GridColumns>
+                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
+                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
+                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
+                            </GridColumns>
+                        </SfGrid>
+                    </ContentTemplate>
+                </TabItem>
+            </TabItems>
+        </SfTab>
+    </SfCard>
+}
+
+@code {
+    [Parameter] public int appId { get; set; }
+
+    List<ApplicationDto> byApplicant = new();
+    List<ApplicationDto> byRepresentative = new();
+    List<ApplicationDto> byGeo = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (appId != 0)
+        {
+            byApplicant = await Api.GetRelatedByApplicantAsync(appId);
+            byRepresentative = await Api.GetRelatedByRepresentativeAsync(appId);
+            byGeo = await Api.GetRelatedByGeoAsync(appId);
+        }
+    }
+
+    void OnRowSelected(RowSelectEventArgs<ApplicationDto> args)
+    {
+        Nav.NavigateTo($"/applications/details/{args.Data.Id}");
+    }
+}

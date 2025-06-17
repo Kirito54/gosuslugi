@@ -15,4 +15,8 @@ public interface IApplicationService
     Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto);
     Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId);
     Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto);
+
+    Task<List<ApplicationDto>> GetByApplicantAsync(int applicationId);
+    Task<List<ApplicationDto>> GetByRepresentativeAsync(int applicationId);
+    Task<List<ApplicationDto>> GetByGeoIntersectionAsync(int applicationId);
 }

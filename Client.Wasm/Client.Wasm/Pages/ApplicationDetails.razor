@@ -67,9 +67,11 @@
                             </Template>
                         </GridColumn>
                     </GridColumns>
-                </SfGrid>
-            </SfCardContent>
-        </SfCard>
+        </SfGrid>
+    </SfCardContent>
+</SfCard>
+
+        <RelatedApplicationsTabs appId="@app.Id" />
 
         <RevisionModal @ref="revisionModal" OnSubmit="AddRevision" />
         <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@( (MouseEventArgs e) => NavigationManager.NavigateTo("/applications") )">Назад</SfButton>
