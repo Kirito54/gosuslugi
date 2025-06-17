@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using GovServices.Server.Interfaces;
 
 namespace GovServices.Server.Controllers;
@@ -15,6 +16,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public IActionResult Login()
     {
         return Ok();
