@@ -1,32 +1,62 @@
 @page "/login"
-@inject AuthService AuthService
-@using Client.Wasm.DTOs
-@inject IJSRuntime Js
+@inject Client.Wasm.Services.AuthService AuthService
 @inject NavigationManager NavigationManager
-@using System.ComponentModel.DataAnnotations
 
-<div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
-    <SfCard CssClass="e-bootstrap5" Style="width:400px;">
-        <CardHeader>
-            <h2 class="text-center">Вход в систему</h2>
-        </CardHeader>
-        <CardContent>
-            <EditForm Model="@model" OnValidSubmit="HandleLogin">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <SfTextBox CssClass="mb-3" @bind-Value="model.Email" Placeholder="Email" />
-                <SfTextBox CssClass="mb-4" @bind-Value="model.Password" Type="InputType.Password" Placeholder="Пароль" />
-                <SfButton CssClass="e-primary w-100" Type="Submit">Войти</SfButton>
-            </EditForm>
-        </CardContent>
-    </SfCard>
+<div class="login-page">
+  <SfCard CssClass="login-card">
+    <img src="favicon.png" alt="Логотип" class="login-logo" />
+    <div class="login-title">ГУ ДИЗО</div>
+    <EditForm Model="@model" OnValidSubmit="HandleLogin">
+      <DataAnnotationsValidator />
+      <div class="mb-3">
+        <SfTextBox @bind-Value="model.Email"
+                  Placeholder="Эл. почта"
+                  CssClass="w-100"
+                  FloatLabelType="FloatLabelType.Auto" />
+        <ValidationMessage For="@(() => model.Email)" />
+      </div>
+      <div class="mb-3">
+        <SfTextBox @bind-Value="model.Password"
+                  Placeholder="Пароль"
+                  InputType="InputType.Password"
+                  CssClass="w-100"
+                  FloatLabelType="FloatLabelType.Auto" />
+        <ValidationMessage For="@(() => model.Password)" />
+      </div>
+      <SfButton Type="Submit" CssClass="e-primary w-100 mb-2">Войти</SfButton>
+      <div class="text-center">
+        <a href="/forgot-password">Забыли пароль?</a>
+      </div>
+    </EditForm>
+    <div class="login-footer">
+      © 2025 ГУ ДИЗО
+    </div>
+  </SfCard>
 </div>
 
 @code {
-    LoginRequestDto model = new();
-    async Task HandleLogin()
+  class LoginModel
+  {
+    [Required(ErrorMessage = "Поле обязательно")]
+    [EmailAddress(ErrorMessage = "Неверный формат эл. почты")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Поле обязательно")]
+    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
+    public string Password { get; set; }
+  }
+
+  LoginModel model = new();
+
+  async Task HandleLogin()
+  {
+    var dto = new Client.Wasm.DTOs.LoginRequestDto
     {
-        await AuthService.LoginAsync(model);
-        NavigationManager.NavigateTo("/");
-    }
+        Email = model.Email,
+        Password = model.Password
+    };
+    var success = await AuthService.LoginAsync(dto);
+    if (success)
+      NavigationManager.NavigateTo("/");
+  }
 }
