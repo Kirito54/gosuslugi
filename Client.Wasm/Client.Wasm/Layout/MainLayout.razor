@@ -1,49 +1,56 @@
 @inherits LayoutComponentBase
 @inject IAuthService AuthService
-@inject NavigationManager NavigationManager
+@inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <CascadingAuthenticationState>
-    <SfToolbar CssClass="e-bootstrap5">
-        <ToolbarItems>
-            <ToolbarItem PrefixIcon="" Text="">
-                <Template>
-                    <a class="navbar-brand" href="/">
-                        <img src="images/logo.png" alt="Logo" style="height:40px" class="me-2" />
-                    </a>
-                </Template>
-            </ToolbarItem>
-            @if (authState?.User?.Identity?.IsAuthenticated == true)
-            {
-                <ToolbarItem Text="Menu">
+    @if (!Nav.Uri.Contains("/login"))
+    {
+        <SfToolbar CssClass="e-bootstrap5">
+            <ToolbarItems>
+                <ToolbarItem PrefixIcon="" Text="">
                     <Template>
-                        <SfMenu Items="MenuItems" CssClass="e-bootstrap5"></SfMenu>
+                        <a class="navbar-brand" href="/">
+                            <img src="images/logo.png" alt="Logo" style="height:40px" class="me-2" />
+                        </a>
                     </Template>
                 </ToolbarItem>
-            }
-            <ToolbarItem Align="ItemAlign.Right">
-                <Template>
-                    @if (authState?.User?.Identity?.IsAuthenticated == true)
-                    {
-                        <SfButton CssClass="e-danger" OnClick="Logout">Выйти</SfButton>
-                    }
-                    else
-                    {
-                        <SfButton CssClass="e-primary" OnClick="@(() => NavigationManager.NavigateTo("/login"))">Войти</SfButton>
-                    }
-                </Template>
-            </ToolbarItem>
-        </ToolbarItems>
-    </SfToolbar>
+                @if (authState?.User?.Identity?.IsAuthenticated == true)
+                {
+                    <ToolbarItem Text="Menu">
+                        <Template>
+                            <SfMenu Items="MenuItems" CssClass="e-bootstrap5"></SfMenu>
+                        </Template>
+                    </ToolbarItem>
+                }
+                <ToolbarItem Align="ItemAlign.Right">
+                    <Template>
+                        @if (authState?.User?.Identity?.IsAuthenticated == true)
+                        {
+                            <SfButton CssClass="e-danger" OnClick="Logout">Выйти</SfButton>
+                        }
+                        else
+                        {
+                            <SfButton CssClass="e-primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</SfButton>
+                        }
+                    </Template>
+                </ToolbarItem>
+            </ToolbarItems>
+        </SfToolbar>
+    }
 </CascadingAuthenticationState>
 
 <div class="content p-4">
+    <RedirectToLogin />
     @Body
 </div>
 
-<footer class="bg-light text-center py-3">
-    &copy; 2025 Госуслуги
-</footer>
+@if (!Nav.Uri.Contains("/login"))
+{
+    <footer class="bg-light text-center py-3">
+        &copy; 2025 Госуслуги
+    </footer>
+}
 
 @code {
     private AuthenticationState? authState;

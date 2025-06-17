@@ -1,4 +1,17 @@
-@inject NavigationManager Nav
-@code {
-    protected override void OnInitialized() => Nav.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(Nav.Uri)}");
-}
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
+
+<AuthorizeView>
+    <NotAuthorized>
+        @code {
+            protected override async Task OnInitializedAsync()
+            {
+                var state = await AuthProvider.GetAuthenticationStateAsync();
+                if (state?.User?.Identity?.IsAuthenticated != true)
+                {
+                    Navigation.NavigateTo("/login", true);
+                }
+            }
+        }
+    </NotAuthorized>
+</AuthorizeView>
