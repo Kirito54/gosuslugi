@@ -16,6 +16,10 @@ public interface IApplicationApiClient
     Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto);
     Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId);
     Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto);
+
+    Task<List<ApplicationDto>> GetRelatedByApplicantAsync(int applicationId);
+    Task<List<ApplicationDto>> GetRelatedByRepresentativeAsync(int applicationId);
+    Task<List<ApplicationDto>> GetRelatedByGeoAsync(int applicationId);
 }
 
 public class ApplicationApiClient : IApplicationApiClient
@@ -89,5 +93,20 @@ public class ApplicationApiClient : IApplicationApiClient
         var res = await _http.PostAsJsonAsync($"api/applications/{dto.ApplicationId}/revisions", dto);
         res.EnsureSuccessStatusCode();
         return (await res.Content.ReadFromJsonAsync<ApplicationRevisionDto>())!;
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByApplicantAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/applicant") ?? new();
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByRepresentativeAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/representative") ?? new();
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByGeoAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/geo") ?? new();
     }
 }

@@ -178,4 +178,40 @@ namespace GovServices.Server.Services;
         await _context.SaveChangesAsync();
         return _mapper.Map<ApplicationRevisionDto>(entity);
     }
+
+    public async Task<List<ApplicationDto>> GetByApplicantAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
+    }
+
+    public async Task<List<ApplicationDto>> GetByRepresentativeAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
+    }
+
+    public async Task<List<ApplicationDto>> GetByGeoIntersectionAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
+    }
 }
