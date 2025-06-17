@@ -5,5 +5,6 @@ namespace GovServices.Server.DTOs
         public string FullName { get; set; }
         public int DepartmentId { get; set; }
         public List<string> RoleIds { get; set; }
+        public List<int> GroupIds { get; set; }
     }
 }

@@ -28,11 +28,39 @@ namespace GovServices.Server.Data
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<PasswordChangeLog> PasswordChangeLogs { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<PermissionGroup> PermissionGroups { get; set; }
+        public DbSet<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
+        public DbSet<UserPermissionGroup> UserPermissionGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // здесь можно добавить конфигурацию связей и ограничений, если надо
+            builder.Entity<UserPermissionGroup>()
+                .HasKey(upg => new { upg.UserId, upg.PermissionGroupId });
+
+            builder.Entity<UserPermissionGroup>()
+                .HasOne(upg => upg.User)
+                .WithMany(u => u.PermissionGroups)
+                .HasForeignKey(upg => upg.UserId);
+
+            builder.Entity<UserPermissionGroup>()
+                .HasOne(upg => upg.PermissionGroup)
+                .WithMany(pg => pg.UserPermissionGroups)
+                .HasForeignKey(upg => upg.PermissionGroupId);
+
+            builder.Entity<PermissionGroupPermission>()
+                .HasKey(pgp => new { pgp.PermissionGroupId, pgp.PermissionId });
+
+            builder.Entity<PermissionGroupPermission>()
+                .HasOne(pgp => pgp.PermissionGroup)
+                .WithMany(pg => pg.PermissionGroupPermissions)
+                .HasForeignKey(pgp => pgp.PermissionGroupId);
+
+            builder.Entity<PermissionGroupPermission>()
+                .HasOne(pgp => pgp.Permission)
+                .WithMany(p => p.PermissionGroupPermissions)
+                .HasForeignKey(pgp => pgp.PermissionId);
         }
     }
 }
