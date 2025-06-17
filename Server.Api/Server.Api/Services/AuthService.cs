@@ -39,8 +39,12 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException();
         }
 
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+        var jwtKey = _configuration["JwtSettings:SecretKey"];
+        if (string.IsNullOrWhiteSpace(jwtKey))
+        {
+            throw new Exception("JWT ключ не задан");
+        }
+        var key = Encoding.UTF8.GetBytes(jwtKey);
 
         var claims = new List<Claim>
         {
@@ -52,14 +56,12 @@ public class AuthService : IAuthService
         var roles = await _userManager.GetRolesAsync(user);
         claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-        var duration = int.TryParse(jwtSettings["DurationInMinutes"], out var mins) ? mins : 60;
+        var duration = 60; // токен действует 1 час
 
         var descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddMinutes(duration),
-            Issuer = jwtSettings["Issuer"],
-            Audience = jwtSettings["Audience"],
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
