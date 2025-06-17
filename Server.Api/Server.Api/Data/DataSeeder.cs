@@ -21,7 +21,17 @@ namespace GovServices.Server.Data
                 RoleNames.DepartmentHead,
                 RoleNames.ManagementHead,
                 RoleNames.Director,
-                RoleNames.Executor
+                RoleNames.FirstDeputyDirector,
+                RoleNames.Executor,
+                RoleNames.Chancery,
+                RoleNames.Egrn,
+                RoleNames.Vis,
+                RoleNames.Zags,
+                RoleNames.DocumentUpload,
+                RoleNames.DocumentSign,
+                RoleNames.Rdz,
+                RoleNames.Rdi,
+                RoleNames.ClosedServices
             };
             const string adminEmail = "admin@gosuslugi.local";
             const string adminPassword = "P@ssw0rd123";

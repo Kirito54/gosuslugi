@@ -1,0 +1,33 @@
+@page "/registry/contracts"
+@attribute [Authorize]
+
+<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <CardHeader>
+        <h1>Договоры</h1>
+    </CardHeader>
+    <CardContent>
+        <SfGrid DataSource="@contracts" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(ContractRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+                <GridColumn Field=@nameof(ContractRow.Name) HeaderText="Название" Width="200" />
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<ContractRow> contracts = new();
+    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
+
+    protected override void OnInitialized()
+    {
+        contracts = new() { new ContractRow { Id = 1, Name = "Договор №1" } };
+    }
+
+    class ContractRow
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+}
