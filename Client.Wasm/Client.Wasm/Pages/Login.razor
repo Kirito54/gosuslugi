@@ -4,7 +4,7 @@
 @inject AuthenticationStateProvider AuthProvider
 
 <div class="login-wrapper">
-    <SfCard CssClass="login-card glass-effect">
+    <SfCard CssClass="login-card">
         <CardHeader>
             <div class="text-center mb-3">
                 <img src="images/logo.png" class="login-logo" alt="Логотип" />
@@ -17,17 +17,16 @@
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
-                <SfTextBox @bind-Value="loginModel.Email" Placeholder="Эл. почта" CssClass="form-field" />
-                <SfTextBox @bind-Value="loginModel.Password" Placeholder="Пароль" Type="InputType.Password" CssClass="form-field" />
+                <SfTextBox @bind-Value="loginModel.Email" Placeholder="Эл. почта" CssClass="e-input mb-3 w-100" />
+                <SfTextBox @bind-Value="loginModel.Password" Placeholder="Пароль" Type="InputType.Password" CssClass="e-input mb-3 w-100" />
 
-                <SfButton CssClass="login-button e-primary" Type="Submit">Войти</SfButton>
+                <SfButton CssClass="e-primary e-block login-button" Type="Submit" Content="Войти" />
             </EditForm>
         </CardContent>
 
         <CardFooter>
             <div class="text-center mt-3">
-                <a href="#" class="text-light">Забыли пароль?</a>
-                <div class="text-muted mt-2">© 2025 Приложение</div>
+                <a href="#" class="forgot-link">Забыли пароль?</a>
             </div>
         </CardFooter>
     </SfCard>
