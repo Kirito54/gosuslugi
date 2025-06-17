@@ -40,7 +40,7 @@
     }
 </CascadingAuthenticationState>
 
-<div class="content p-4">
+<div class="content @(Nav.Uri.Contains("/login") ? string.Empty : "p-4")">
     <RedirectToLogin />
     @Body
 </div>
