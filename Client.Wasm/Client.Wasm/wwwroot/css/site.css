@@ -1,8 +1,15 @@
+:root {
+    --color-primary: #2563eb;
+    --radius: 12px;
+}
+
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Segoe UI", "Roboto", sans-serif;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    background-color: #ffffff;
+    color: #1f2937;
 }
 
 .login-wrapper {
@@ -10,15 +17,16 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0d47a1, #2196f3);
+    background: #f1f5f9;
 }
 
 .login-card {
     width: 380px;
     padding: 2rem 1.5rem;
-    border-radius: 16px;
+    border-radius: var(--radius);
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    animation: fade-in 0.4s ease-out;
 }
 
 .glass-effect {
@@ -34,7 +42,7 @@ html, body {
 
 .login-title {
     font-weight: 600;
-    color: white;
+    color: var(--color-primary);
     margin-bottom: 1rem;
 }
 
@@ -61,4 +69,9 @@ html, body {
   z-index: 1020;
   background-color: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
