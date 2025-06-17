@@ -1,48 +1,59 @@
 @page "/login"
 @inject Client.Wasm.Services.AuthService AuthService
-@inject NavigationManager NavigationManager
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
 
-<div class="login-page">
-  <div class="login-container">
-    <img src="images/logo.png" alt="Логотип" class="login-logo" />
-    <h3 class="login-title">ГУ ДИЗО</h3>
+<div class="login-wrapper">
+    <div class="login-card shadow">
+        <img src="images/logo.png" alt="Логотип" class="login-logo" />
+        <h4 class="login-title">ГУ ДИЗО</h4>
 
-    <EditForm Model="@Model" OnValidSubmit="OnLogin">
-      <SfTextBox Placeholder="Эл. почта" @bind-Value="Model.Email" CssClass="mb-3 w-100" />
-      <SfTextBox Placeholder="Пароль" @bind-Value="Model.Password" Type="InputType.Password" CssClass="mb-3 w-100" />
-      <SfButton Type="Submit" CssClass="e-primary w-100">Войти</SfButton>
-    </EditForm>
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-    <div class="text-center mt-3">
-      <a href="#">Забыли пароль?</a>
-      <div class="text-muted mt-2">© 2025 ГУ ДИЗО</div>
+            <SfTextBox Placeholder="Эл. почта" CssClass="mb-3 w-100" @bind-Value="loginModel.Email" />
+            <SfTextBox Placeholder="Пароль" CssClass="mb-3 w-100" Type="InputType.Password" @bind-Value="loginModel.Password" />
+
+            <SfButton CssClass="e-primary w-100 mb-2" Type="Submit">Войти</SfButton>
+        </EditForm>
+
+        <div class="text-center">
+            <a href="#" class="text-light">Забыли пароль?</a>
+            <div class="text-light mt-2">© 2025 ГУ ДИЗО</div>
+        </div>
     </div>
-  </div>
 </div>
 
 @code {
-  class LoginModel
-  {
-    [Required(ErrorMessage = "Поле обязательно")]
-    [EmailAddress(ErrorMessage = "Неверный формат эл. почты")]
-    public string Email { get; set; }
+    LoginModel loginModel = new();
 
-    [Required(ErrorMessage = "Поле обязательно")]
-    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
-    public string Password { get; set; }
-  }
-
-  LoginModel Model = new();
-
-  async Task OnLogin()
-  {
-    var dto = new Client.Wasm.DTOs.LoginRequestDto
+    protected override async Task OnInitializedAsync()
     {
-        Email = Model.Email,
-        Password = Model.Password
-    };
-    var success = await AuthService.LoginAsync(dto);
-    if (success)
-      NavigationManager.NavigateTo("/");
-  }
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        var dto = new Client.Wasm.DTOs.LoginRequestDto
+        {
+            Email = loginModel.Email,
+            Password = loginModel.Password
+        };
+        var success = await AuthService.LoginAsync(dto);
+        if (success)
+            Navigation.NavigateTo("/");
+    }
+
+    class LoginModel
+    {
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
+    }
 }
