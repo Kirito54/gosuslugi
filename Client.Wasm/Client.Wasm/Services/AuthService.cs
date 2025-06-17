@@ -23,15 +23,23 @@ public class AuthService : IAuthService
     public async Task<bool> LoginAsync(LoginRequestDto dto)
     {
         var res = await _http.PostAsJsonAsync("api/auth/login", dto);
+
         if (!res.IsSuccessStatusCode)
         {
             return false;
         }
+
+        if (res.Content == null || res.Content.Headers.ContentLength == 0)
+        {
+            return false;
+        }
+
         var result = await res.Content.ReadFromJsonAsync<AuthResultDto>();
         if (result == null)
         {
             return false;
         }
+
         await _authProvider.SetTokenAsync(result.Token);
         return true;
     }
