@@ -1,3 +1,9 @@
 namespace GovServices.Server.Interfaces;
 
-public interface IAuthService { }
+using GovServices.Server.DTOs;
+
+public interface IAuthService
+{
+    Task<AuthResultDto> LoginAsync(LoginRequestDto dto);
+    Task<bool> RefreshTokenAsync(string refreshToken);
+}

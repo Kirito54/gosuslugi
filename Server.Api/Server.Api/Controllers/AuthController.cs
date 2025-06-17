@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using GovServices.Server.Interfaces;
+using GovServices.Server.DTOs;
 
 namespace GovServices.Server.Controllers;
 
@@ -17,8 +18,16 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public IActionResult Login()
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
-        return Ok();
+        try
+        {
+            var result = await _auth.LoginAsync(dto);
+            return Ok(result);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized(new { error = "Invalid credentials" });
+        }
     }
 }

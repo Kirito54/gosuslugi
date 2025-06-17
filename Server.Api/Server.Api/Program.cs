@@ -150,6 +150,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler("/error");
+
 // app.UseHttpsRedirection(); // Disabled for local development
 
 app.UseRouting();
