@@ -5,12 +5,16 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 <div class="container p-4">
-    <h1>Приказы</h1>
-    <SfButton CssClass="e-primary mb-3" OnClick="(() => edit.Show(new OrderDto()))">Добавить приказ</SfButton>
-    <SfGrid DataSource="@orders" AllowPaging="true" CssClass="e-bootstrap5">
-        <GridPageSettings PageSize="10" />
-        <GridColumns>
-            <GridColumn Field=@nameof(OrderDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" />
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Приказы</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" OnClick="(() => edit.Show(new OrderDto()))">Добавить приказ</SfButton>
+            <SfGrid DataSource="@orders" AllowPaging="true" CssClass="e-bootstrap5">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(OrderDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" />
             <GridColumn Field=@nameof(OrderDto.Number) HeaderText="Номер" Width="120" />
             <GridColumn Field=@nameof(OrderDto.Date) HeaderText="Дата" Format="d" Width="120" />
             <GridColumn HeaderText="" Width="120" TextAlign="TextAlign.Center">
@@ -18,8 +22,10 @@
                     <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as OrderDto).Id) )"></SfButton>
                 </Template>
             </GridColumn>
-        </GridColumns>
-    </SfGrid>
+            </GridColumns>
+        </SfGrid>
+        </CardContent>
+    </SfCard>
     <OrderEdit @ref="edit" OnSaved="Reload" />
 </div>
 

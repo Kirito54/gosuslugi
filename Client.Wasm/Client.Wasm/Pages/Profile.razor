@@ -5,12 +5,19 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 <div class="container p-4">
-    <h1>Профиль</h1>
-    <EditForm Model="model">
-        <InputText class="form-control mb-3" @bind-Value="model.FullName" placeholder="ФИО" />
-        <InputText class="form-control mb-3" @bind-Value="model.Email" placeholder="Email" />
-        <button class="btn btn-primary">Сохранить</button>
-    </EditForm>
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Профиль</h1>
+        </CardHeader>
+        <CardContent>
+            <EditForm Model="model">
+                <DataAnnotationsValidator />
+                <SfTextBox TValue="string" @bind-Value="model.FullName" Placeholder="ФИО" CssClass="mb-3 w-100" />
+                <SfTextBox TValue="string" @bind-Value="model.Email" Placeholder="Email" CssClass="mb-3 w-100" />
+                <SfButton Type="Submit" CssClass="e-primary">Сохранить</SfButton>
+            </EditForm>
+        </CardContent>
+    </SfCard>
 </div>
 
 @code {

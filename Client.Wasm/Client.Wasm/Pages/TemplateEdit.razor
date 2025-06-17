@@ -15,7 +15,7 @@
                 <TabItem HeaderText="Основное">
                     <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
                     <SfTextBox TValue="string" @bind-Value="model.Type" Placeholder="Тип" CssClass="mb-3 w-100" />
-                    <InputTextArea @bind-Value="model.Content" class="form-control mb-3" rows="6" placeholder="Содержимое" />
+                    <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Content" Placeholder="Содержимое" CssClass="mb-3 w-100" Rows="6" />
                 </TabItem>
                 <TabItem HeaderText="Дополнительно">
                     <!-- дополнительные поля -->

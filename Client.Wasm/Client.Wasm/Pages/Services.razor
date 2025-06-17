@@ -6,12 +6,16 @@
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
-    <h1>Услуги</h1>
-    <SfButton CssClass="e-primary mb-3" OnClick="OpenNew">Добавить услугу</SfButton>
-    <SfGrid DataSource="@services" AllowPaging="true" CssClass="e-bootstrap5" Toolbar="@toolbarOptions">
-        <GridPageSettings PageSize="10" />
-        <GridColumns>
-            <GridColumn Field=@nameof(ServiceDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Услуги</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" OnClick="OpenNew">Добавить услугу</SfButton>
+            <SfGrid DataSource="@services" AllowPaging="true" CssClass="e-bootstrap5" Toolbar="@toolbarOptions">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(ServiceDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(ServiceDto.Name) HeaderText="Название" Width="200" />
             <GridColumn Field=@nameof(ServiceDto.Description) HeaderText="Описание" Width="200" />
             <GridColumn Field=@nameof(ServiceDto.CreatedAt) HeaderText="Создана" Format="d" Width="120" />
@@ -22,8 +26,10 @@
                     <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as ServiceDto).Id) )"></SfButton>
                 </Template>
             </GridColumn>
-        </GridColumns>
-    </SfGrid>
+            </GridColumns>
+        </SfGrid>
+        </CardContent>
+    </SfCard>
 
     <ServiceEdit @ref="editDialog" OnSaved="Reload" />
 </div>
