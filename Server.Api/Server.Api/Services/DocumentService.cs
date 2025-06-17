@@ -91,6 +91,19 @@ public class DocumentService : IDocumentService
 
         doc.Metadata = metadata;
 
+        if (applicationId > 0)
+        {
+            _context.ApplicationResults.Add(new ApplicationResult
+            {
+                ApplicationId = applicationId,
+                DocumentId = doc.Id,
+                Type = "Документ",
+                LinkedAt = DateTime.UtcNow,
+                Automatic = true
+            });
+            await _context.SaveChangesAsync();
+        }
+
         return _mapper.Map<DocumentDto>(doc);
     }
 

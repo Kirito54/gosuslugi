@@ -76,6 +76,12 @@ namespace GovServices.Server.Mappings
 
             CreateMap<CreateUserDto, ApplicationUser>();
             CreateMap<UpdateUserDto, ApplicationUser>();
+
+            CreateMap<ApplicationResult, ApplicationResultDto>().ReverseMap();
+            CreateMap<CreateApplicationResultDto, ApplicationResult>();
+
+            CreateMap<ApplicationRevision, ApplicationRevisionDto>().ReverseMap();
+            CreateMap<CreateApplicationRevisionDto, ApplicationRevision>();
         }
     }
 }

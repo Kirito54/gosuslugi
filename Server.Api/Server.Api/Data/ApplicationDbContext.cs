@@ -25,6 +25,8 @@ namespace GovServices.Server.Data
         public DbSet<Template> Templates { get; set; }
         public DbSet<RosreestrRequest> RosreestrRequests { get; set; }
         public DbSet<SedDocumentLog> SedDocumentLogs { get; set; }
+        public DbSet<ApplicationResult> ApplicationResults { get; set; }
+        public DbSet<ApplicationRevision> ApplicationRevisions { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<PasswordChangeLog> PasswordChangeLogs { get; set; }
         public DbSet<Department> Departments { get; set; }

@@ -11,4 +11,8 @@ public interface IApplicationService
     Task DeleteAsync(int id);
     Task AdvanceAsync(int applicationId, object contextData);
     Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId);
+    Task<List<ApplicationResultDto>> GetResultsAsync(int applicationId);
+    Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto);
+    Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId);
+    Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto);
 }
