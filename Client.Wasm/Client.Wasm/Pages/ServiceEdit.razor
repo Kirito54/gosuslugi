@@ -4,41 +4,26 @@
 @inject NavigationManager NavigationManager
 @inject IServiceApiClient ApiClient
 
-@if (visible)
-{
-    <div class="modal show d-block" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">@header</h5>
-                    <button type="button" class="btn-close" @onclick="Hide"></button>
-                </div>
-                <EditForm Model="model" OnValidSubmit="HandleSave">
-                    <DataAnnotationsValidator />
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#tab1">Основное</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content p-4 border border-top-0 rounded-bottom">
-                        <div class="tab-pane fade show active" id="tab1">
-                            <InputText class="form-control mb-3" @bind-Value="model.Name" placeholder="Название" />
-                            <InputTextArea class="form-control mb-3" @bind-Value="model.Description" placeholder="Описание" rows="3" />
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary me-2" type="submit">Сохранить</button>
-                        <button type="button" class="btn btn-outline-secondary" @onclick="Hide">Отмена</button>
-                    </div>
-                </EditForm>
-            </div>
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@header">
+    <EditForm Model="model" OnValidSubmit="HandleSave">
+        <DataAnnotationsValidator />
+        <SfTab>
+            <TabItems>
+                <TabItem HeaderText="Основное">
+                    <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+                    <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
+                </TabItem>
+            </TabItems>
+        </SfTab>
+        <div class="text-right mt-3">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
         </div>
-    </div>
-    <div class="modal-backdrop fade show"></div>
-}
+    </EditForm>
+</SfDialog>
 
 @code {
-    bool visible;
+    SfDialog dlg;
     ServiceDto model = new();
     string header = string.Empty;
 
@@ -46,17 +31,17 @@
     {
         model = new ServiceDto();
         header = "Новая услуга";
-        visible = true;
+        _ = dlg.ShowAsync();
     }
 
     public async void Load(int id)
     {
         model = await ApiClient.GetByIdAsync(id);
         header = $"Редактировать услугу #{id}";
-        visible = true;
+        _ = dlg.ShowAsync();
     }
 
-    void Hide() => visible = false;
+    Task Hide() => dlg.HideAsync();
 
     async Task HandleSave()
     {
@@ -64,7 +49,7 @@
             await ApiClient.CreateAsync(new CreateServiceDto { Name = model.Name, Description = model.Description });
         else
             await ApiClient.UpdateAsync(model.Id, new UpdateServiceDto { Name = model.Name, Description = model.Description });
-        visible = false;
+        await dlg.HideAsync();
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();

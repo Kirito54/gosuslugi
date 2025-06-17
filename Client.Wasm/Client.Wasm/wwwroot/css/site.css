@@ -2,6 +2,7 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-family: "Segoe UI", "Roboto", sans-serif;
 }
 
 .login-page {
@@ -32,4 +33,16 @@ body, html {
 .login-title {
   margin-bottom: 1.5rem;
   font-weight: 600;
+}
+
+.container {
+  max-width: 1140px;
+}
+
+.top-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background-color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }

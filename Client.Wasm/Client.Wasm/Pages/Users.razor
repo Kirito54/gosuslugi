@@ -9,12 +9,16 @@
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
-    <h1>Пользователи</h1>
-    <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show(new CreateUserDto()) )">Добавить пользователя</SfButton>
-    <SfGrid TItem="UserDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
-        <GridColumns>
-            <GridColumn Field=@nameof(UserDto.Id) HeaderText="ID" Width="120" />
-            <GridColumn Field=@nameof(UserDto.Email) HeaderText="Email" Width="200" />
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Пользователи</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show(new CreateUserDto()) )">Добавить пользователя</SfButton>
+            <SfGrid TItem="UserDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
+            <GridColumns>
+                <GridColumn Field=@nameof(UserDto.Id) HeaderText="ID" Width="120" />
+                <GridColumn Field=@nameof(UserDto.Email) HeaderText="Email" Width="200" />
             <GridColumn Field=@nameof(UserDto.FullName) HeaderText="ФИО" Width="200" />
             <GridColumn HeaderText="Роли" Width="200">
                 <Template>
@@ -27,8 +31,10 @@
                     <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as UserDto).Id) )" />
                 </Template>
             </GridColumn>
-        </GridColumns>
-    </SfGrid>
+            </GridColumns>
+        </SfGrid>
+        </CardContent>
+    </SfCard>
     <UserEdit @ref="edit" OnSaved="LoadData" />
 </div>
 

@@ -3,22 +3,28 @@
 @inject HttpClient Http
 
 <div class="container p-4">
-    <h1>Погода</h1>
-    @if (forecasts == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <SfGrid DataSource="forecasts" Width="100%" CssClass="e-bootstrap5">
-            <GridColumns>
-                <GridColumn Field=@nameof(WeatherForecast.Date) HeaderText="Дата" Format="d" Width="120" />
-                <GridColumn Field=@nameof(WeatherForecast.TemperatureC) HeaderText="C" Width="100" />
-                <GridColumn Field=@nameof(WeatherForecast.TemperatureF) HeaderText="F" Width="100" />
-                <GridColumn Field=@nameof(WeatherForecast.Summary) HeaderText="Описание" Width="*" />
-            </GridColumns>
-        </SfGrid>
-    }
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Погода</h1>
+        </CardHeader>
+        <CardContent>
+            @if (forecasts == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <SfGrid DataSource="forecasts" Width="100%" CssClass="e-bootstrap5">
+                <GridColumns>
+                    <GridColumn Field=@nameof(WeatherForecast.Date) HeaderText="Дата" Format="d" Width="120" />
+                    <GridColumn Field=@nameof(WeatherForecast.TemperatureC) HeaderText="C" Width="100" />
+                    <GridColumn Field=@nameof(WeatherForecast.TemperatureF) HeaderText="F" Width="100" />
+                    <GridColumn Field=@nameof(WeatherForecast.Summary) HeaderText="Описание" Width="*" />
+                </GridColumns>
+                </SfGrid>
+            }
+        </CardContent>
+    </SfCard>
 </div>
 
 @code {
