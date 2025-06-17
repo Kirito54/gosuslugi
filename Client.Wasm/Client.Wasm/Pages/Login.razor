@@ -4,25 +4,33 @@
 @inject AuthenticationStateProvider AuthProvider
 
 <div class="login-wrapper">
-    <div class="login-card shadow">
-        <img src="images/logo.png" alt="Логотип" class="login-logo" />
-        <h4 class="login-title">ГУ ДИЗО</h4>
+    <SfCard CssClass="login-card glass-effect">
+        <CardHeader>
+            <div class="text-center mb-3">
+                <img src="images/logo.png" class="login-logo" alt="Логотип" />
+                <h4 class="login-title">ГУ ДИЗО</h4>
+            </div>
+        </CardHeader>
 
-        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+        <CardContent>
+            <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <SfTextBox Placeholder="Эл. почта" CssClass="mb-3 w-100" @bind-Value="loginModel.Email" />
-            <SfTextBox Placeholder="Пароль" CssClass="mb-3 w-100" Type="InputType.Password" @bind-Value="loginModel.Password" />
+                <SfTextBox @bind-Value="loginModel.Email" Placeholder="Эл. почта" CssClass="form-field" />
+                <SfTextBox @bind-Value="loginModel.Password" Placeholder="Пароль" Type="InputType.Password" CssClass="form-field" />
 
-            <SfButton CssClass="e-primary w-100 mb-2" Type="Submit">Войти</SfButton>
-        </EditForm>
+                <SfButton CssClass="login-button e-primary" Type="Submit">Войти</SfButton>
+            </EditForm>
+        </CardContent>
 
-        <div class="text-center">
-            <a href="#" class="text-light">Забыли пароль?</a>
-            <div class="text-light mt-2">© 2025 ГУ ДИЗО</div>
-        </div>
-    </div>
+        <CardFooter>
+            <div class="text-center mt-3">
+                <a href="#" class="text-light">Забыли пароль?</a>
+                <div class="text-muted mt-2">© 2025 ГУ ДИЗО</div>
+            </div>
+        </CardFooter>
+    </SfCard>
 </div>
 
 @code {
