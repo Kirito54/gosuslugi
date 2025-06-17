@@ -1,0 +1,33 @@
+@page "/registry/rdi-orders"
+@attribute [Authorize]
+
+<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <CardHeader>
+        <h1>Распоряжения РДИ</h1>
+    </CardHeader>
+    <CardContent>
+        <SfGrid DataSource="@orders" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(OrderRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+                <GridColumn Field=@nameof(OrderRow.Number) HeaderText="Номер" Width="120" />
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<OrderRow> orders = new();
+    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
+
+    protected override void OnInitialized()
+    {
+        orders = new() { new OrderRow { Id = 1, Number = "01-РДИ" } };
+    }
+
+    class OrderRow
+    {
+        public int Id { get; set; }
+        public string Number { get; set; } = string.Empty;
+    }
+}

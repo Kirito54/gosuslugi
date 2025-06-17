@@ -38,6 +38,22 @@ html, body {
     backdrop-filter: blur(14px);
 }
 
+.rounded-xl {
+    border-radius: 1rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
 .login-logo {
     height: 48px;
     margin-bottom: 1rem;
