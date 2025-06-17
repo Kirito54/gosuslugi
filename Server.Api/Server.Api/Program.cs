@@ -81,8 +81,13 @@ builder.Services.AddAuthentication(options =>
 // CORS configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllowWasmDev", policy =>
+    {
+        policy.WithOrigins("https://localhost:7197")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 // AutoMapper
@@ -143,11 +148,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
+// app.UseHttpsRedirection(); // Disabled for local development
 
 app.UseRouting();
+
+app.UseCors("AllowWasmDev");
 
 app.UseAuthentication();
 app.UseAuthorization();
