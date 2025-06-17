@@ -8,5 +8,6 @@ namespace GovServices.Server.Entities
         public Department Department { get; set; }
         public DateTime PasswordLastChangedAt { get; set; }
         public ICollection<Application> AssignedApplications { get; set; }
+        public ICollection<UserPermissionGroup> PermissionGroups { get; set; }
     }
 }

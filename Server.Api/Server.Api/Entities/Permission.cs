@@ -1,0 +1,8 @@
+namespace GovServices.Server.Entities;
+
+public class Permission
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public ICollection<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
+}
