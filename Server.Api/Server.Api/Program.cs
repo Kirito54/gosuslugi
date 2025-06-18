@@ -56,12 +56,11 @@ if (string.IsNullOrWhiteSpace(defaultConn))
 {
     throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured in appsettings.json.");
 }
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
-);
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
 );
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
 
 // JWT configuration
 var jwtKey = builder.Configuration["JwtSettings:SecretKey"];
@@ -88,9 +87,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("SmartCors", policy =>
     {
-        policy.SetIsOriginAllowed(origin =>
-                origin.StartsWith("http://localhost") ||
-                origin.StartsWith("https://localhost"))
+        var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ??
+                      new[] { "http://localhost:5093", "https://localhost:7197" };
+        policy.WithOrigins(origins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
