@@ -59,9 +59,7 @@ if (string.IsNullOrWhiteSpace(defaultConn))
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
 );
-builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
-    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
-);
+builder.Services.AddDbContextFactory<ApplicationDbContext>();
 
 // JWT configuration
 var jwtKey = builder.Configuration["JwtSettings:SecretKey"];
@@ -142,6 +140,7 @@ builder.Services.AddScoped<IEcpService, EcpService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
 builder.Services.AddScoped<IExtractChecker, ExtractChecker>();
+builder.Services.AddScoped<IRegistryApi, RegistryApi>();
 builder.Services.AddKeyedScoped<IRegistryApi, ZagcApi>(RegistrySource.Zags);
 builder.Services.AddKeyedScoped<IRegistryApi, RosreestrApi>(RegistrySource.Rosreestr);
 

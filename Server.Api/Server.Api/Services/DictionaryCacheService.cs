@@ -1,5 +1,6 @@
 using GovServices.Server.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 
 namespace GovServices.Server.Services;
@@ -12,18 +13,19 @@ public interface IDictionaryCacheService
 
 public class DictionaryCacheService : IDictionaryCacheService
 {
-    private readonly IDbContextFactory<ApplicationDbContext> _factory;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly Dictionary<string, Dictionary<string, string>> _cache = new();
 
-    public DictionaryCacheService(IDbContextFactory<ApplicationDbContext> factory)
+    public DictionaryCacheService(IServiceScopeFactory scopeFactory)
     {
-        _factory = factory;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task ReloadAsync()
     {
         _cache.Clear();
-        await using var context = await _factory.CreateDbContextAsync();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var dicts = await context.Dictionaries.ToListAsync();
         foreach (var d in dicts)
         {
