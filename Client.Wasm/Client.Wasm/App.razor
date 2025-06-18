@@ -2,9 +2,13 @@
 @inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
-    <CustomErrorBoundary @ref="errorBoundary">
+    <CustomErrorBoundary>
         <ErrorContent>
-            <p class="m-4 text-red-600">Произошла непредвиденная ошибка.</p>
+            <SfCard CssClass="m-4">
+                <CardContent>
+                    <p class="text-red-600">Произошла непредвиденная ошибка.</p>
+                </CardContent>
+            </SfCard>
         </ErrorContent>
         <Router AppAssembly="@typeof(Program).Assembly">
             <Found Context="routeData">
@@ -25,7 +29,3 @@
 </CascadingAuthenticationState>
 
 <ErrorDialog />
-
-@code {
-    CustomErrorBoundary? errorBoundary;
-}
