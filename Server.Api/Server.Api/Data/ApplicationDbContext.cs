@@ -38,6 +38,7 @@ namespace GovServices.Server.Data
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
         public DbSet<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
         public DbSet<UserPermissionGroup> UserPermissionGroups { get; set; }
+        public DbSet<Dictionary> Dictionaries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -70,6 +71,10 @@ namespace GovServices.Server.Data
 
             builder.Entity<Document>()
                 .HasIndex(d => new { d.OwnerId, d.Type, d.CreatedAt });
+
+            builder.Entity<Dictionary>()
+                .Property(d => d.Data)
+                .HasColumnType("jsonb");
         }
     }
 }

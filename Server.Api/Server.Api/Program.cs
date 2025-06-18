@@ -58,6 +58,9 @@ if (string.IsNullOrWhiteSpace(defaultConn))
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
 );
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
+);
 
 // JWT configuration
 var jwtKey = builder.Configuration["JwtSettings:SecretKey"];
@@ -123,6 +126,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOcrService, OcrService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDocumentStorageService, DocumentStorageService>();
+builder.Services.AddScoped<IDictionaryService, DictionaryService>();
+builder.Services.AddSingleton<IDictionaryCacheService, DictionaryCacheService>();
 
 // Регистрация IEmailService (и реализация EmailService)
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -149,6 +154,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     await DataSeeder.SeedAsync(scope.ServiceProvider);
+    var cache = scope.ServiceProvider.GetRequiredService<IDictionaryCacheService>();
+    await cache.ReloadAsync();
 }
 
 app.UseSerilogRequestLogging();
