@@ -22,6 +22,7 @@ namespace GovServices.Server.Data
         public DbSet<OutgoingAttachment> OutgoingAttachments { get; set; }
         public DbSet<GeoObject> GeoObjects { get; set; }
         public DbSet<Template> Templates { get; set; }
+        public DbSet<ServiceTemplate> ServiceTemplates { get; set; }
         public DbSet<RosreestrRequest> RosreestrRequests { get; set; }
         public DbSet<ZagsRequest> ZagsRequests { get; set; }
         public DbSet<ZagsRequestAttachment> ZagsRequestAttachments { get; set; }

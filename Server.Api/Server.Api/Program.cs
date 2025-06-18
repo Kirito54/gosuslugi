@@ -117,6 +117,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOutgoingService, OutgoingService>();
 builder.Services.AddScoped<IGeoService, GeoService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IServiceTemplateService, ServiceTemplateService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOcrService, OcrService>();

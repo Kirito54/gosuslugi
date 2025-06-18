@@ -94,6 +94,13 @@ namespace GovServices.Server.Mappings
 
             CreateMap<ApplicationRevision, ApplicationRevisionDto>().ReverseMap();
             CreateMap<CreateApplicationRevisionDto, ApplicationRevision>();
+
+            CreateMap<ServiceTemplate, ServiceTemplateDto>()
+                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service != null ? s.Service.Name : null))
+                .ForMember(d => d.UpdatedByName, o => o.MapFrom(s => s.UpdatedBy != null ? s.UpdatedBy.FullName : null))
+                .ReverseMap();
+            CreateMap<CreateServiceTemplateDto, ServiceTemplate>();
+            CreateMap<UpdateServiceTemplateDto, ServiceTemplate>();
         }
     }
 }
