@@ -2,7 +2,10 @@
 @inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
-    <ErrorBoundary @ref="errorBoundary" OnError="HandleError">
+    <CustomErrorBoundary @ref="errorBoundary">
+        <ErrorContent>
+            <p class="m-4 text-red-600">Произошла непредвиденная ошибка.</p>
+        </ErrorContent>
         <Router AppAssembly="@typeof(Program).Assembly">
             <Found Context="routeData">
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -18,17 +21,11 @@
                 <RedirectToLogin />
             </NotFound>
         </Router>
-    </ErrorBoundary>
+    </CustomErrorBoundary>
 </CascadingAuthenticationState>
 
 <ErrorDialog />
 
 @code {
-    ErrorBoundary? errorBoundary;
-    [Inject] ErrorHandlerService ErrorService { get; set; } = default!;
-
-    void HandleError(Exception ex)
-    {
-        ErrorService.Handle(ex);
-    }
+    CustomErrorBoundary? errorBoundary;
 }
