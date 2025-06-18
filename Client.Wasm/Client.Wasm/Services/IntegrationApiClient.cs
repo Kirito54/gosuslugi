@@ -7,6 +7,10 @@ public interface IIntegrationApiClient
 {
     Task<RosreestrRequestDto> SendRosreestrRequestAsync(int applicationId);
     Task<RosreestrRequestDto> GetRosreestrStatusAsync(string requestId);
+    Task<List<RosreestrRequestDto>> GetRosreestrByApplicationAsync(int applicationId);
+    Task<ZagsRequestDto> SendZagsRequestAsync(int applicationId);
+    Task<ZagsRequestDto> GetZagsStatusAsync(string requestId);
+    Task<List<ZagsRequestDto>> GetZagsByApplicationAsync(int applicationId);
     Task<List<SedDocumentLogDto>> GetSedLogsAsync(int applicationId);
     Task<bool> SendSedDocumentAsync(int applicationId, string documentNumber);
     Task<byte[]> SignPdfAsync(byte[] pdfBytes, string certificateThumbprint);
@@ -24,7 +28,7 @@ public class IntegrationApiClient : IIntegrationApiClient
 
     public async Task<RosreestrRequestDto> SendRosreestrRequestAsync(int applicationId)
     {
-        var res = await _http.PostAsync($"api/integrations/rosreestr/{applicationId}", null);
+        var res = await _http.PostAsJsonAsync("api/integrations/rosreestr/request", new { applicationId });
         res.EnsureSuccessStatusCode();
         return (await res.Content.ReadFromJsonAsync<RosreestrRequestDto>())!;
     }
@@ -32,6 +36,28 @@ public class IntegrationApiClient : IIntegrationApiClient
     public async Task<RosreestrRequestDto> GetRosreestrStatusAsync(string requestId)
     {
         return await _http.GetFromJsonAsync<RosreestrRequestDto>($"api/integrations/rosreestr/status/{requestId}") ?? new RosreestrRequestDto();
+    }
+
+    public async Task<List<RosreestrRequestDto>> GetRosreestrByApplicationAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<RosreestrRequestDto>>($"api/integrations/rosreestr/application/{applicationId}") ?? new();
+    }
+
+    public async Task<ZagsRequestDto> SendZagsRequestAsync(int applicationId)
+    {
+        var res = await _http.PostAsJsonAsync("api/integrations/zags/request", new { applicationId });
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<ZagsRequestDto>())!;
+    }
+
+    public async Task<ZagsRequestDto> GetZagsStatusAsync(string requestId)
+    {
+        return await _http.GetFromJsonAsync<ZagsRequestDto>($"api/integrations/zags/status/{requestId}") ?? new ZagsRequestDto();
+    }
+
+    public async Task<List<ZagsRequestDto>> GetZagsByApplicationAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ZagsRequestDto>>($"api/integrations/zags/application/{applicationId}") ?? new();
     }
 
     public async Task<List<SedDocumentLogDto>> GetSedLogsAsync(int applicationId)

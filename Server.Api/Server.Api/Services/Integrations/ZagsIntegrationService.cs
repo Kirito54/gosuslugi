@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GovServices.Server.Services.Integrations;
 
-public class RosreestrIntegrationService : IRosreestrIntegrationService
+public class ZagsIntegrationService : IZagsIntegrationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
 
-    private string ApiUrl => _configuration["Rosreestr:ApiUrl"] ?? string.Empty;
+    private string ApiUrl => _configuration["Zags:ApiUrl"] ?? string.Empty;
 
-    public RosreestrIntegrationService(
+    public ZagsIntegrationService(
         IHttpClientFactory httpClientFactory,
         ApplicationDbContext context,
         IConfiguration configuration)
@@ -26,7 +26,7 @@ public class RosreestrIntegrationService : IRosreestrIntegrationService
         _configuration = configuration;
     }
 
-    public async Task<RosreestrRequestDto> SendRequestAsync(int applicationId)
+    public async Task<ZagsRequestDto> SendRequestAsync(int applicationId)
     {
         var application = await _context.Set<Application>()
             .FirstOrDefaultAsync(a => a.Id == applicationId);
@@ -36,65 +36,64 @@ public class RosreestrIntegrationService : IRosreestrIntegrationService
         var body = new { application.Id, application.Number };
 
         var client = _httpClientFactory.CreateClient();
-        var response = await client.PostAsJsonAsync($"{ApiUrl}/sendRequest", body);
+        var response = await client.PostAsJsonAsync($"{ApiUrl}/request", body);
         response.EnsureSuccessStatusCode();
 
         var stream = await response.Content.ReadAsStreamAsync();
-        var dto = await JsonSerializer.DeserializeAsync<RosreestrRequestDto>(stream) ??
-                  throw new InvalidOperationException("Invalid response from Rosreestr");
+        var dto = await JsonSerializer.DeserializeAsync<ZagsRequestDto>(stream) ??
+                  throw new InvalidOperationException("Invalid response from ZAGS");
 
-        var entity = new RosreestrRequest
+        var entity = new ZagsRequest
         {
             ApplicationId = applicationId,
             RequestId = dto.RequestId,
             Status = dto.Status,
-            ResponseData = dto.ResponseData,
+            ResponseXml = dto.ResponseXml,
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.Set<RosreestrRequest>().Add(entity);
+        _context.Set<ZagsRequest>().Add(entity);
         await _context.SaveChangesAsync();
 
         dto.Id = entity.Id;
         return dto;
     }
 
-    public async Task<RosreestrRequestDto> GetStatusAsync(string requestId)
+    public async Task<ZagsRequestDto> GetStatusAsync(string requestId)
     {
         var client = _httpClientFactory.CreateClient();
         var response = await client.GetAsync($"{ApiUrl}/status/{requestId}");
         response.EnsureSuccessStatusCode();
 
         var stream = await response.Content.ReadAsStreamAsync();
-        var dto = await JsonSerializer.DeserializeAsync<RosreestrRequestDto>(stream) ??
-                  throw new InvalidOperationException("Invalid response from Rosreestr");
+        var dto = await JsonSerializer.DeserializeAsync<ZagsRequestDto>(stream) ??
+                  throw new InvalidOperationException("Invalid response from ZAGS");
 
-        var entity = await _context.Set<RosreestrRequest>()
+        var entity = await _context.Set<ZagsRequest>()
             .FirstOrDefaultAsync(r => r.RequestId == requestId);
         if (entity != null)
         {
             entity.Status = dto.Status;
-            entity.ResponseData = dto.ResponseData;
+            entity.ResponseXml = dto.ResponseXml;
             await _context.SaveChangesAsync();
         }
 
         return dto;
     }
 
-    public async Task<List<RosreestrRequestDto>> GetByApplicationAsync(int applicationId)
+    public async Task<List<ZagsRequestDto>> GetByApplicationAsync(int applicationId)
     {
-        var list = await _context.Set<RosreestrRequest>()
+        var list = await _context.Set<ZagsRequest>()
             .Where(r => r.ApplicationId == applicationId)
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
-        return list.Select(r => new RosreestrRequestDto
+        return list.Select(r => new ZagsRequestDto
         {
             Id = r.Id,
             ApplicationId = r.ApplicationId,
             RequestId = r.RequestId,
             Status = r.Status,
-            ResponseData = r.ResponseData
+            ResponseXml = r.ResponseXml
         }).ToList();
     }
 }
-

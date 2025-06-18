@@ -1,0 +1,86 @@
+@using Client.Wasm.Services
+@using Client.Wasm.DTOs
+@inject IIntegrationApiClient IntegrationApi
+
+<SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
+    <div class="mb-3 d-flex gap-2">
+        <SfButton CssClass="e-primary" OnClick="CreateRosreestr">Запрос в Росреестр</SfButton>
+        <SfButton CssClass="e-primary" OnClick="CreateZags">Запрос в ЗАГС</SfButton>
+    </div>
+    <SfGrid DataSource="@requests" AllowPaging="true" CssClass="e-bootstrap5">
+        <GridPageSettings PageSize="5" />
+        <GridColumns>
+            <GridColumn Field=@nameof(RequestView.Type) HeaderText="Тип" Width="120" />
+            <GridColumn Field=@nameof(RequestView.Status) HeaderText="Статус" Width="150" />
+            <GridColumn Field=@nameof(RequestView.CreatedAt) HeaderText="Дата" Format="g" Width="150" />
+            <GridColumn HeaderText="XML" Width="120">
+                <Template>
+                    @if (!string.IsNullOrWhiteSpace((context as RequestView).Response))
+                    {
+                        <SfButton CssClass="e-flat" OnClick="@(() => ShowXml((context as RequestView).Response))">Открыть</SfButton>
+                    }
+                </Template>
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+</SfCard>
+
+<SfDialog @ref="xmlDialog" Width="600px" ShowCloseIcon="true" CssClass="rounded-xl shadow-lg">
+    <pre style="white-space:pre-wrap">@xmlContent</pre>
+</SfDialog>
+
+@code {
+    [Parameter] public int ApplicationId { get; set; }
+    SfDialog xmlDialog;
+    string xmlContent = string.Empty;
+
+    List<RequestView> requests = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var ros = await IntegrationApi.GetRosreestrByApplicationAsync(ApplicationId);
+        var zags = await IntegrationApi.GetZagsByApplicationAsync(ApplicationId);
+        requests = ros.Select(r => new RequestView
+        {
+            Type = "Росреестр",
+            Status = r.Status,
+            CreatedAt = DateTime.Now,
+            Response = r.ResponseData
+        }).ToList();
+        requests.AddRange(zags.Select(z => new RequestView
+        {
+            Type = "ЗАГС",
+            Status = z.Status,
+            CreatedAt = DateTime.Now,
+            Response = z.ResponseXml
+        }));
+    }
+
+    async Task CreateRosreestr()
+    {
+        await IntegrationApi.SendRosreestrRequestAsync(ApplicationId);
+        await OnParametersSetAsync();
+        StateHasChanged();
+    }
+
+    async Task CreateZags()
+    {
+        await IntegrationApi.SendZagsRequestAsync(ApplicationId);
+        await OnParametersSetAsync();
+        StateHasChanged();
+    }
+
+    void ShowXml(string xml)
+    {
+        xmlContent = xml;
+        _ = xmlDialog.ShowAsync();
+    }
+
+    class RequestView
+    {
+        public string Type { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public string Response { get; set; } = string.Empty;
+    }
+}

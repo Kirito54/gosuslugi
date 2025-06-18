@@ -58,6 +58,8 @@ namespace GovServices.Server.Mappings
 
             CreateMap<RosreestrRequest, RosreestrRequestDto>().ReverseMap();
             CreateMap<CreateRosreestrRequestDto, RosreestrRequest>();
+            CreateMap<ZagsRequest, ZagsRequestDto>().ReverseMap();
+            CreateMap<CreateZagsRequestDto, ZagsRequest>();
             CreateMap<SedDocumentLog, SedDocumentLogDto>().ReverseMap();
             CreateMap<Service, ServiceDto>().ReverseMap();
             CreateMap<CreateServiceDto, Service>();

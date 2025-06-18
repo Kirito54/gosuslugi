@@ -24,6 +24,7 @@ namespace GovServices.Server.Data
         public DbSet<GeoObject> GeoObjects { get; set; }
         public DbSet<Template> Templates { get; set; }
         public DbSet<RosreestrRequest> RosreestrRequests { get; set; }
+        public DbSet<ZagsRequest> ZagsRequests { get; set; }
         public DbSet<SedDocumentLog> SedDocumentLogs { get; set; }
         public DbSet<ApplicationResult> ApplicationResults { get; set; }
         public DbSet<ApplicationRevision> ApplicationRevisions { get; set; }

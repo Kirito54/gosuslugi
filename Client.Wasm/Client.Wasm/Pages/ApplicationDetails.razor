@@ -5,6 +5,7 @@
 @using Syncfusion.Blazor.Inputs
 @using Syncfusion.Blazor.Navigations
 @using Client.Wasm.DTOs
+@using Client.Wasm.Components
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
@@ -68,8 +69,10 @@
                         </GridColumn>
                     </GridColumns>
         </SfGrid>
-    </SfCardContent>
-</SfCard>
+            </SfCardContent>
+        </SfCard>
+
+        <ExternalRequestsTab ApplicationId="@app.Id" />
 
         <RelatedApplicationsTabs appId="@app.Id" />
 
