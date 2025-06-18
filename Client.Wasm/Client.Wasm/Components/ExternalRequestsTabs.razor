@@ -1,0 +1,63 @@
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@using Client.Wasm.DTOs
+@inject Services.IIntegrationApiClient Api
+
+@if (ApplicationId != 0)
+{
+    <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
+        <SfTab>
+            <TabItems>
+                <TabItem HeaderText="Росреестр">
+                    <ContentTemplate>
+                        <SfButton CssClass="e-outline mb-3" OnClick="CreateRosreestr">Создать запрос</SfButton>
+                        <SfGrid DataSource="rosreestr" AllowPaging="true" CssClass="e-bootstrap5">
+                            <GridPageSettings PageSize="5" />
+                            <GridColumns>
+                                <GridColumn Field=@nameof(RosreestrRequestDto.RequestId) HeaderText="ID" Width="150" />
+                                <GridColumn Field=@nameof(RosreestrRequestDto.Status) HeaderText="Статус" Width="120" />
+                            </GridColumns>
+                        </SfGrid>
+                    </ContentTemplate>
+                </TabItem>
+                <TabItem HeaderText="ЗАГС">
+                    <ContentTemplate>
+                        <SfButton CssClass="e-outline mb-3" OnClick="CreateZags">Создать запрос</SfButton>
+                        <SfGrid DataSource="zags" AllowPaging="true" CssClass="e-bootstrap5">
+                            <GridPageSettings PageSize="5" />
+                            <GridColumns>
+                                <GridColumn Field=@nameof(ZagsRequestDto.RequestId) HeaderText="ID" Width="150" />
+                                <GridColumn Field=@nameof(ZagsRequestDto.Status) HeaderText="Статус" Width="120" />
+                            </GridColumns>
+                        </SfGrid>
+                    </ContentTemplate>
+                </TabItem>
+            </TabItems>
+        </SfTab>
+    </SfCard>
+}
+
+@code {
+    [Parameter] public int ApplicationId { get; set; }
+    List<RosreestrRequestDto> rosreestr = new();
+    List<ZagsRequestDto> zags = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ApplicationId != 0)
+        {
+            // Здесь предполагаются методы получения списков, для примера пустые
+        }
+    }
+
+    async Task CreateRosreestr()
+    {
+        await Api.SendRosreestrRequestAsync(ApplicationId);
+    }
+
+    async Task CreateZags()
+    {
+        var dto = new CreateZagsRequestDto { ApplicationId = ApplicationId };
+        await Api.SendZagsRequestAsync(dto);
+    }
+}
