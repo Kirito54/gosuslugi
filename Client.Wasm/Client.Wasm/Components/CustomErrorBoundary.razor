@@ -12,8 +12,8 @@ else
 }
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? ErrorContent { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment ErrorContent { get; set; }
 
     protected override Task OnErrorAsync(Exception exception)
     {
