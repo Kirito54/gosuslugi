@@ -3,24 +3,26 @@
 
 <CascadingAuthenticationState>
     <CustomErrorBoundary @ref="errorBoundary">
+        <ChildContent>
+            <Router AppAssembly="@typeof(Program).Assembly">
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <NotAuthorized>
+                            @if (!NavigationManager.Uri.Contains("/login"))
+                            {
+                                NavigationManager.NavigateTo("/login", forceLoad: true);
+                            }
+                        </NotAuthorized>
+                    </AuthorizeRouteView>
+                </Found>
+                <NotFound>
+                    <RedirectToLogin />
+                </NotFound>
+            </Router>
+        </ChildContent>
         <ErrorContent>
             <p class="m-4 text-red-600">Произошла непредвиденная ошибка.</p>
         </ErrorContent>
-        <Router AppAssembly="@typeof(Program).Assembly">
-            <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                    <NotAuthorized>
-                        @if (!NavigationManager.Uri.Contains("/login"))
-                        {
-                            NavigationManager.NavigateTo("/login", forceLoad: true);
-                        }
-                    </NotAuthorized>
-                </AuthorizeRouteView>
-            </Found>
-            <NotFound>
-                <RedirectToLogin />
-            </NotFound>
-        </Router>
     </CustomErrorBoundary>
 </CascadingAuthenticationState>
 

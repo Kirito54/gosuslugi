@@ -1,9 +1,23 @@
 @inherits ErrorBoundary
 @inject ErrorHandlerService ErrorService
+@inject ILogger<CustomErrorBoundary> Logger
+
+@if (CurrentException is not null)
+{
+    @ErrorContent
+}
+else
+{
+    @ChildContent
+}
 
 @code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ErrorContent { get; set; }
+
     protected override Task OnErrorAsync(Exception exception)
     {
+        Logger.LogError(exception, "Unhandled exception in component");
         ErrorService.Handle(exception);
         return base.OnErrorAsync(exception);
     }
