@@ -126,6 +126,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<ISedIntegrationService, SedIntegrationService>();
 builder.Services.AddScoped<IRosreestrIntegrationService, RosreestrIntegrationService>();
+builder.Services.AddScoped<IZagsIntegrationService, ZagsIntegrationService>();
 builder.Services.AddScoped<IEcpService, EcpService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 
