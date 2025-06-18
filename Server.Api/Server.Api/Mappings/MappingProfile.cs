@@ -77,6 +77,9 @@ namespace GovServices.Server.Mappings
             CreateMap<Template, TemplateDto>().ReverseMap();
             CreateMap<CreateTemplateDto, Template>();
             CreateMap<UpdateTemplateDto, Template>();
+            CreateMap<NumberTemplate, NumberTemplateDto>().ReverseMap();
+            CreateMap<CreateNumberTemplateDto, NumberTemplate>();
+            CreateMap<UpdateNumberTemplateDto, NumberTemplate>();
             CreateMap<Workflow, WorkflowDto>().ReverseMap();
             CreateMap<WorkflowStep, WorkflowStepDto>().ReverseMap();
             CreateMap<WorkflowTransition, WorkflowTransitionDto>().ReverseMap();

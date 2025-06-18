@@ -1,0 +1,36 @@
+@attribute [Authorize(Roles="Администратор,Канцелярия,Начальник управления")]
+@page "/number-templates"
+@using Syncfusion.Blazor.Grids
+@using Client.Wasm.DTOs
+@inject INumberTemplateApiClient ApiClient
+
+<div class="p-4">
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1 class="text-xl font-semibold mb-2">Шаблоны номеров</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@(e => edit.Show())">Добавить</SfButton>
+            <SfGrid DataSource="@items" TItem="NumberTemplateDto" AllowPaging="true" Width="100%">
+                <GridColumns>
+                    <GridColumn Field=@nameof(NumberTemplateDto.Name) HeaderText="Название" Width="200" />
+                    <GridColumn Field=@nameof(NumberTemplateDto.TargetType) HeaderText="Тип" Width="150" />
+                    <GridColumn Field=@nameof(NumberTemplateDto.TemplateText) HeaderText="Шаблон" Width="200" />
+                    <GridColumn HeaderText="" Width="100" TextAlign="TextAlign.Center">
+                        <Template>
+                            <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs args) => edit.Load((context as NumberTemplateDto).Id) )" />
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </CardContent>
+    </SfCard>
+    <NumberTemplateEdit @ref="edit" OnSaved="Load" />
+</div>
+
+@code {
+    List<NumberTemplateDto> items = new();
+    NumberTemplateEdit? edit;
+    protected override async Task OnInitializedAsync() => await Load();
+    async Task Load() => items = await ApiClient.GetAllAsync();
+}
