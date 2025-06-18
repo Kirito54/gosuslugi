@@ -1,0 +1,49 @@
+@page "/documents/sign/{Id:guid}"
+@attribute [Authorize]
+@using Client.Wasm.DTOs
+@inject IDocumentApiClient ApiClient
+@inject IJSRuntime Js
+
+<SfCard CssClass="p-6 rounded-xl shadow-lg glass-effect">
+    <CardHeader>
+        <h3 class="mb-4">Подпись документа</h3>
+    </CardHeader>
+    <CardContent>
+        @if (pdfData != null)
+        {
+            <SfPdfViewer DocumentPath="" DocumentBase64="@pdfData" Width="100%" Height="600px"></SfPdfViewer>
+        }
+        <div class="mt-4 flex justify-end">
+            <SfButton CssClass="e-primary" OnClick="Sign">Подписать</SfButton>
+        </div>
+    </CardContent>
+</SfCard>
+
+<SfToast @ref="toast" Timeout="3000"></SfToast>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    string? pdfData;
+    SfToast? toast;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pdfData = await ApiClient.GetBase64Async(Id);
+    }
+
+    async Task Sign()
+    {
+        if (pdfData == null) return;
+        try
+        {
+            var signature = await Js.InvokeAsync<string>("signWithCryptoPro", pdfData);
+            var dto = new DocumentSignatureDto { DocumentId = Id, SignatureBase64 = signature };
+            await ApiClient.UploadSignatureAsync(dto);
+            await toast!.ShowAsync(new ToastModel { Content = "Документ подписан" });
+        }
+        catch (Exception ex)
+        {
+            await toast!.ShowAsync(new ToastModel { Content = "Ошибка подписи: " + ex.Message, CssClass="e-danger" });
+        }
+    }
+}

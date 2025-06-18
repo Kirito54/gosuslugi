@@ -101,4 +101,13 @@ public class DocumentStorageService : IDocumentStorageService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    public async Task SaveSignatureAsync(Guid documentId, string base64)
+    {
+        var doc = await _db.Documents.FirstOrDefaultAsync(d => d.Id == documentId)
+                  ?? throw new FileNotFoundException();
+
+        var sigPath = Path.ChangeExtension(doc.StoragePath, ".sig");
+        await File.WriteAllTextAsync(sigPath, base64);
+    }
 }
