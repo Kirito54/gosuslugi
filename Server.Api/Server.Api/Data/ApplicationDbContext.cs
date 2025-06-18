@@ -39,6 +39,8 @@ namespace GovServices.Server.Data
         public DbSet<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
         public DbSet<UserPermissionGroup> UserPermissionGroups { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }
+        public DbSet<NumberTemplate> NumberTemplates { get; set; }
+        public DbSet<NumberTemplateCounter> NumberTemplateCounters { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -75,6 +77,10 @@ namespace GovServices.Server.Data
             builder.Entity<Dictionary>()
                 .Property(d => d.Data)
                 .HasColumnType("jsonb");
+
+            builder.Entity<NumberTemplateCounter>()
+                .HasIndex(c => new { c.TemplateId, c.ScopeKey })
+                .IsUnique();
         }
     }
 }

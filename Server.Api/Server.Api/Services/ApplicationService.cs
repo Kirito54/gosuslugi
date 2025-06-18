@@ -12,12 +12,14 @@ namespace GovServices.Server.Services;
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IWorkflowService _workflowService;
+        private readonly INumberGenerator _numberGenerator;
 
-    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService)
+    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService, INumberGenerator numberGenerator)
     {
         _context = context;
         _mapper = mapper;
         _workflowService = workflowService;
+        _numberGenerator = numberGenerator;
     }
 
     public async Task<List<ApplicationDto>> GetAllAsync()
@@ -45,8 +47,7 @@ namespace GovServices.Server.Services;
 
     public async Task<ApplicationDto> CreateAsync(CreateApplicationDto dto)
     {
-        var todayCount = await _context.Applications.CountAsync(a => a.CreatedAt.Date == DateTime.UtcNow.Date);
-        var number = $"{DateTime.UtcNow:yyyyMMdd}-{(todayCount + 1):D5}";
+        var number = await _numberGenerator.GenerateAsync("Application");
 
         var app = new Application
         {

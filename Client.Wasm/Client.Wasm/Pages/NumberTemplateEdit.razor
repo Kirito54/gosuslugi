@@ -1,0 +1,66 @@
+@attribute [Authorize(Roles="Администратор,Канцелярия,Начальник управления")]
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
+@using Client.Wasm.DTOs
+@inject INumberTemplateApiClient ApiClient
+
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@header">
+    <EditForm Model="model" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="w-100" />
+        </div>
+        <div class="mb-3">
+            <SfTextBox TValue="string" @bind-Value="model.TargetType" Placeholder="Тип" CssClass="w-100" />
+        </div>
+        <div class="mb-3">
+            <SfTextBox TValue="string" @bind-Value="model.TemplateText" Placeholder="Шаблон" CssClass="w-100" />
+        </div>
+        <div class="mb-3">
+            <SfDropDownList TItem="ResetPolicy" TValue="ResetPolicy" DataSource="resetOptions" @bind-Value="model.ResetPolicy" Placeholder="Политика сброса" />
+        </div>
+        <div class="text-right mt-3">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
+
+@code {
+    SfDialog dlg;
+    string header = string.Empty;
+    bool isNew;
+    NumberTemplateDto model = new();
+    ResetPolicy[] resetOptions = Enum.GetValues<ResetPolicy>();
+
+    public void Show()
+    {
+        model = new NumberTemplateDto();
+        header = "Новый шаблон";
+        isNew = true;
+        _ = dlg.ShowAsync();
+    }
+
+    public async void Load(int id)
+    {
+        var t = await ApiClient.GetByIdAsync(id);
+        if (t != null) model = t;
+        header = $"Редактировать {t?.Name}";
+        isNew = false;
+        _ = dlg.ShowAsync();
+    }
+
+    Task Hide() => dlg.HideAsync();
+
+    async Task Save()
+    {
+        if (isNew)
+            await ApiClient.CreateAsync(new CreateNumberTemplateDto { Name = model.Name, TargetType = model.TargetType, TemplateText = model.TemplateText, ResetPolicy = model.ResetPolicy });
+        else
+            await ApiClient.UpdateAsync(model.Id, new UpdateNumberTemplateDto { Name = model.Name, TargetType = model.TargetType, TemplateText = model.TemplateText, ResetPolicy = model.ResetPolicy });
+        await dlg.HideAsync();
+        if (OnSaved.HasDelegate) await OnSaved.InvokeAsync();
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}
