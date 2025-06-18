@@ -12,7 +12,12 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // HttpClient для API
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri("http://localhost:5141/") });
+builder.Services.AddScoped<ErrorHandlerService>();
+builder.Services.AddScoped(sp =>
+{
+    var handler = new ErrorHandlingMessageHandler(sp.GetRequiredService<ErrorHandlerService>());
+    return new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5141/") };
+});
 
 // Регистрация клиентских сервисов
 builder.Services.AddScoped<Client.Wasm.Services.AuthService>();

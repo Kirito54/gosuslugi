@@ -2,19 +2,33 @@
 @inject NavigationManager NavigationManager
 
 <CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(Program).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    @if (!NavigationManager.Uri.Contains("/login"))
-                    {
-                        NavigationManager.NavigateTo("/login", forceLoad: true);
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
-        </Found>
-        <NotFound>
-            <RedirectToLogin />
-        </NotFound>
-    </Router>
+    <ErrorBoundary @ref="errorBoundary" OnError="HandleError">
+        <Router AppAssembly="@typeof(Program).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        @if (!NavigationManager.Uri.Contains("/login"))
+                        {
+                            NavigationManager.NavigateTo("/login", forceLoad: true);
+                        }
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
+                <RedirectToLogin />
+            </NotFound>
+        </Router>
+    </ErrorBoundary>
 </CascadingAuthenticationState>
+
+<ErrorDialog />
+
+@code {
+    ErrorBoundary? errorBoundary;
+    [Inject] ErrorHandlerService ErrorService { get; set; } = default!;
+
+    void HandleError(Exception ex)
+    {
+        ErrorService.Handle(ex);
+    }
+}
