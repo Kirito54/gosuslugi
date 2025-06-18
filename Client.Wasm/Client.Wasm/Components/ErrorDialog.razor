@@ -1,0 +1,68 @@
+@inject ErrorHandlerService ErrorService
+@inject HttpClient Http
+@implements IDisposable
+
+<SfDialog @ref="dialog" Width="400px" IsModal="true" Visible="false" CssClass="p-6 rounded-xl shadow-lg glass-effect">
+    <DialogTemplates>
+        <Header>
+            <h4 class="text-lg font-semibold mb-2">❗ Произошла ошибка</h4>
+        </Header>
+        <Content>
+            <p class="text-sm mb-4">@_errorMessage</p>
+            <EditForm Model="_model" OnValidSubmit="SendReport">
+                <DataAnnotationsValidator />
+                <SfTextBox CssClass="w-full mb-3" Placeholder="Что вы делали в момент ошибки?" @bind-Value="_model.Comment"></SfTextBox>
+                <div class="flex justify-end gap-2">
+                    <SfButton CssClass="e-primary" Type="Submit">Отправить отчёт</SfButton>
+                    <SfButton CssClass="e-flat" OnClick="Close">Закрыть</SfButton>
+                </div>
+            </EditForm>
+        </Content>
+    </DialogTemplates>
+</SfDialog>
+
+@code {
+    SfDialog? dialog;
+    string? _errorMessage;
+    readonly ReportModel _model = new();
+
+    protected override void OnInitialized()
+    {
+        ErrorService.OnError += Show;
+    }
+
+    public void Dispose()
+    {
+        ErrorService.OnError -= Show;
+    }
+
+    private async void Show()
+    {
+        var ex = ErrorService.GetError();
+        if (ex == null) return;
+        _errorMessage = ex.Message;
+        await dialog!.ShowAsync();
+    }
+
+    private async Task SendReport()
+    {
+        var ex = ErrorService.GetError();
+        if (ex == null) return;
+        var dto = new {
+            message = ex.Message,
+            stackTrace = ex.StackTrace,
+            userComment = _model.Comment,
+            userId = string.Empty
+        };
+        await Http.PostAsJsonAsync("api/errors/report", dto);
+        await dialog!.HideAsync();
+    }
+
+    private void Close() => dialog?.HideAsync();
+
+    class ReportModel
+    {
+        [Required]
+        public string? Comment { get; set; }
+    }
+}

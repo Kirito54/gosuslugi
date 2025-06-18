@@ -1,0 +1,161 @@
+@attribute [Authorize(Roles="Administrator")]
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Grids
+@using Client.Wasm.DTOs
+@using Client.Wasm.Helpers
+@inject IServiceTemplateApiClient ApiClient
+
+<SfDialog @ref="dlg" Width="600px" ShowCloseIcon="true" Header="@header">
+    <EditForm Model="model" OnValidSubmit="SaveTemplate">
+        <DataAnnotationsValidator />
+        <SfTab>
+            <TabItems>
+                <TabItem HeaderText="Поля">
+                    <SfGrid DataSource="@config.Fields" AllowPaging="false">
+                        <GridColumns>
+                            <GridColumn Field=@nameof(FieldConfig.Name) HeaderText="Название" Width="150" />
+                            <GridColumn Field=@nameof(FieldConfig.Type) HeaderText="Тип" Width="100" />
+                            <GridColumn Field=@nameof(FieldConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
+                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                                <Template Context="item">
+                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveField(item as FieldConfig))"></SfButton>
+                                </Template>
+                            </GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                    <div class="mt-2">
+                        <SfButton CssClass="e-primary" OnClick="AddField">Добавить поле</SfButton>
+                    </div>
+                </TabItem>
+                <TabItem HeaderText="Документы">
+                    <SfGrid DataSource="@config.Documents" AllowPaging="false">
+                        <GridColumns>
+                            <GridColumn Field=@nameof(DocumentConfig.Name) HeaderText="Название" Width="180" />
+                            <GridColumn Field=@nameof(DocumentConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
+                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                                <Template Context="doc">
+                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveDocument(doc as DocumentConfig))"></SfButton>
+                                </Template>
+                            </GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                    <div class="mt-2">
+                        <SfButton CssClass="e-primary" OnClick="AddDocument">Добавить документ</SfButton>
+                    </div>
+                </TabItem>
+                <TabItem HeaderText="Категории">
+                    <div class="p-3">
+                        @foreach(var cat in categories)
+                        {
+                            <SfCheckBox TChecked="bool" Label="@cat" Checked="@CategoryChecked(cat)" CheckedChanged="@(val => ToggleCategory(cat, val))" CssClass="mb-2" />
+                        }
+                    </div>
+                </TabItem>
+                <TabItem HeaderText="Workflow">
+                    <SfGrid DataSource="@config.Workflow" AllowPaging="false">
+                        <GridColumns>
+                            <GridColumn Field=@nameof(WorkflowStepConfig.Name) HeaderText="Этап" Width="150" />
+                            <GridColumn Field=@nameof(WorkflowStepConfig.Role) HeaderText="Роль" Width="150" />
+                            <GridColumn Field=@nameof(WorkflowStepConfig.Order) HeaderText="Порядок" Width="80" />
+                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                                <Template Context="step">
+                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveStep(step as WorkflowStepConfig))"></SfButton>
+                                </Template>
+                            </GridColumn>
+                        </GridColumns>
+                    </SfGrid>
+                    <div class="mt-2">
+                        <SfButton CssClass="e-primary" OnClick="AddStep">Добавить этап</SfButton>
+                    </div>
+                </TabItem>
+                <TabItem HeaderText="Превью">
+                    <div class="p-3">
+                        @foreach(var f in config.Fields.OrderBy(f => f.Order))
+                        {
+                            <div class="mb-3">
+                                <label>@f.Name</label>
+                                @if(f.Type == "text")
+                                {
+                                    <SfTextBox CssClass="w-100" Placeholder="@f.Name" />
+                                }
+                                else if(f.Type == "date")
+                                {
+                                    <SfDatePicker TValue="DateTime?" CssClass="w-100" />
+                                }
+                                else if(f.Type == "checkbox")
+                                {
+                                    <SfCheckBox TChecked="bool" Label="@f.Name" />
+                                }
+                            </div>
+                        }
+                    </div>
+                </TabItem>
+            </TabItems>
+        </SfTab>
+        <div class="text-right mt-3">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
+
+@code {
+    SfDialog dlg;
+    ServiceTemplateDto model = new();
+    ServiceTemplateConfig config = new();
+    string header = string.Empty;
+    bool isNew;
+    string[] categories = new[]{"Физ. лицо","Представитель","Организация"};
+
+    public void Show(int serviceId)
+    {
+        model = new ServiceTemplateDto{ServiceId = serviceId, IsActive = true};
+        config = new ServiceTemplateConfig();
+        header = "Новый шаблон";
+        isNew = true;
+        _ = dlg.ShowAsync();
+    }
+
+    public async void Load(int id)
+    {
+        var t = await ApiClient.GetByIdAsync(id);
+        if(t != null)
+        {
+            model = t;
+            config = ServiceTemplateConfig.FromJson(t.JsonConfig);
+        }
+        header = $"Редактировать {t?.ServiceName}";
+        isNew = false;
+        _ = dlg.ShowAsync();
+    }
+
+    Task Hide() => dlg.HideAsync();
+
+    async Task SaveTemplate()
+    {
+        model.JsonConfig = config.ToJson();
+        if(isNew)
+            await ApiClient.CreateAsync(new CreateServiceTemplateDto{ ServiceId = model.ServiceId, JsonConfig = model.JsonConfig, IsActive = model.IsActive });
+        else
+            await ApiClient.UpdateAsync(model.Id, new UpdateServiceTemplateDto{ JsonConfig = model.JsonConfig, IsActive = model.IsActive });
+        await dlg.HideAsync();
+        if(OnSaved.HasDelegate) await OnSaved.InvokeAsync();
+    }
+
+    void AddField() => config.Fields.Add(new FieldConfig());
+    void RemoveField(FieldConfig f) => config.Fields.Remove(f);
+    void AddDocument() => config.Documents.Add(new DocumentConfig());
+    void RemoveDocument(DocumentConfig d) => config.Documents.Remove(d);
+    void AddStep() => config.Workflow.Add(new WorkflowStepConfig());
+    void RemoveStep(WorkflowStepConfig s) => config.Workflow.Remove(s);
+
+    bool CategoryChecked(string cat) => config.ApplicantCategories.Contains(cat);
+    void ToggleCategory(string cat, bool val)
+    {
+        if(val){ if(!config.ApplicantCategories.Contains(cat)) config.ApplicantCategories.Add(cat); }
+        else { config.ApplicantCategories.Remove(cat); }
+    }
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}

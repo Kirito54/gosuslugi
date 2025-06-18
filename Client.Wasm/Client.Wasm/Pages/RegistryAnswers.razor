@@ -1,0 +1,33 @@
+@page "/registry/answers"
+@attribute [Authorize]
+
+<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <CardHeader>
+        <h1>Ответы</h1>
+    </CardHeader>
+    <CardContent>
+        <SfGrid DataSource="@answers" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(AnswerRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+                <GridColumn Field=@nameof(AnswerRow.Subject) HeaderText="Тема" Width="200" />
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<AnswerRow> answers = new();
+    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
+
+    protected override void OnInitialized()
+    {
+        answers = new() { new AnswerRow { Id = 1, Subject = "Ответ по заявлению" } };
+    }
+
+    class AnswerRow
+    {
+        public int Id { get; set; }
+        public string Subject { get; set; } = string.Empty;
+    }
+}

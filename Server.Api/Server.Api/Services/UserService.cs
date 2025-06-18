@@ -29,19 +29,23 @@ public class UserService : IUserService
     {
         var users = await _context.Users
             .Include(u => u.Department)
+            .Include(u => u.PermissionGroups)
+                .ThenInclude(pg => pg.PermissionGroup)
             .ToListAsync();
 
         var result = new List<UserDto>();
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
+            var groups = user.PermissionGroups.Select(g => g.PermissionGroup.Name).ToList();
             result.Add(new UserDto
             {
                 Id = user.Id,
                 Email = user.Email ?? string.Empty,
                 FullName = user.FullName,
                 DepartmentName = user.Department?.Name ?? string.Empty,
-                Roles = roles.ToList()
+                Roles = roles.ToList(),
+                Groups = groups
             });
         }
 
@@ -52,6 +56,8 @@ public class UserService : IUserService
     {
         var user = await _context.Users
             .Include(u => u.Department)
+            .Include(u => u.PermissionGroups)
+                .ThenInclude(pg => pg.PermissionGroup)
             .FirstOrDefaultAsync(u => u.Id == id)
             ?? throw new KeyNotFoundException($"User {id} not found");
 
@@ -63,7 +69,8 @@ public class UserService : IUserService
             Email = user.Email ?? string.Empty,
             FullName = user.FullName,
             DepartmentName = user.Department?.Name ?? string.Empty,
-            Roles = roles.ToList()
+            Roles = roles.ToList(),
+            Groups = user.PermissionGroups.Select(g => g.PermissionGroup.Name).ToList()
         };
     }
 
@@ -83,11 +90,21 @@ public class UserService : IUserService
         if (!res.Succeeded)
             throw new InvalidOperationException(string.Join(";", res.Errors.Select(e => e.Description)));
 
+
         foreach (var roleId in dto.RoleIds)
         {
             var role = await _roleManager.FindByIdAsync(roleId)
                        ?? throw new KeyNotFoundException($"Role {roleId} not found");
             await _userManager.AddToRoleAsync(user, role.Name!);
+        }
+
+        foreach (var groupId in dto.GroupIds)
+        {
+            _context.UserPermissionGroups.Add(new UserPermissionGroup
+            {
+                UserId = user.Id,
+                PermissionGroupId = groupId
+            });
         }
 
         await _emailService.SendEmailAsync(user.Email!, "Регистрация", $"Ваш пароль: {temp}");
@@ -120,6 +137,17 @@ public class UserService : IUserService
 
         if (rolesToRemove.Any())
             await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+        var existingGroups = _context.UserPermissionGroups.Where(g => g.UserId == id).ToList();
+        _context.UserPermissionGroups.RemoveRange(existingGroups);
+        foreach (var groupId in dto.GroupIds)
+        {
+            _context.UserPermissionGroups.Add(new UserPermissionGroup
+            {
+                UserId = id,
+                PermissionGroupId = groupId
+            });
+        }
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

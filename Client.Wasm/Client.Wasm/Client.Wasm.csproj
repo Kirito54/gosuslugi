@@ -13,7 +13,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.17" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Syncfusion.Blazor" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Notifications" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.PdfViewer" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Layouts" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.Lists" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.FileManager" Version="24.1.41" />
+    <PackageReference Include="Syncfusion.Blazor.WordProcessor" Version="24.1.41" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="24.1.41" />
   </ItemGroup>
 

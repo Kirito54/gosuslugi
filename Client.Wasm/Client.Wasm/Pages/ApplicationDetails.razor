@@ -27,6 +27,54 @@
                 <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
             </SfCardContent>
         </SfCard>
+        <SfCard CssClass="mb-3">
+            <SfCardHeader>
+                <h3>Результаты</h3>
+            </SfCardHeader>
+            <SfCardContent>
+                <SfGrid TItem="ApplicationResultDto" DataSource="results" AllowPaging="true" Width="100%">
+                    <GridPageSettings PageSize="5" />
+                    <GridColumns>
+                        <GridColumn Field=@nameof(ApplicationResultDto.Type) HeaderText="Тип" Width="150" />
+                        <GridColumn Field=@nameof(ApplicationResultDto.LinkedAt) HeaderText="Дата" Format="g" Width="150" />
+                        <GridColumn HeaderText="Документ" Width="100">
+                            <Template>
+                                <a href="/documents/@(context as ApplicationResultDto).DocumentId" target="_blank">Открыть</a>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                </SfGrid>
+            </SfCardContent>
+        </SfCard>
+
+        <SfCard CssClass="mb-3">
+            <SfCardHeader>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="m-0">Пересмотры</h3>
+                    <SfButton CssClass="e-outline" OnClick="@(() => revisionModal.Show(app.Id))">Пересмотреть</SfButton>
+                </div>
+            </SfCardHeader>
+            <SfCardContent>
+                <SfGrid TItem="ApplicationRevisionDto" DataSource="revisions" AllowPaging="true" Width="100%">
+                    <GridPageSettings PageSize="5" />
+                    <GridColumns>
+                        <GridColumn Field=@nameof(ApplicationRevisionDto.Type) HeaderText="Тип" Width="150" />
+                        <GridColumn Field=@nameof(ApplicationRevisionDto.DocumentNumber) HeaderText="Номер" Width="150" />
+                        <GridColumn Field=@nameof(ApplicationRevisionDto.CreatedAt) HeaderText="Дата" Format="g" Width="150" />
+                        <GridColumn HeaderText="Документ" Width="120">
+                            <Template>
+                                <a href="@((context as ApplicationRevisionDto).SedLink)" target="_blank">Ссылка</a>
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+        </SfGrid>
+    </SfCardContent>
+</SfCard>
+
+        <ExternalRequestsTabs ApplicationId="@app.Id" />
+        <RelatedApplicationsTabs appId="@app.Id" />
+
+        <RevisionModal @ref="revisionModal" OnSubmit="AddRevision" />
         <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@( (MouseEventArgs e) => NavigationManager.NavigateTo("/applications") )">Назад</SfButton>
     }
 </div>
@@ -34,9 +82,21 @@
 @code {
     [Parameter] public int id { get; set; }
     ApplicationDto app;
+    List<ApplicationResultDto> results = new();
+    List<ApplicationRevisionDto> revisions = new();
+    RevisionModal revisionModal;
 
     protected override async Task OnParametersSetAsync()
     {
         app = await ApiClient.GetByIdAsync(id);
+        results = await ApiClient.GetResultsAsync(id);
+        revisions = await ApiClient.GetRevisionsAsync(id);
+    }
+
+    async Task AddRevision(CreateApplicationRevisionDto dto)
+    {
+        await ApiClient.AddRevisionAsync(dto);
+        revisions = await ApiClient.GetRevisionsAsync(id);
+        StateHasChanged();
     }
 }

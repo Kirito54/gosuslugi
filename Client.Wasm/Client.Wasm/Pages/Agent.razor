@@ -1,0 +1,33 @@
+@page "/agent"
+@inject Client.Wasm.Services.IAgentApiClient AgentClient
+
+<SfCard CssClass="rounded-xl shadow-lg glass-effect p-6">
+    <CardHeader>
+        <h3 class="text-lg font-semibold mb-4">AI Агент</h3>
+    </CardHeader>
+    <CardContent>
+        <EditForm Model="@request" OnValidSubmit="Send">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <SfTextBox Multiline="true" @bind-Value="request.Text" Rows="6" Placeholder="Введите заявление или вопрос" CssClass="w-100 mb-4" />
+            <SfButton CssClass="e-primary" Type="Submit">Отправить</SfButton>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(response))
+        {
+            <div class="mt-4 p-6 rounded-xl shadow-lg bg-white">
+                <p>@response</p>
+            </div>
+        }
+    </CardContent>
+</SfCard>
+
+@code {
+    Client.Wasm.DTOs.AgentRequestDto request = new();
+    string? response;
+
+    private async Task Send()
+    {
+        var res = await AgentClient.AnalyzeAsync(request);
+        response = res.Result;
+    }
+}

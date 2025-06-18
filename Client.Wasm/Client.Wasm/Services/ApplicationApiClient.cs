@@ -12,6 +12,14 @@ public interface IApplicationApiClient
     Task DeleteAsync(int id);
     Task AdvanceAsync(int applicationId, object contextData);
     Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId);
+    Task<List<ApplicationResultDto>> GetResultsAsync(int applicationId);
+    Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto);
+    Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId);
+    Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto);
+
+    Task<List<ApplicationDto>> GetRelatedByApplicantAsync(int applicationId);
+    Task<List<ApplicationDto>> GetRelatedByRepresentativeAsync(int applicationId);
+    Task<List<ApplicationDto>> GetRelatedByGeoAsync(int applicationId);
 }
 
 public class ApplicationApiClient : IApplicationApiClient
@@ -61,5 +69,44 @@ public class ApplicationApiClient : IApplicationApiClient
     public async Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId)
     {
         return await _http.GetFromJsonAsync<List<ApplicationLogDto>>($"api/applications/{applicationId}/logs") ?? new();
+    }
+
+    public async Task<List<ApplicationResultDto>> GetResultsAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationResultDto>>($"api/applications/{applicationId}/results") ?? new();
+    }
+
+    public async Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto)
+    {
+        var res = await _http.PostAsJsonAsync($"api/applications/{dto.ApplicationId}/results", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<ApplicationResultDto>())!;
+    }
+
+    public async Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationRevisionDto>>($"api/applications/{applicationId}/revisions") ?? new();
+    }
+
+    public async Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto)
+    {
+        var res = await _http.PostAsJsonAsync($"api/applications/{dto.ApplicationId}/revisions", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<ApplicationRevisionDto>())!;
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByApplicantAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/applicant") ?? new();
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByRepresentativeAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/representative") ?? new();
+    }
+
+    public async Task<List<ApplicationDto>> GetRelatedByGeoAsync(int applicationId)
+    {
+        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/geo") ?? new();
     }
 }

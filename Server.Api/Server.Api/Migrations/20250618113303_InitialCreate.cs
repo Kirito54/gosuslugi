@@ -62,6 +62,42 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Dictionaries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Schema = table.Column<string>(type: "text", nullable: false),
+                    SourceType = table.Column<string>(type: "text", nullable: false),
+                    SourceUrl = table.Column<string>(type: "text", nullable: true),
+                    Data = table.Column<string>(type: "jsonb", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dictionaries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ErrorReports",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    ErrorMessage = table.Column<string>(type: "text", nullable: false),
+                    StackTrace = table.Column<string>(type: "text", nullable: true),
+                    UserComment = table.Column<string>(type: "text", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ErrorReports", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GeoObjects",
                 columns: table => new
                 {
@@ -77,6 +113,22 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NumberTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    TargetType = table.Column<string>(type: "text", nullable: false),
+                    TemplateText = table.Column<string>(type: "text", nullable: false),
+                    ResetPolicy = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NumberTemplates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PasswordChangeLogs",
                 columns: table => new
                 {
@@ -89,6 +141,32 @@ namespace Server.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PasswordChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionGroups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionGroups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,6 +266,51 @@ namespace Server.Api.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NumberTemplateCounters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TemplateId = table.Column<int>(type: "integer", nullable: false),
+                    ScopeKey = table.Column<string>(type: "text", nullable: false),
+                    CurrentValue = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NumberTemplateCounters", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NumberTemplateCounters_NumberTemplates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "NumberTemplates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PermissionGroupPermissions",
+                columns: table => new
+                {
+                    PermissionGroupId = table.Column<int>(type: "integer", nullable: false),
+                    PermissionId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PermissionGroupPermissions", x => new { x.PermissionGroupId, x.PermissionId });
+                    table.ForeignKey(
+                        name: "FK_PermissionGroupPermissions_PermissionGroups_PermissionGroup~",
+                        column: x => x.PermissionGroupId,
+                        principalTable: "PermissionGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PermissionGroupPermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -297,6 +420,59 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ServiceTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    JsonConfig = table.Column<string>(type: "text", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    UpdatedById = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServiceTemplates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServiceTemplates_AspNetUsers_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServiceTemplates_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserPermissionGroups",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    PermissionGroupId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPermissionGroups", x => new { x.UserId, x.PermissionGroupId });
+                    table.ForeignKey(
+                        name: "FK_UserPermissionGroups_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserPermissionGroups_PermissionGroups_PermissionGroupId",
+                        column: x => x.PermissionGroupId,
+                        principalTable: "PermissionGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
@@ -389,17 +565,46 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Documents",
+                name: "ApplicationRevisions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ApplicationId = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    DocumentNumber = table.Column<string>(type: "text", nullable: false),
+                    SedLink = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationRevisions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApplicationRevisions_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: false),
-                    FilePath = table.Column<string>(type: "text", nullable: false),
-                    UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UploadedByUserId = table.Column<string>(type: "text", nullable: false),
-                    UploadedById = table.Column<string>(type: "text", nullable: true)
+                    OriginalName = table.Column<string>(type: "text", nullable: false),
+                    MimeType = table.Column<string>(type: "text", nullable: false),
+                    StoragePath = table.Column<string>(type: "text", nullable: false),
+                    Hash = table.Column<string>(type: "text", nullable: false),
+                    CreatedByUserId = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Visibility = table.Column<int>(type: "integer", nullable: false),
+                    DocumentStatus = table.Column<int>(type: "integer", nullable: false),
+                    LinkedSEDId = table.Column<string>(type: "text", nullable: true),
+                    ApplicationId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -408,13 +613,31 @@ namespace Server.Api.Migrations
                         name: "FK_Documents_Applications_ApplicationId",
                         column: x => x.ApplicationId,
                         principalTable: "Applications",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExtractRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ServiceId = table.Column<int>(type: "integer", nullable: false),
+                    ExternalId = table.Column<string>(type: "text", nullable: false),
+                    RegistrySource = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    ResponseRaw = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExtractRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExtractRequests_Applications_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_UploadedById",
-                        column: x => x.UploadedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -514,19 +737,51 @@ namespace Server.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DocumentMetadatas",
+                name: "ZagsRequests",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DocumentId = table.Column<int>(type: "integer", nullable: false),
-                    MetadataJson = table.Column<string>(type: "text", nullable: false)
+                    ApplicationId = table.Column<int>(type: "integer", nullable: false),
+                    RequestId = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    ResponseXml = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DocumentMetadatas", x => x.Id);
+                    table.PrimaryKey("PK_ZagsRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DocumentMetadatas_Documents_DocumentId",
+                        name: "FK_ZagsRequests_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ApplicationId = table.Column<int>(type: "integer", nullable: false),
+                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    LinkedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Automatic = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApplicationResults_Applications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "Applications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationResults_Documents_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "Documents",
                         principalColumn: "Id",
@@ -554,6 +809,48 @@ namespace Server.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RosreestrRequestAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RosreestrRequestId = table.Column<int>(type: "integer", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<byte[]>(type: "bytea", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosreestrRequestAttachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RosreestrRequestAttachments_RosreestrRequests_RosreestrRequ~",
+                        column: x => x.RosreestrRequestId,
+                        principalTable: "RosreestrRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ZagsRequestAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ZagsRequestId = table.Column<int>(type: "integer", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<byte[]>(type: "bytea", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ZagsRequestAttachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ZagsRequestAttachments_ZagsRequests_ZagsRequestId",
+                        column: x => x.ZagsRequestId,
+                        principalTable: "ZagsRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationLogs_ApplicationId",
                 table: "ApplicationLogs",
@@ -563,6 +860,21 @@ namespace Server.Api.Migrations
                 name: "IX_ApplicationLogs_UserId",
                 table: "ApplicationLogs",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationResults_ApplicationId",
+                table: "ApplicationResults",
+                column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationResults_DocumentId",
+                table: "ApplicationResults",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationRevisions_ApplicationId",
+                table: "ApplicationRevisions",
+                column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_AssignedToId",
@@ -622,20 +934,25 @@ namespace Server.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DocumentMetadatas_DocumentId",
-                table: "DocumentMetadatas",
-                column: "DocumentId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Documents_ApplicationId",
                 table: "Documents",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_UploadedById",
+                name: "IX_Documents_OwnerId_Type_CreatedAt",
                 table: "Documents",
-                column: "UploadedById");
+                columns: new[] { "OwnerId", "Type", "CreatedAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExtractRequests_ServiceId",
+                table: "ExtractRequests",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NumberTemplateCounters_TemplateId_ScopeKey",
+                table: "NumberTemplateCounters",
+                columns: new[] { "TemplateId", "ScopeKey" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ApplicationId",
@@ -658,6 +975,16 @@ namespace Server.Api.Migrations
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PermissionGroupPermissions_PermissionId",
+                table: "PermissionGroupPermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosreestrRequestAttachments_RosreestrRequestId",
+                table: "RosreestrRequestAttachments",
+                column: "RosreestrRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RosreestrRequests_ApplicationId",
                 table: "RosreestrRequests",
                 column: "ApplicationId");
@@ -666,6 +993,21 @@ namespace Server.Api.Migrations
                 name: "IX_SedDocumentLogs_ApplicationId",
                 table: "SedDocumentLogs",
                 column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceTemplates_ServiceId",
+                table: "ServiceTemplates",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceTemplates_UpdatedById",
+                table: "ServiceTemplates",
+                column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPermissionGroups_PermissionGroupId",
+                table: "UserPermissionGroups",
+                column: "PermissionGroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkflowSteps_WorkflowId",
@@ -681,6 +1023,16 @@ namespace Server.Api.Migrations
                 name: "IX_WorkflowTransitions_ToStepId",
                 table: "WorkflowTransitions",
                 column: "ToStepId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZagsRequestAttachments_ZagsRequestId",
+                table: "ZagsRequestAttachments",
+                column: "ZagsRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ZagsRequests_ApplicationId",
+                table: "ZagsRequests",
+                column: "ApplicationId");
         }
 
         /// <inheritdoc />
@@ -688,6 +1040,12 @@ namespace Server.Api.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ApplicationLogs");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationResults");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationRevisions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -708,10 +1066,19 @@ namespace Server.Api.Migrations
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "DocumentMetadatas");
+                name: "Dictionaries");
+
+            migrationBuilder.DropTable(
+                name: "ErrorReports");
+
+            migrationBuilder.DropTable(
+                name: "ExtractRequests");
 
             migrationBuilder.DropTable(
                 name: "GeoObjects");
+
+            migrationBuilder.DropTable(
+                name: "NumberTemplateCounters");
 
             migrationBuilder.DropTable(
                 name: "Orders");
@@ -723,25 +1090,52 @@ namespace Server.Api.Migrations
                 name: "PasswordChangeLogs");
 
             migrationBuilder.DropTable(
-                name: "RosreestrRequests");
+                name: "PermissionGroupPermissions");
+
+            migrationBuilder.DropTable(
+                name: "RosreestrRequestAttachments");
 
             migrationBuilder.DropTable(
                 name: "SedDocumentLogs");
 
             migrationBuilder.DropTable(
+                name: "ServiceTemplates");
+
+            migrationBuilder.DropTable(
                 name: "Templates");
+
+            migrationBuilder.DropTable(
+                name: "UserPermissionGroups");
 
             migrationBuilder.DropTable(
                 name: "WorkflowTransitions");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "ZagsRequestAttachments");
 
             migrationBuilder.DropTable(
                 name: "Documents");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "NumberTemplates");
+
+            migrationBuilder.DropTable(
                 name: "OutgoingDocuments");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "RosreestrRequests");
+
+            migrationBuilder.DropTable(
+                name: "PermissionGroups");
+
+            migrationBuilder.DropTable(
+                name: "ZagsRequests");
 
             migrationBuilder.DropTable(
                 name: "Applications");

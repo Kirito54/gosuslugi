@@ -1,6 +1,7 @@
 using AutoMapper;
 using GovServices.Server.Entities;
 using GovServices.Server.DTOs;
+using System;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System.Linq;
@@ -27,13 +28,7 @@ namespace GovServices.Server.Mappings
 
             CreateMap<AuditLog, AuditLogDto>().ReverseMap();
 
-            CreateMap<Document, DocumentDto>()
-                .ForMember(d => d.UploadedByUserName, o => o.MapFrom(s => s.UploadedBy != null ? s.UploadedBy.FullName : null))
-                .ForMember(d => d.MetadataJson, o => o.MapFrom(s => s.Metadata != null ? s.Metadata.MetadataJson : null))
-                .ReverseMap()
-                .ForPath(s => s.Metadata.MetadataJson, o => o.MapFrom(d => d.MetadataJson));
-
-            CreateMap<CreateDocumentDto, Document>();
+            CreateMap<Document, DocumentDto>().ReverseMap();
 
             CreateMap<GeoObject, GeoObjectDto>()
                 .ForMember(d => d.GeoJson, o => o.MapFrom(s => s.Geometry != null ? new GeoJsonWriter().Write(s.Geometry) : null))
@@ -56,7 +51,24 @@ namespace GovServices.Server.Mappings
 
             CreateMap<CreateOutgoingDocumentDto, OutgoingDocument>();
 
-            CreateMap<RosreestrRequest, RosreestrRequestDto>().ReverseMap();
+            CreateMap<ZagsRequest, ZagsRequestDto>()
+                .ForMember(d => d.Attachments, o => o.MapFrom(s => s.Attachments.Select(a => new AttachmentDto
+                {
+                    FileName = a.FileName,
+                    ContentBase64 = Convert.ToBase64String(a.Content)
+                }).ToList()))
+                .ReverseMap()
+                .ForMember(d => d.Attachments, o => o.Ignore());
+            CreateMap<CreateZagsRequestDto, ZagsRequest>();
+
+            CreateMap<RosreestrRequest, RosreestrRequestDto>()
+                .ForMember(d => d.Attachments, o => o.MapFrom(s => s.Attachments.Select(a => new AttachmentDto
+                {
+                    FileName = a.FileName,
+                    ContentBase64 = Convert.ToBase64String(a.Content)
+                }).ToList()))
+                .ReverseMap()
+                .ForMember(d => d.Attachments, o => o.Ignore());
             CreateMap<CreateRosreestrRequestDto, RosreestrRequest>();
             CreateMap<SedDocumentLog, SedDocumentLogDto>().ReverseMap();
             CreateMap<Service, ServiceDto>().ReverseMap();
@@ -65,6 +77,9 @@ namespace GovServices.Server.Mappings
             CreateMap<Template, TemplateDto>().ReverseMap();
             CreateMap<CreateTemplateDto, Template>();
             CreateMap<UpdateTemplateDto, Template>();
+            CreateMap<NumberTemplate, NumberTemplateDto>().ReverseMap();
+            CreateMap<CreateNumberTemplateDto, NumberTemplate>();
+            CreateMap<UpdateNumberTemplateDto, NumberTemplate>();
             CreateMap<Workflow, WorkflowDto>().ReverseMap();
             CreateMap<WorkflowStep, WorkflowStepDto>().ReverseMap();
             CreateMap<WorkflowTransition, WorkflowTransitionDto>().ReverseMap();
@@ -76,6 +91,21 @@ namespace GovServices.Server.Mappings
 
             CreateMap<CreateUserDto, ApplicationUser>();
             CreateMap<UpdateUserDto, ApplicationUser>();
+
+            CreateMap<ApplicationResult, ApplicationResultDto>().ReverseMap();
+            CreateMap<CreateApplicationResultDto, ApplicationResult>();
+
+            CreateMap<ApplicationRevision, ApplicationRevisionDto>().ReverseMap();
+            CreateMap<CreateApplicationRevisionDto, ApplicationRevision>();
+
+            CreateMap<ServiceTemplate, ServiceTemplateDto>()
+                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service != null ? s.Service.Name : null))
+                .ForMember(d => d.UpdatedByName, o => o.MapFrom(s => s.UpdatedBy != null ? s.UpdatedBy.FullName : null))
+                .ReverseMap();
+            CreateMap<CreateServiceTemplateDto, ServiceTemplate>();
+            CreateMap<UpdateServiceTemplateDto, ServiceTemplate>();
+
+            CreateMap<Dictionary, DictionaryDto>();
         }
     }
 }

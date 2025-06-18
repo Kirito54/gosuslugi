@@ -7,17 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GovServices.Server.Services;
 
-public class ApplicationService : IApplicationService
-{
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IWorkflowService _workflowService;
+    public class ApplicationService : IApplicationService
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IWorkflowService _workflowService;
+        private readonly INumberGenerator _numberGenerator;
 
-    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService)
+    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService, INumberGenerator numberGenerator)
     {
         _context = context;
         _mapper = mapper;
         _workflowService = workflowService;
+        _numberGenerator = numberGenerator;
     }
 
     public async Task<List<ApplicationDto>> GetAllAsync()
@@ -45,8 +47,7 @@ public class ApplicationService : IApplicationService
 
     public async Task<ApplicationDto> CreateAsync(CreateApplicationDto dto)
     {
-        var todayCount = await _context.Applications.CountAsync(a => a.CreatedAt.Date == DateTime.UtcNow.Date);
-        var number = $"{DateTime.UtcNow:yyyyMMdd}-{(todayCount + 1):D5}";
+        var number = await _numberGenerator.GenerateAsync("Application");
 
         var app = new Application
         {
@@ -142,5 +143,76 @@ public class ApplicationService : IApplicationService
             .OrderByDescending(l => l.Timestamp)
             .ToListAsync();
         return _mapper.Map<List<ApplicationLogDto>>(logs);
+    }
+
+    public async Task<List<ApplicationResultDto>> GetResultsAsync(int applicationId)
+    {
+        var results = await _context.ApplicationResults
+            .Where(r => r.ApplicationId == applicationId)
+            .Include(r => r.Document)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationResultDto>>(results);
+    }
+
+    public async Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto)
+    {
+        var entity = _mapper.Map<ApplicationResult>(dto);
+        entity.LinkedAt = DateTime.UtcNow;
+        _context.ApplicationResults.Add(entity);
+        await _context.SaveChangesAsync();
+        return _mapper.Map<ApplicationResultDto>(entity);
+    }
+
+    public async Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId)
+    {
+        var revisions = await _context.ApplicationRevisions
+            .Where(r => r.ApplicationId == applicationId)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationRevisionDto>>(revisions);
+    }
+
+    public async Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto)
+    {
+        var entity = _mapper.Map<ApplicationRevision>(dto);
+        entity.CreatedAt = DateTime.UtcNow;
+        _context.ApplicationRevisions.Add(entity);
+        await _context.SaveChangesAsync();
+        return _mapper.Map<ApplicationRevisionDto>(entity);
+    }
+
+    public async Task<List<ApplicationDto>> GetByApplicantAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
+    }
+
+    public async Task<List<ApplicationDto>> GetByRepresentativeAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
+    }
+
+    public async Task<List<ApplicationDto>> GetByGeoIntersectionAsync(int applicationId)
+    {
+        var apps = await _context.Applications
+            .Where(a => a.Id != applicationId)
+            .Include(a => a.Service)
+            .Include(a => a.CurrentStep)
+            .Include(a => a.AssignedTo)
+            .Take(10)
+            .ToListAsync();
+        return _mapper.Map<List<ApplicationDto>>(apps);
     }
 }

@@ -1,0 +1,60 @@
+@page "/registry/clerical"
+@attribute [Authorize(Roles = "Канцелярия")]
+
+<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <CardHeader>
+        <h1>Реестр канцелярии</h1>
+    </CardHeader>
+    <CardContent>
+        <SfButton CssClass="e-primary mb-4" OnClick="ShowDialog">Зарегистрировать ответ</SfButton>
+        <SfGrid DataSource="@answers" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
+            <GridPageSettings PageSize="10" />
+            <GridColumns>
+                <GridColumn Field=@nameof(AnswerRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+                <GridColumn Field=@nameof(AnswerRow.Subject) HeaderText="Тема" Width="200" />
+            </GridColumns>
+        </SfGrid>
+        <SfDialog Width="450px" IsModal="true" ShowCloseIcon="true" Visible="@dialogVisible" Header="Регистрация ответа" CssClass="e-bootstrap5">
+            <EditForm Model="newAnswer" OnValidSubmit="Save">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <SfTextBox @bind-Value="newAnswer.Subject" Placeholder="Тема" CssClass="form-field" />
+                <SfUploader AutoUpload="false" CssClass="form-field" />
+                <div class="text-right">
+                    <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+                    <SfButton CssClass="e-flat" OnClick="HideDialog">Отмена</SfButton>
+                </div>
+            </EditForm>
+        </SfDialog>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<AnswerRow> answers = new();
+    bool dialogVisible;
+    AnswerRow newAnswer = new();
+    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
+
+    protected override void OnInitialized()
+    {
+        answers = new() { new AnswerRow { Id = 1, Subject = "Получен ответ" } };
+    }
+
+    void ShowDialog() => dialogVisible = true;
+    void HideDialog() => dialogVisible = false;
+
+    Task Save()
+    {
+        dialogVisible = false;
+        answers.Add(new AnswerRow { Id = answers.Count + 1, Subject = newAnswer.Subject });
+        newAnswer = new();
+        return Task.CompletedTask;
+    }
+
+    class AnswerRow
+    {
+        public int Id { get; set; }
+        [Required]
+        public string Subject { get; set; } = string.Empty;
+    }
+}

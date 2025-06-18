@@ -62,11 +62,23 @@
     List<MenuItem> MenuItems = new()
     {
         new MenuItem { Text = "Services", Url = "/services" },
+        new MenuItem { Text = "Service Templates", Url = "/service-templates" },
         new MenuItem { Text = "Workflows", Url = "/workflows" },
         new MenuItem { Text = "Applications", Url = "/applications" },
         new MenuItem { Text = "Documents", Url = "/documents/0" },
         new MenuItem { Text = "Templates", Url = "/templates" },
-        new MenuItem { Text = "Users", Url = "/users" }
+        new MenuItem { Text = "Document Templates", Url = "/document-templates" },
+        new MenuItem { Text = "Users", Url = "/users" },
+        new MenuItem { Text = "Permission Groups", Url = "/permission-groups" },
+        new MenuItem { Text = "Актуальные заявления", Url = "/registry/applications" },
+        new MenuItem { Text = "Распоряжения РДЗ", Url = "/registry/rdz-orders" },
+        new MenuItem { Text = "Распоряжения РДИ", Url = "/registry/rdi-orders" },
+        new MenuItem { Text = "Ответы", Url = "/registry/answers" },
+        new MenuItem { Text = "Договоры", Url = "/registry/contracts" },
+        new MenuItem { Text = "Акты", Url = "/registry/acts" },
+        new MenuItem { Text = "Соглашения", Url = "/registry/agreements" },
+        new MenuItem { Text = "Канцелярия", Url = "/registry/clerical" },
+        new MenuItem { Text = "AI Agent", Url = "/agent" }
     };
 
     private async Task Logout()

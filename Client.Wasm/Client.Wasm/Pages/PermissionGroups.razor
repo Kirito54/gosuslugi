@@ -1,0 +1,29 @@
+@page "/permission-groups"
+@attribute [Authorize(Roles="Администратор")]
+@inject IPermissionGroupApiClient Api
+@using Client.Wasm.DTOs
+@using Syncfusion.Blazor.Grids
+@using Microsoft.AspNetCore.Authorization
+
+<SfCard CssClass="mb-4">
+    <CardHeader><h1>Группы прав</h1></CardHeader>
+    <CardContent>
+        <SfGrid DataSource="groups" AllowPaging="true" Width="100%">
+            <GridColumns>
+                <GridColumn Field="Id" HeaderText="ID" Width="100" TextAlign="TextAlign.Center" />
+                <GridColumn Field="Name" HeaderText="Название" Width="200" />
+                <GridColumn HeaderText="Права" Width="300">
+                    <Template>@string.Join(", ", (context as PermissionGroupDto).Permissions)</Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<PermissionGroupDto> groups = new();
+    protected override async Task OnInitializedAsync()
+    {
+        groups = await Api.GetAllAsync();
+    }
+}

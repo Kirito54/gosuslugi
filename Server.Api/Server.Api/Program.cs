@@ -10,6 +10,8 @@ using GovServices.Server.Interfaces;
 using GovServices.Server.Services;
 using GovServices.Server.Services.Templates;
 using GovServices.Server.Services.Integrations;
+using GovServices.Server.Services.RegistryApis;
+using GovServices.Server.Services.Numbering;
 using GovServices.Server.Middleware;
 using GovServices.Server.BackgroundServices;
 using GovServices.Server.Entities;
@@ -55,6 +57,9 @@ if (string.IsNullOrWhiteSpace(defaultConn))
     throw new InvalidOperationException("ConnectionString 'DefaultConnection' is not configured in appsettings.json.");
 }
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
+);
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
 );
 
@@ -112,34 +117,48 @@ builder.Services.AddScoped<IExampleService, ExampleService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
-builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOutgoingService, OutgoingService>();
 builder.Services.AddScoped<IGeoService, GeoService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IServiceTemplateService, ServiceTemplateService>();
+builder.Services.AddScoped<INumberTemplateService, NumberTemplateService>();
+builder.Services.AddScoped<INumberGenerator, NumberGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOcrService, OcrService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDocumentStorageService, DocumentStorageService>();
+builder.Services.AddScoped<IDictionaryService, DictionaryService>();
+builder.Services.AddSingleton<IDictionaryCacheService, DictionaryCacheService>();
 
 // Регистрация IEmailService (и реализация EmailService)
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<ISedIntegrationService, SedIntegrationService>();
 builder.Services.AddScoped<IRosreestrIntegrationService, RosreestrIntegrationService>();
+builder.Services.AddScoped<IZagsIntegrationService, ZagsIntegrationService>();
 builder.Services.AddScoped<IEcpService, EcpService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
+builder.Services.AddScoped<IExtractChecker, ExtractChecker>();
+builder.Services.AddKeyedScoped<IRegistryApi, ZagcApi>(RegistrySource.Zags);
+builder.Services.AddKeyedScoped<IRegistryApi, RosreestrApi>(RegistrySource.Rosreestr);
 
 
 // Background services
 builder.Services.AddHostedService<ExampleBackgroundService>();
 builder.Services.AddHostedService<PasswordReminderService>();
 builder.Services.AddHostedService<StatusNotificationService>();
+builder.Services.AddHostedService<ExtractMonitoringService>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     await DataSeeder.SeedAsync(scope.ServiceProvider);
+    var cache = scope.ServiceProvider.GetRequiredService<IDictionaryCacheService>();
+    await cache.ReloadAsync();
 }
 
 app.UseSerilogRequestLogging();

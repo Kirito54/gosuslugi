@@ -1,7 +1,8 @@
 @attribute [Authorize]
-@page "/documents/{applicationId:int}"
+@page "/documents/{ownerId:guid}"
 @inject IDocumentApiClient ApiClient
 @using Client.Wasm.DTOs
+@using Syncfusion.Blazor.Inputs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
@@ -11,24 +12,62 @@
             <h1>Документы</h1>
         </CardHeader>
         <CardContent>
+            <EditForm Model="upload" OnValidSubmit="HandleUpload">
+                <DataAnnotationsValidator />
+                <div class="mb-4 flex gap-2 items-center">
+                    <SfDropDownList TItem="DocumentType" TValue="DocumentType" @bind-Value="upload.Type" DataSource="@types" CssClass="w-40" />
+                    <SfUploader @ref="uploader" AutoUpload="false" Selected="OnFileSelected"></SfUploader>
+                    <SfButton CssClass="e-primary" Type="Submit">Загрузить</SfButton>
+                </div>
+            </EditForm>
+
             <SfGrid DataSource="@docs" AllowPaging="true" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(DocumentDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" />
-                <GridColumn Field=@nameof(DocumentDto.FileName) HeaderText="Файл" Width="200" />
-                <GridColumn Field=@nameof(DocumentDto.UploadedAt) HeaderText="Загружен" Format="d" Width="120" />
-            </GridColumns>
+                <GridPageSettings PageSize="10" />
+                <GridColumns>
+                    <GridColumn Field=@nameof(DocumentDto.OriginalName) HeaderText="Файл" Width="250" />
+                    <GridColumn Field=@nameof(DocumentDto.CreatedAt) HeaderText="Загружен" Format="d" Width="120" />
+                    <GridColumn HeaderText="" Width="120">
+                        <Template>
+                            <SfButton CssClass="e-flat" OnClick="@(() => Download((context as DocumentDto).Id))">Скачать</SfButton>
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
             </SfGrid>
         </CardContent>
     </SfCard>
 </div>
 
 @code {
-    [Parameter] public int applicationId { get; set; }
+    [Parameter] public Guid ownerId { get; set; }
     List<DocumentDto> docs = new();
+    DocumentUploadDto upload = new();
+    DocumentType[] types = Enum.GetValues<DocumentType>();
+    SfUploader? uploader;
 
     protected override async Task OnParametersSetAsync()
     {
-        docs = await ApiClient.GetByApplicationIdAsync(applicationId);
+        docs = await ApiClient.GetByOwnerAsync(ownerId);
+    }
+
+    async Task HandleUpload()
+    {
+        if (upload.File != null)
+        {
+            upload.OwnerId = ownerId;
+            await ApiClient.UploadAsync(upload);
+            if (uploader != null) await uploader.ClearAllAsync();
+            upload.File = null;
+            docs = await ApiClient.GetByOwnerAsync(ownerId);
+        }
+    }
+
+    void OnFileSelected(SelectedEventArgs args)
+    {
+        upload.File = args.FilesData.FirstOrDefault()?.RawFile as IBrowserFile;
+    }
+
+    async Task Download(Guid id)
+    {
+        await Js.InvokeVoidAsync("open", $"api/documents/download/{id}", "_blank");
     }
 }

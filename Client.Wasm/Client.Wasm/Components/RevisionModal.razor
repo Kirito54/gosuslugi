@@ -1,0 +1,40 @@
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using Client.Wasm.DTOs
+
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="Пересмотр" CssClass="rounded-xl shadow-lg glass-effect">
+    <EditForm Model="model" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <SfDropDownList TValue="string" TItem="string" @bind-Value="model.Type" DataSource="reasons" Placeholder="Основание" CssClass="w-100" />
+        </div>
+        <SfTextBox @bind-Value="model.DocumentNumber" Placeholder="Номер документа" CssClass="w-100 mb-3" />
+        <SfTextBox @bind-Value="model.SedLink" Placeholder="Ссылка в СЭД" CssClass="w-100 mb-3" />
+        <div class="text-right">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="@( () => dlg.HideAsync() )">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
+
+@code {
+    private SfDialog dlg;
+    private CreateApplicationRevisionDto model = new();
+    private string[] reasons = new[] { "Жалоба", "Протест прокуратуры", "Решение суда" };
+
+    public async Task Show(int applicationId)
+    {
+        model = new CreateApplicationRevisionDto { ApplicationId = applicationId };
+        await dlg.ShowAsync();
+    }
+
+    [Parameter] public EventCallback<CreateApplicationRevisionDto> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        if (OnSubmit.HasDelegate)
+            await OnSubmit.InvokeAsync(model);
+        await dlg.HideAsync();
+    }
+}

@@ -12,7 +12,12 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // HttpClient для API
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri("http://localhost:5141/") });
+builder.Services.AddScoped<ErrorHandlerService>();
+builder.Services.AddScoped(sp =>
+{
+    var handler = new ErrorHandlingMessageHandler(sp.GetRequiredService<ErrorHandlerService>());
+    return new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5141/") };
+});
 
 // Регистрация клиентских сервисов
 builder.Services.AddScoped<Client.Wasm.Services.AuthService>();
@@ -26,6 +31,13 @@ builder.Services.AddScoped<Client.Wasm.Services.IGeoApiClient, Client.Wasm.Servi
 builder.Services.AddScoped<Client.Wasm.Services.ITemplateApiClient, Client.Wasm.Services.TemplateApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.IUserApiClient, Client.Wasm.Services.UserApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
+builder.Services.AddScoped<Client.Wasm.Services.IDocumentTemplateService, Client.Wasm.Services.DocumentTemplateService>();
+builder.Services.AddScoped<Client.Wasm.Services.DocumentGeneratorService>();
+
+builder.Services.AddHttpClient<IAgentApiClient, AgentApiClient>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:8000/");
+});
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSyncfusionBlazor();
@@ -40,6 +52,8 @@ var assembly = typeof(Program).Assembly;
 var clients = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("ApiClient"));
 foreach (var client in clients)
 {
+    if (client == typeof(AgentApiClient))
+        continue;
     var iface = client.GetInterface($"I{client.Name}");
     if (iface != null)
     {

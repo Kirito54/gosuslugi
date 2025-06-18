@@ -18,6 +18,9 @@ namespace GovServices.Server.Entities
         public ICollection<Order> Orders { get; set; }
         public ICollection<OutgoingDocument> OutgoingDocuments { get; set; }
         public ICollection<RosreestrRequest> RosreestrRequests { get; set; }
+        public ICollection<ZagsRequest> ZagsRequests { get; set; }
         public ICollection<SedDocumentLog> SedLogs { get; set; }
+        public ICollection<ApplicationResult> Results { get; set; }
+        public ICollection<ApplicationRevision> Revisions { get; set; }
     }
 }

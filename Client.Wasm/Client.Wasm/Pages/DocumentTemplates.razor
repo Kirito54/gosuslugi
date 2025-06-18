@@ -1,0 +1,47 @@
+@attribute [Authorize(Roles="Administrator")]
+@page "/document-templates"
+@inject IDocumentTemplateService TemplateService
+@inject IJSRuntime JsRuntime
+
+<div class="container p-4">
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Шаблоны документов</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( _ => editor.Show())">Новый шаблон</SfButton>
+            <SfGrid TItem="TemplateDto" DataSource="items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
+                <GridColumns>
+                    <GridColumn Field=@nameof(TemplateDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
+                    <GridColumn Field=@nameof(TemplateDto.Name) HeaderText="Название" Width="200" />
+                    <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
+                        <Template>
+                            <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => editor.Show((context as TemplateDto).Id) )" />
+                            <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as TemplateDto).Id) )" />
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </CardContent>
+    </SfCard>
+
+    <DocumentTemplateEditor @ref="editor" OnSaved="Load" />
+</div>
+
+@code {
+    List<TemplateDto> items = new();
+    DocumentTemplateEditor editor;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    async Task Load() => items = await TemplateService.GetAllAsync();
+
+    async Task Delete(int id)
+    {
+        if (await JsRuntime.InvokeAsync<bool>("confirm", $"Удалить шаблон {id}?") )
+        {
+            await TemplateService.DeleteAsync(id);
+            await Load();
+        }
+    }
+}
