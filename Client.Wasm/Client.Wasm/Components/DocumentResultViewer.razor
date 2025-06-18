@@ -1,0 +1,33 @@
+@using Syncfusion.Blazor.DocumentEditor
+@inject IJSRuntime JS
+
+<SfDialog @ref="dialog" Width="900px" ShowCloseIcon="true" Header="Результат">
+    <SfDocumentEditorContainer @ref="container" Height="500px" EnableToolbar="true">
+        <DocumentEditorSettings EnableSpellCheck="false" EnableReadOnly="true" EnableSfdtExport="true"></DocumentEditorSettings>
+    </SfDocumentEditorContainer>
+    <div class="text-right mt-3">
+        <SfButton CssClass="e-flat me-2" OnClick="DownloadWord">Скачать Word</SfButton>
+        <SfButton CssClass="e-flat" OnClick="Close">Закрыть</SfButton>
+    </div>
+</SfDialog>
+
+@code {
+    SfDialog dialog;
+    SfDocumentEditorContainer container;
+    string content = string.Empty;
+
+    public async Task Show(string sfdt)
+    {
+        content = sfdt;
+        await container.DocumentEditor.OpenAsync(content);
+        await dialog.ShowAsync();
+    }
+
+    async Task DownloadWord()
+    {
+        var data = await container.DocumentEditor.SaveAsBlobAsync(FormatType.Docx);
+        await JS.InvokeVoidAsync("saveAsFile", "document.docx", data);
+    }
+
+    void Close() => dialog.HideAsync();
+}

@@ -26,6 +26,8 @@ builder.Services.AddScoped<Client.Wasm.Services.IGeoApiClient, Client.Wasm.Servi
 builder.Services.AddScoped<Client.Wasm.Services.ITemplateApiClient, Client.Wasm.Services.TemplateApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.IUserApiClient, Client.Wasm.Services.UserApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
+builder.Services.AddScoped<Client.Wasm.Services.IDocumentTemplateService, Client.Wasm.Services.DocumentTemplateService>();
+builder.Services.AddScoped<Client.Wasm.Services.DocumentGeneratorService>();
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSyncfusionBlazor();

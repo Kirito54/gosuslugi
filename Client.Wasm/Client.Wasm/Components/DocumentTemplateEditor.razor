@@ -1,0 +1,76 @@
+@using Syncfusion.Blazor.DocumentEditor
+@inject IDocumentTemplateService TemplateService
+
+<SfDialog @ref="dialog" Width="900px" ShowCloseIcon="true" Header="Редактор шаблона">
+    <div class="row">
+        <div class="col-9">
+            <SfDocumentEditorContainer @ref="container" Height="500px" EnableToolbar="true">
+                <DocumentEditorSettings EnableSpellCheck="false" EnableSfdtExport="true"></DocumentEditorSettings>
+            </SfDocumentEditorContainer>
+        </div>
+        <div class="col-3">
+            <h5>Поля</h5>
+            <ul class="list-unstyled">
+                @foreach (var f in Fields)
+                {
+                    <li class="mb-2"><SfButton CssClass="e-flat" OnClick="() => InsertField(f)">@f</SfButton></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="text-right mt-3">
+        <SfButton CssClass="e-primary me-2" OnClick="Save">Сохранить</SfButton>
+        <SfButton CssClass="e-flat" OnClick="Close">Отмена</SfButton>
+    </div>
+</SfDialog>
+
+@code {
+    SfDialog dialog;
+    SfDocumentEditorContainer container;
+    TemplateDto model = new();
+    bool isNew;
+
+    List<string> Fields = new() { "ФИО_Заявителя", "Дата_Регистрации", "Услуга", "ФИО_Представителя", "Тип_Результата" };
+
+    public async Task Show(int? id = null)
+    {
+        if (id.HasValue)
+        {
+            model = await TemplateService.GetByIdAsync(id.Value) ?? new TemplateDto();
+            isNew = false;
+            await container.DocumentEditor.OpenAsync(model.Content ?? "{}");
+        }
+        else
+        {
+            model = new TemplateDto { Type = "Word" };
+            isNew = true;
+            await container.DocumentEditor.OpenBlankAsync();
+        }
+        await dialog.ShowAsync();
+    }
+
+    async Task InsertField(string field)
+    {
+        await container.DocumentEditor.Editor.InsertTextAsync($"{{{{{field}}}}}");
+    }
+
+    async Task Save()
+    {
+        var content = await container.DocumentEditor.SaveAsBlobAsync(FormatType.Sfdt);
+        if (isNew)
+        {
+            await TemplateService.CreateAsync(new CreateTemplateDto { Name = model.Name, Type = "Word", Content = content });
+        }
+        else
+        {
+            await TemplateService.UpdateAsync(model.Id, new UpdateTemplateDto { Name = model.Name, Type = "Word", Content = content });
+        }
+        await dialog.HideAsync();
+        if (OnSaved.HasDelegate)
+            await OnSaved.InvokeAsync();
+    }
+
+    void Close() => dialog.HideAsync();
+
+    [Parameter] public EventCallback OnSaved { get; set; }
+}
