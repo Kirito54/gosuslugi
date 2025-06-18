@@ -90,6 +90,24 @@ public class DocumentsController : ControllerBase
         return File(stream, doc.MimeType, doc.OriginalName);
     }
 
+    [HttpGet("base64/{id}")]
+    public async Task<ActionResult<string>> GetBase64(Guid id)
+    {
+        var stream = await _storage.GetFileStreamAsync(id);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+        return Convert.ToBase64String(bytes);
+    }
+
+    [HttpPost("signature")]
+    [Authorize]
+    public async Task<IActionResult> UploadSignature(DocumentSignatureDto dto)
+    {
+        await _storage.SaveSignatureAsync(dto.DocumentId, dto.SignatureBase64);
+        return Ok();
+    }
+
     [HttpDelete("{id}")]
     [Authorize]
     public async Task<IActionResult> Delete(Guid id)

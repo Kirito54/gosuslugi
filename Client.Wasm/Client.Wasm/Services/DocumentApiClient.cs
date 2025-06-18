@@ -8,7 +8,9 @@ public interface IDocumentApiClient
 {
     Task<List<DocumentDto>> GetByOwnerAsync(Guid ownerId);
     Task<DocumentDto?> GetByIdAsync(Guid id);
+    Task<string> GetBase64Async(Guid id);
     Task<Guid> UploadAsync(DocumentUploadDto dto);
+    Task UploadSignatureAsync(DocumentSignatureDto dto);
     Task DeleteAsync(Guid id);
 }
 
@@ -31,6 +33,11 @@ public class DocumentApiClient : IDocumentApiClient
         return await _http.GetFromJsonAsync<DocumentDto>($"api/documents/{id}");
     }
 
+    public async Task<string> GetBase64Async(Guid id)
+    {
+        return await _http.GetStringAsync($"api/documents/base64/{id}");
+    }
+
     public async Task<Guid> UploadAsync(DocumentUploadDto dto)
     {
         using var content = new MultipartFormDataContent();
@@ -42,6 +49,12 @@ public class DocumentApiClient : IDocumentApiClient
         res.EnsureSuccessStatusCode();
         var idStr = await res.Content.ReadAsStringAsync();
         return Guid.Parse(idStr.Trim('"'));
+    }
+
+    public async Task UploadSignatureAsync(DocumentSignatureDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/documents/signature", dto);
+        res.EnsureSuccessStatusCode();
     }
 
     public async Task DeleteAsync(Guid id)
