@@ -28,13 +28,7 @@ namespace GovServices.Server.Mappings
 
             CreateMap<AuditLog, AuditLogDto>().ReverseMap();
 
-            CreateMap<Document, DocumentDto>()
-                .ForMember(d => d.UploadedByUserName, o => o.MapFrom(s => s.UploadedBy != null ? s.UploadedBy.FullName : null))
-                .ForMember(d => d.MetadataJson, o => o.MapFrom(s => s.Metadata != null ? s.Metadata.MetadataJson : null))
-                .ReverseMap()
-                .ForPath(s => s.Metadata.MetadataJson, o => o.MapFrom(d => d.MetadataJson));
-
-            CreateMap<CreateDocumentDto, Document>();
+            CreateMap<Document, DocumentDto>().ReverseMap();
 
             CreateMap<GeoObject, GeoObjectDto>()
                 .ForMember(d => d.GeoJson, o => o.MapFrom(s => s.Geometry != null ? new GeoJsonWriter().Write(s.Geometry) : null))

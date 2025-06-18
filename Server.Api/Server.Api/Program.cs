@@ -113,7 +113,6 @@ builder.Services.AddScoped<IExampleService, ExampleService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
-builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOutgoingService, OutgoingService>();
 builder.Services.AddScoped<IGeoService, GeoService>();
@@ -121,6 +120,8 @@ builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOcrService, OcrService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDocumentStorageService, DocumentStorageService>();
 
 // Регистрация IEmailService (и реализация EmailService)
 builder.Services.AddScoped<IEmailService, EmailService>();
