@@ -1,0 +1,44 @@
+@using Client.Wasm.DTOs
+@using Microsoft.AspNetCore.Components.Forms
+@inject IDictionaryApiClient ApiClient
+
+<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="Загрузить справочник">
+    <EditForm Model="model" OnValidSubmit="HandleSave">
+        <DataAnnotationsValidator />
+        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
+        <SfTextBox TValue="string" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" />
+        <InputFile OnChange="OnFileSelected" class="mb-3" />
+        <div class="text-right mt-3">
+            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
+            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
+        </div>
+    </EditForm>
+</SfDialog>
+
+@code {
+    SfDialog? dlg;
+    UploadDictionaryDto model = new();
+
+    public void Show()
+    {
+        model = new UploadDictionaryDto();
+        _ = dlg!.ShowAsync();
+    }
+
+    Task Hide() => dlg!.HideAsync();
+
+    void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null) model.File = file;
+    }
+
+    async Task HandleSave()
+    {
+        await ApiClient.UploadAsync(model);
+        await dlg!.HideAsync();
+        if (OnUploaded.HasDelegate) await OnUploaded.InvokeAsync();
+    }
+
+    [Parameter] public EventCallback OnUploaded { get; set; }
+}

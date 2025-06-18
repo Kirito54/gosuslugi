@@ -1,0 +1,41 @@
+@attribute [Authorize(Roles="Администратор,Системный аналитик")]
+@page "/dictionaries"
+@inject IDictionaryApiClient ApiClient
+@using Client.Wasm.DTOs
+
+<div class="container p-4">
+    <SfCard CssClass="mb-4">
+        <CardHeader>
+            <h1>Справочники</h1>
+        </CardHeader>
+        <CardContent>
+            <SfButton CssClass="e-primary mb-3" OnClick="OpenUpload">Загрузить</SfButton>
+            <SfGrid DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5" Toolbar="@toolbarOptions">
+                <GridPageSettings PageSize="10" />
+                <GridColumns>
+                    <GridColumn Field=@nameof(DictionaryDto.Name) HeaderText="Название" Width="200" />
+                    <GridColumn Field=@nameof(DictionaryDto.Description) HeaderText="Описание" Width="250" />
+                    <GridColumn Field=@nameof(DictionaryDto.RecordCount) HeaderText="Записей" Width="100" TextAlign="TextAlign.Center" />
+                    <GridColumn Field=@nameof(DictionaryDto.UpdatedAt) HeaderText="Обновлён" Format="d" Width="120" />
+                </GridColumns>
+            </SfGrid>
+        </CardContent>
+    </SfCard>
+
+    <DictionaryUpload @ref="uploadDialog" OnUploaded="Reload" />
+</div>
+
+@code {
+    List<DictionaryDto> items = new();
+    string[] toolbarOptions = new[] { "Search" };
+    DictionaryUpload? uploadDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Reload();
+    }
+
+    async Task Reload() => items = await ApiClient.GetAllAsync();
+
+    void OpenUpload() => uploadDialog?.Show();
+}

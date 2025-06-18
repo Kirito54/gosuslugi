@@ -101,6 +101,8 @@ namespace GovServices.Server.Mappings
                 .ReverseMap();
             CreateMap<CreateServiceTemplateDto, ServiceTemplate>();
             CreateMap<UpdateServiceTemplateDto, ServiceTemplate>();
+
+            CreateMap<Dictionary, DictionaryDto>();
         }
     }
 }
