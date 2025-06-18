@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using GovServices.Server.Interfaces;
+using GovServices.Server.DTOs;
 
 namespace GovServices.Server.Controllers;
 
@@ -15,8 +16,9 @@ public class ServicesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<ActionResult<List<ServiceDto>>> GetAll()
     {
-        return Ok();
+        var result = await _services.GetAllAsync();
+        return Ok(result);
     }
 }
