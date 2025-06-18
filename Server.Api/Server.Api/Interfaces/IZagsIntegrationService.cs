@@ -2,8 +2,6 @@ using GovServices.Server.DTOs;
 
 namespace GovServices.Server.Interfaces;
 
-public interface IZagsIntegrationService
+public interface IZagsIntegrationService : IIntegrationService<CreateZagsRequestDto, ZagsRequestDto>
 {
-    Task<ZagsRequestDto> SendRequestAsync(CreateZagsRequestDto dto);
-    Task<ZagsRequestDto> GetStatusAsync(string requestId);
 }

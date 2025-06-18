@@ -1,11 +1,11 @@
-namespace GovServices.Server.DTOs
+namespace GovServices.Server.DTOs;
+
+public class ZagsRequestDto
 {
-    public class ZagsRequestDto
-    {
-        public int Id { get; set; }
-        public int ApplicationId { get; set; }
-        public string RequestId { get; set; }
-        public string Status { get; set; }
-        public string ResponseXml { get; set; }
-    }
+    public int Id { get; set; }
+    public int ApplicationId { get; set; }
+    public string RequestId { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public string ResponseXml { get; set; } = string.Empty;
+    public List<AttachmentDto>? Attachments { get; set; }
 }

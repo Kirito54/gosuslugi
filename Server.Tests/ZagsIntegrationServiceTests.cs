@@ -29,8 +29,14 @@ public class ZagsIntegrationServiceTests
         });
         var client = new HttpClient(handler);
         var factory = new FakeHttpClientFactory(client);
-        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string>{{"Zags:ApiUrl","http://test"}}).Build();
-        var service = new ZagsIntegrationService(factory, context, config);
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string>
+        {
+            {"Zags:ApiUrl","http://test"},
+            {"Zags:Login","login"},
+            {"Zags:Password","pass"}
+        }).Build();
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<ZagsIntegrationService>.Instance;
+        var service = new ZagsIntegrationService(factory, context, config, logger);
 
         var dtoResult = await service.SendRequestAsync(new CreateZagsRequestDto { ApplicationId = 1 });
 
