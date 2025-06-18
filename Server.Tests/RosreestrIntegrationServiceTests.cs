@@ -29,10 +29,16 @@ public class RosreestrIntegrationServiceTests
         });
         var client = new HttpClient(handler);
         var factory = new FakeHttpClientFactory(client);
-        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string>{{"Rosreestr:ApiUrl","http://test"}}).Build();
-        var service = new RosreestrIntegrationService(factory, context, config);
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string>
+        {
+            {"Rosreestr:ApiUrl","http://test"},
+            {"Rosreestr:Login","login"},
+            {"Rosreestr:Password","pass"}
+        }).Build();
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<RosreestrIntegrationService>.Instance;
+        var service = new RosreestrIntegrationService(factory, context, config, logger);
 
-        var result = await service.SendRequestAsync(1);
+        var result = await service.SendRequestAsync(new CreateRosreestrRequestDto { ApplicationId = 1 });
 
         Assert.Equal("r1", result.RequestId);
         Assert.Equal(1, await context.RosreestrRequests.CountAsync());

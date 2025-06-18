@@ -2,8 +2,6 @@ using GovServices.Server.DTOs;
 
 namespace GovServices.Server.Interfaces;
 
-public interface IRosreestrIntegrationService
+public interface IRosreestrIntegrationService : IIntegrationService<CreateRosreestrRequestDto, RosreestrRequestDto>
 {
-    Task<RosreestrRequestDto> SendRequestAsync(int applicationId);
-    Task<RosreestrRequestDto> GetStatusAsync(string requestId);
 }

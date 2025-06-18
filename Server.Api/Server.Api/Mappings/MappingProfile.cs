@@ -1,6 +1,7 @@
 using AutoMapper;
 using GovServices.Server.Entities;
 using GovServices.Server.DTOs;
+using System;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System.Linq;
@@ -56,7 +57,24 @@ namespace GovServices.Server.Mappings
 
             CreateMap<CreateOutgoingDocumentDto, OutgoingDocument>();
 
-            CreateMap<RosreestrRequest, RosreestrRequestDto>().ReverseMap();
+            CreateMap<ZagsRequest, ZagsRequestDto>()
+                .ForMember(d => d.Attachments, o => o.MapFrom(s => s.Attachments.Select(a => new AttachmentDto
+                {
+                    FileName = a.FileName,
+                    ContentBase64 = Convert.ToBase64String(a.Content)
+                }).ToList()))
+                .ReverseMap()
+                .ForMember(d => d.Attachments, o => o.Ignore());
+            CreateMap<CreateZagsRequestDto, ZagsRequest>();
+
+            CreateMap<RosreestrRequest, RosreestrRequestDto>()
+                .ForMember(d => d.Attachments, o => o.MapFrom(s => s.Attachments.Select(a => new AttachmentDto
+                {
+                    FileName = a.FileName,
+                    ContentBase64 = Convert.ToBase64String(a.Content)
+                }).ToList()))
+                .ReverseMap()
+                .ForMember(d => d.Attachments, o => o.Ignore());
             CreateMap<CreateRosreestrRequestDto, RosreestrRequest>();
             CreateMap<SedDocumentLog, SedDocumentLogDto>().ReverseMap();
             CreateMap<Service, ServiceDto>().ReverseMap();
