@@ -41,6 +41,7 @@ namespace GovServices.Server.Data
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<NumberTemplate> NumberTemplates { get; set; }
         public DbSet<NumberTemplateCounter> NumberTemplateCounters { get; set; }
+        public DbSet<ErrorReport> ErrorReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
