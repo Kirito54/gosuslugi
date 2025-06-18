@@ -10,6 +10,7 @@ using GovServices.Server.Interfaces;
 using GovServices.Server.Services;
 using GovServices.Server.Services.Templates;
 using GovServices.Server.Services.Integrations;
+using GovServices.Server.Services.RegistryApis;
 using GovServices.Server.Middleware;
 using GovServices.Server.BackgroundServices;
 using GovServices.Server.Entities;
@@ -129,12 +130,17 @@ builder.Services.AddScoped<IRosreestrIntegrationService, RosreestrIntegrationSer
 builder.Services.AddScoped<IZagsIntegrationService, ZagsIntegrationService>();
 builder.Services.AddScoped<IEcpService, EcpService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IExtractRepository, ExtractRepository>();
+builder.Services.AddScoped<IExtractChecker, ExtractChecker>();
+builder.Services.AddKeyedScoped<IRegistryApi, ZagcApi>(RegistrySource.Zags);
+builder.Services.AddKeyedScoped<IRegistryApi, RosreestrApi>(RegistrySource.Rosreestr);
 
 
 // Background services
 builder.Services.AddHostedService<ExampleBackgroundService>();
 builder.Services.AddHostedService<PasswordReminderService>();
 builder.Services.AddHostedService<StatusNotificationService>();
+builder.Services.AddHostedService<ExtractMonitoringService>();
 
 var app = builder.Build();
 

@@ -27,6 +27,7 @@ namespace GovServices.Server.Data
         public DbSet<ZagsRequest> ZagsRequests { get; set; }
         public DbSet<ZagsRequestAttachment> ZagsRequestAttachments { get; set; }
         public DbSet<RosreestrRequestAttachment> RosreestrRequestAttachments { get; set; }
+        public DbSet<ExtractRequest> ExtractRequests { get; set; }
         public DbSet<SedDocumentLog> SedDocumentLogs { get; set; }
         public DbSet<ApplicationResult> ApplicationResults { get; set; }
         public DbSet<ApplicationRevision> ApplicationRevisions { get; set; }
