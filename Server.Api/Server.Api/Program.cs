@@ -59,7 +59,9 @@ if (string.IsNullOrWhiteSpace(defaultConn))
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
 );
-builder.Services.AddDbContextFactory<ApplicationDbContext>();
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+    options.UseNpgsql(defaultConn, npgsql => npgsql.UseNetTopologySuite())
+);
 
 // JWT configuration
 var jwtKey = builder.Configuration["JwtSettings:SecretKey"];
