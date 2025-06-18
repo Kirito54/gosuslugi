@@ -17,7 +17,6 @@ namespace GovServices.Server.Data
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationLog> ApplicationLogs { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<DocumentMetadata> DocumentMetadatas { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OutgoingDocument> OutgoingDocuments { get; set; }
         public DbSet<OutgoingAttachment> OutgoingAttachments { get; set; }
@@ -67,6 +66,9 @@ namespace GovServices.Server.Data
                 .HasOne(pgp => pgp.Permission)
                 .WithMany(p => p.PermissionGroupPermissions)
                 .HasForeignKey(pgp => pgp.PermissionId);
+
+            builder.Entity<Document>()
+                .HasIndex(d => new { d.OwnerId, d.Type, d.CreatedAt });
         }
     }
 }

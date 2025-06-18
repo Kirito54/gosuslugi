@@ -2,13 +2,14 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Microsoft.AspNetCore.Components.Forms;
 
 public interface IDocumentApiClient
 {
-    Task<List<DocumentDto>> GetByApplicationIdAsync(int applicationId);
-    Task<DocumentDto?> GetByIdAsync(int id);
-    Task<DocumentDto> UploadAsync(int applicationId, Stream fileStream, string fileName);
-    Task DeleteAsync(int id);
+    Task<List<DocumentDto>> GetByOwnerAsync(Guid ownerId);
+    Task<DocumentDto?> GetByIdAsync(Guid id);
+    Task<Guid> UploadAsync(DocumentUploadDto dto);
+    Task DeleteAsync(Guid id);
 }
 
 public class DocumentApiClient : IDocumentApiClient
@@ -20,26 +21,30 @@ public class DocumentApiClient : IDocumentApiClient
         _http = http;
     }
 
-    public async Task<List<DocumentDto>> GetByApplicationIdAsync(int applicationId)
+    public async Task<List<DocumentDto>> GetByOwnerAsync(Guid ownerId)
     {
-        return await _http.GetFromJsonAsync<List<DocumentDto>>($"api/applications/{applicationId}/documents") ?? new();
+        return await _http.GetFromJsonAsync<List<DocumentDto>>($"api/documents/owner/{ownerId}") ?? new();
     }
 
-    public async Task<DocumentDto?> GetByIdAsync(int id)
+    public async Task<DocumentDto?> GetByIdAsync(Guid id)
     {
         return await _http.GetFromJsonAsync<DocumentDto>($"api/documents/{id}");
     }
 
-    public async Task<DocumentDto> UploadAsync(int applicationId, Stream fileStream, string fileName)
+    public async Task<Guid> UploadAsync(DocumentUploadDto dto)
     {
         using var content = new MultipartFormDataContent();
-        content.Add(new StreamContent(fileStream), "file", fileName);
-        var res = await _http.PostAsync($"api/applications/{applicationId}/documents", content);
+        content.Add(new StreamContent(dto.File.OpenReadStream()), "File", dto.File.Name);
+        content.Add(new StringContent(dto.OwnerId.ToString()), "OwnerId");
+        content.Add(new StringContent(dto.Type.ToString()), "Type");
+        content.Add(new StringContent(dto.Visibility.ToString()), "Visibility");
+        var res = await _http.PostAsync("api/documents/upload", content);
         res.EnsureSuccessStatusCode();
-        return (await res.Content.ReadFromJsonAsync<DocumentDto>())!;
+        var idStr = await res.Content.ReadAsStringAsync();
+        return Guid.Parse(idStr.Trim('"'));
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var res = await _http.DeleteAsync($"api/documents/{id}");
         res.EnsureSuccessStatusCode();

@@ -101,6 +101,72 @@ namespace Server.Api.Migrations
                     b.ToTable("ApplicationLogs");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.ApplicationResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Automatic")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LinkedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.HasIndex("DocumentId");
+
+                    b.ToTable("ApplicationResults");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ApplicationRevision", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SedLink")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("ApplicationRevisions");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -231,43 +297,65 @@ namespace Server.Api.Migrations
 
             modelBuilder.Entity("GovServices.Server.Entities.Document", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ApplicationId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ApplicationId")
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DocumentStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FilePath")
+                    b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UploadedById")
+                    b.Property<string>("LinkedSEDId")
                         .HasColumnType("text");
 
-                    b.Property<string>("UploadedByUserId")
+                    b.Property<string>("MimeType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("OriginalName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StoragePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationId");
 
-                    b.HasIndex("UploadedById");
+                    b.HasIndex("OwnerId", "Type", "CreatedAt");
 
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("GovServices.Server.Entities.DocumentMetadata", b =>
+            modelBuilder.Entity("GovServices.Server.Entities.ExtractRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,19 +363,32 @@ namespace Server.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("MetadataJson")
+                    b.Property<string>("ExternalId")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("RegistrySource")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ResponseRaw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentId")
-                        .IsUnique();
+                    b.HasIndex("ServiceId");
 
-                    b.ToTable("DocumentMetadatas");
+                    b.ToTable("ExtractRequests");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.GeoObject", b =>
@@ -436,6 +537,55 @@ namespace Server.Api.Migrations
                     b.ToTable("PasswordChangeLogs");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PermissionGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PermissionGroups");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PermissionGroupPermission", b =>
+                {
+                    b.Property<int>("PermissionGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PermissionGroupId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("PermissionGroupPermissions");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -467,6 +617,32 @@ namespace Server.Api.Migrations
                     b.HasIndex("ApplicationId");
 
                     b.ToTable("RosreestrRequests");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequestAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RosreestrRequestId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RosreestrRequestId");
+
+                    b.ToTable("RosreestrRequestAttachments");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.SedDocumentLog", b =>
@@ -550,6 +726,21 @@ namespace Server.Api.Migrations
                     b.ToTable("Templates");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.UserPermissionGroup", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PermissionGroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "PermissionGroupId");
+
+                    b.HasIndex("PermissionGroupId");
+
+                    b.ToTable("UserPermissionGroups");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.Workflow", b =>
                 {
                     b.Property<int>("Id")
@@ -621,6 +812,65 @@ namespace Server.Api.Migrations
                     b.HasIndex("ToStepId");
 
                     b.ToTable("WorkflowTransitions");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ZagsRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RequestId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResponseXml")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.ToTable("ZagsRequests");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ZagsRequestAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Content")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ZagsRequestId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ZagsRequestId");
+
+                    b.ToTable("ZagsRequestAttachments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -799,6 +1049,36 @@ namespace Server.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.ApplicationResult", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.Application", "Application")
+                        .WithMany("Results")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GovServices.Server.Entities.Document", "Document")
+                        .WithMany()
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ApplicationRevision", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.Application", "Application")
+                        .WithMany("Revisions")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationUser", b =>
                 {
                     b.HasOne("GovServices.Server.Entities.Department", "Department")
@@ -810,30 +1090,20 @@ namespace Server.Api.Migrations
 
             modelBuilder.Entity("GovServices.Server.Entities.Document", b =>
                 {
-                    b.HasOne("GovServices.Server.Entities.Application", "Application")
+                    b.HasOne("GovServices.Server.Entities.Application", null)
                         .WithMany("Documents")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GovServices.Server.Entities.ApplicationUser", "UploadedBy")
-                        .WithMany()
-                        .HasForeignKey("UploadedById");
-
-                    b.Navigation("Application");
-
-                    b.Navigation("UploadedBy");
+                        .HasForeignKey("ApplicationId");
                 });
 
-            modelBuilder.Entity("GovServices.Server.Entities.DocumentMetadata", b =>
+            modelBuilder.Entity("GovServices.Server.Entities.ExtractRequest", b =>
                 {
-                    b.HasOne("GovServices.Server.Entities.Document", "Document")
-                        .WithOne("Metadata")
-                        .HasForeignKey("GovServices.Server.Entities.DocumentMetadata", "DocumentId")
+                    b.HasOne("GovServices.Server.Entities.Application", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Document");
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Order", b =>
@@ -873,6 +1143,25 @@ namespace Server.Api.Migrations
                     b.Navigation("Application");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.PermissionGroupPermission", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.PermissionGroup", "PermissionGroup")
+                        .WithMany("PermissionGroupPermissions")
+                        .HasForeignKey("PermissionGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GovServices.Server.Entities.Permission", "Permission")
+                        .WithMany("PermissionGroupPermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("PermissionGroup");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequest", b =>
                 {
                     b.HasOne("GovServices.Server.Entities.Application", "Application")
@@ -884,6 +1173,17 @@ namespace Server.Api.Migrations
                     b.Navigation("Application");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequestAttachment", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.RosreestrRequest", "RosreestrRequest")
+                        .WithMany("Attachments")
+                        .HasForeignKey("RosreestrRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RosreestrRequest");
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.SedDocumentLog", b =>
                 {
                     b.HasOne("GovServices.Server.Entities.Application", "Application")
@@ -893,6 +1193,25 @@ namespace Server.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.UserPermissionGroup", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.PermissionGroup", "PermissionGroup")
+                        .WithMany("UserPermissionGroups")
+                        .HasForeignKey("PermissionGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GovServices.Server.Entities.ApplicationUser", "User")
+                        .WithMany("PermissionGroups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PermissionGroup");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.WorkflowStep", b =>
@@ -923,6 +1242,28 @@ namespace Server.Api.Migrations
                     b.Navigation("FromStep");
 
                     b.Navigation("ToStep");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ZagsRequest", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.Application", "Application")
+                        .WithMany("ZagsRequests")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ZagsRequestAttachment", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.ZagsRequest", "ZagsRequest")
+                        .WithMany("Attachments")
+                        .HasForeignKey("ZagsRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ZagsRequest");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -986,14 +1327,22 @@ namespace Server.Api.Migrations
 
                     b.Navigation("OutgoingDocuments");
 
+                    b.Navigation("Results");
+
+                    b.Navigation("Revisions");
+
                     b.Navigation("RosreestrRequests");
 
                     b.Navigation("SedLogs");
+
+                    b.Navigation("ZagsRequests");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("AssignedApplications");
+
+                    b.Navigation("PermissionGroups");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Department", b =>
@@ -1001,13 +1350,24 @@ namespace Server.Api.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("GovServices.Server.Entities.Document", b =>
+            modelBuilder.Entity("GovServices.Server.Entities.OutgoingDocument", b =>
                 {
-                    b.Navigation("Metadata")
-                        .IsRequired();
+                    b.Navigation("Attachments");
                 });
 
-            modelBuilder.Entity("GovServices.Server.Entities.OutgoingDocument", b =>
+            modelBuilder.Entity("GovServices.Server.Entities.Permission", b =>
+                {
+                    b.Navigation("PermissionGroupPermissions");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PermissionGroup", b =>
+                {
+                    b.Navigation("PermissionGroupPermissions");
+
+                    b.Navigation("UserPermissionGroups");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.RosreestrRequest", b =>
                 {
                     b.Navigation("Attachments");
                 });
@@ -1027,6 +1387,11 @@ namespace Server.Api.Migrations
                     b.Navigation("IncomingTransitions");
 
                     b.Navigation("OutgoingTransitions");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.ZagsRequest", b =>
+                {
+                    b.Navigation("Attachments");
                 });
 #pragma warning restore 612, 618
         }
