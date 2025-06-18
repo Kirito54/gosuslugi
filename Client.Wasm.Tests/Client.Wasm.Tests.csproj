@@ -20,13 +20,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="bunit" Version="1.27.17" />
+    <PackageReference Include="RichardSzalay.MockHttp" Version="7.0.0" />
+    <PackageReference Include="Moq" Version="4.18.4" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server.Api\Server.Api\Server.Api.csproj" />
+    <ProjectReference Include="../Client.Wasm/Client.Wasm/Client.Wasm.csproj" />
   </ItemGroup>
-
 
 </Project>
