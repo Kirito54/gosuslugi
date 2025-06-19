@@ -3,6 +3,7 @@ namespace Client.Wasm.Services;
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
 using Microsoft.AspNetCore.Components.Forms;
+using Client.Wasm.Helpers;
 
 public interface IDocumentApiClient
 {
@@ -25,12 +26,13 @@ public class DocumentApiClient : IDocumentApiClient
 
     public async Task<List<DocumentDto>> GetByOwnerAsync(Guid ownerId)
     {
-        return await _http.GetFromJsonAsync<List<DocumentDto>>($"api/documents/owner/{ownerId}") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<DocumentDto>>($"api/documents/owner/{ownerId}");
+        return result ?? new();
     }
 
     public async Task<DocumentDto?> GetByIdAsync(Guid id)
     {
-        return await _http.GetFromJsonAsync<DocumentDto>($"api/documents/{id}");
+        return await _http.GetFromJsonSafeAsync<DocumentDto>($"api/documents/{id}");
     }
 
     public async Task<string> GetBase64Async(Guid id)

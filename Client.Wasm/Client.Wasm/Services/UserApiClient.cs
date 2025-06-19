@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IUserApiClient
 {
@@ -24,12 +25,13 @@ public class UserApiClient : IUserApiClient
 
     public async Task<List<UserDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<UserDto>>("api/users") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<UserDto>>("api/users");
+        return result ?? new();
     }
 
     public async Task<UserDto?> GetByIdAsync(string id)
     {
-        return await _http.GetFromJsonAsync<UserDto>($"api/users/{id}");
+        return await _http.GetFromJsonSafeAsync<UserDto>($"api/users/{id}");
     }
 
     public async Task<UserDto> CreateAsync(CreateUserDto dto)

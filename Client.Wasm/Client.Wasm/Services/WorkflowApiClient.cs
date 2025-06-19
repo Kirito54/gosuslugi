@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IWorkflowApiClient
 {
@@ -25,12 +26,13 @@ public class WorkflowApiClient : IWorkflowApiClient
 
     public async Task<List<WorkflowDto>> GetAllWorkflowsAsync()
     {
-        return await _http.GetFromJsonAsync<List<WorkflowDto>>("api/workflow") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<WorkflowDto>>("api/workflow");
+        return result ?? new();
     }
 
     public async Task<WorkflowDto?> GetByIdAsync(int id)
     {
-        return await _http.GetFromJsonAsync<WorkflowDto>($"api/workflow/{id}");
+        return await _http.GetFromJsonSafeAsync<WorkflowDto>($"api/workflow/{id}");
     }
 
     public async Task<WorkflowDto> CreateAsync(WorkflowDto dto)

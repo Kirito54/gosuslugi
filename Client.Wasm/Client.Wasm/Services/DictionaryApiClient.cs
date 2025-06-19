@@ -3,6 +3,7 @@ namespace Client.Wasm.Services;
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
 using Microsoft.AspNetCore.Components.Forms;
+using Client.Wasm.Helpers;
 
 public interface IDictionaryApiClient
 {
@@ -21,7 +22,8 @@ public class DictionaryApiClient : IDictionaryApiClient
 
     public async Task<List<DictionaryDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<DictionaryDto>>("api/dictionaries") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<DictionaryDto>>("api/dictionaries");
+        return result ?? new();
     }
 
     public async Task<int> UploadAsync(UploadDictionaryDto dto)

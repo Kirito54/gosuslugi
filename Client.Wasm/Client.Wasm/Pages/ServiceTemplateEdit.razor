@@ -11,13 +11,17 @@
         <DataAnnotationsValidator />
         <SfTab>
             <TabItems>
-                <TabItem HeaderText="Поля">
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Поля"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <SfGrid DataSource="@config.Fields" AllowPaging="false">
                         <GridColumns>
                             <GridColumn Field=@nameof(FieldConfig.Name) HeaderText="Название" Width="150" />
                             <GridColumn Field=@nameof(FieldConfig.Type) HeaderText="Тип" Width="100" />
                             <GridColumn Field=@nameof(FieldConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
-                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
                                 <Template Context="item">
                                     <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveField(item as FieldConfig))"></SfButton>
                                 </Template>
@@ -27,13 +31,18 @@
                     <div class="mt-2">
                         <SfButton CssClass="e-primary" OnClick="AddField">Добавить поле</SfButton>
                     </div>
-                </TabItem>
-                <TabItem HeaderText="Документы">
+                </ContentTemplate>
+</TabItem>
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Документы"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <SfGrid DataSource="@config.Documents" AllowPaging="false">
                         <GridColumns>
                             <GridColumn Field=@nameof(DocumentConfig.Name) HeaderText="Название" Width="180" />
                             <GridColumn Field=@nameof(DocumentConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
-                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
                                 <Template Context="doc">
                                     <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveDocument(doc as DocumentConfig))"></SfButton>
                                 </Template>
@@ -43,22 +52,32 @@
                     <div class="mt-2">
                         <SfButton CssClass="e-primary" OnClick="AddDocument">Добавить документ</SfButton>
                     </div>
-                </TabItem>
-                <TabItem HeaderText="Категории">
+                </ContentTemplate>
+</TabItem>
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Категории"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <div class="p-3">
                         @foreach(var cat in categories)
                         {
                             <SfCheckBox TChecked="bool" Label="@cat" Checked="@CategoryChecked(cat)" CheckedChanged="@(val => ToggleCategory(cat, val))" CssClass="mb-2" />
                         }
                     </div>
-                </TabItem>
-                <TabItem HeaderText="Workflow">
+                </ContentTemplate>
+</TabItem>
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Workflow"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <SfGrid DataSource="@config.Workflow" AllowPaging="false">
                         <GridColumns>
                             <GridColumn Field=@nameof(WorkflowStepConfig.Name) HeaderText="Этап" Width="150" />
                             <GridColumn Field=@nameof(WorkflowStepConfig.Role) HeaderText="Роль" Width="150" />
                             <GridColumn Field=@nameof(WorkflowStepConfig.Order) HeaderText="Порядок" Width="80" />
-                            <GridColumn HeaderText="" Width="60" TextAlign="TextAlign.Center">
+                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
                                 <Template Context="step">
                                     <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveStep(step as WorkflowStepConfig))"></SfButton>
                                 </Template>
@@ -68,8 +87,13 @@
                     <div class="mt-2">
                         <SfButton CssClass="e-primary" OnClick="AddStep">Добавить этап</SfButton>
                     </div>
-                </TabItem>
-                <TabItem HeaderText="Превью">
+                </ContentTemplate>
+</TabItem>
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Превью"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <div class="p-3">
                         @foreach(var f in config.Fields.OrderBy(f => f.Order))
                         {
@@ -90,7 +114,8 @@
                             </div>
                         }
                     </div>
-                </TabItem>
+                </ContentTemplate>
+</TabItem>
             </TabItems>
         </SfTab>
         <div class="text-right mt-3">

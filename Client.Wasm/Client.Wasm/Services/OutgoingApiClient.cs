@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IOutgoingApiClient
 {
@@ -22,12 +23,13 @@ public class OutgoingApiClient : IOutgoingApiClient
 
     public async Task<List<OutgoingDocumentDto>> GetByApplicationIdAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<OutgoingDocumentDto>>($"api/applications/{applicationId}/outgoing") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<OutgoingDocumentDto>>($"api/applications/{applicationId}/outgoing");
+        return result ?? new();
     }
 
     public async Task<OutgoingDocumentDto?> GetByIdAsync(int id)
     {
-        return await _http.GetFromJsonAsync<OutgoingDocumentDto>($"api/outgoing/{id}");
+        return await _http.GetFromJsonSafeAsync<OutgoingDocumentDto>($"api/outgoing/{id}");
     }
 
     public async Task<OutgoingDocumentDto> CreateAsync(int applicationId, Stream fileStream, string fileName, IEnumerable<(Stream stream, string fileName)> attachments)

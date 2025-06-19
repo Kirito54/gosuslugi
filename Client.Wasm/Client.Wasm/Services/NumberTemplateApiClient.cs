@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface INumberTemplateApiClient
 {
@@ -18,10 +19,13 @@ public class NumberTemplateApiClient : INumberTemplateApiClient
     public NumberTemplateApiClient(HttpClient http) => _http = http;
 
     public async Task<List<NumberTemplateDto>> GetAllAsync()
-        => await _http.GetFromJsonAsync<List<NumberTemplateDto>>("api/number-templates") ?? new();
+    {
+        var result = await _http.GetFromJsonSafeAsync<List<NumberTemplateDto>>("api/number-templates");
+        return result ?? new();
+    }
 
     public async Task<NumberTemplateDto?> GetByIdAsync(int id)
-        => await _http.GetFromJsonAsync<NumberTemplateDto>($"api/number-templates/{id}");
+        => await _http.GetFromJsonSafeAsync<NumberTemplateDto>($"api/number-templates/{id}");
 
     public async Task<NumberTemplateDto> CreateAsync(CreateNumberTemplateDto dto)
     {

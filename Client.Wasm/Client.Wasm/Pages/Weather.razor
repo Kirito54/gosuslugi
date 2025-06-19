@@ -1,6 +1,7 @@
 @attribute [Authorize]
 @page "/weather"
 @inject HttpClient Http
+@using Client.Wasm.Helpers
 
 <div class="container p-4">
     <SfCard CssClass="mb-4">
@@ -32,7 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        forecasts = await Http.GetFromJsonSafeAsync<WeatherForecast[]>("sample-data/weather.json");
     }
 
     public class WeatherForecast

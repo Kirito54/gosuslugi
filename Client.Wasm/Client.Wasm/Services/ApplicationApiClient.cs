@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IApplicationApiClient
 {
@@ -33,12 +34,13 @@ public class ApplicationApiClient : IApplicationApiClient
 
     public async Task<List<ApplicationDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<ApplicationDto>>("api/applications") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationDto>>("api/applications");
+        return result ?? new();
     }
 
     public async Task<ApplicationDto?> GetByIdAsync(int id)
     {
-        return await _http.GetFromJsonAsync<ApplicationDto>($"api/applications/{id}");
+        return await _http.GetFromJsonSafeAsync<ApplicationDto>($"api/applications/{id}");
     }
 
     public async Task<ApplicationDto> CreateAsync(CreateApplicationDto dto)
@@ -68,12 +70,14 @@ public class ApplicationApiClient : IApplicationApiClient
 
     public async Task<List<ApplicationLogDto>> GetLogsAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationLogDto>>($"api/applications/{applicationId}/logs") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationLogDto>>($"api/applications/{applicationId}/logs");
+        return result ?? new();
     }
 
     public async Task<List<ApplicationResultDto>> GetResultsAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationResultDto>>($"api/applications/{applicationId}/results") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationResultDto>>($"api/applications/{applicationId}/results");
+        return result ?? new();
     }
 
     public async Task<ApplicationResultDto> AddResultAsync(CreateApplicationResultDto dto)
@@ -85,7 +89,8 @@ public class ApplicationApiClient : IApplicationApiClient
 
     public async Task<List<ApplicationRevisionDto>> GetRevisionsAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationRevisionDto>>($"api/applications/{applicationId}/revisions") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationRevisionDto>>($"api/applications/{applicationId}/revisions");
+        return result ?? new();
     }
 
     public async Task<ApplicationRevisionDto> AddRevisionAsync(CreateApplicationRevisionDto dto)
@@ -97,16 +102,19 @@ public class ApplicationApiClient : IApplicationApiClient
 
     public async Task<List<ApplicationDto>> GetRelatedByApplicantAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/applicant") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/applicant");
+        return result ?? new();
     }
 
     public async Task<List<ApplicationDto>> GetRelatedByRepresentativeAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/representative") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/representative");
+        return result ?? new();
     }
 
     public async Task<List<ApplicationDto>> GetRelatedByGeoAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/geo") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ApplicationDto>>($"api/applications/{applicationId}/related/geo");
+        return result ?? new();
     }
 }
