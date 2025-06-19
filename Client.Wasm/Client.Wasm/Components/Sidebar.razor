@@ -1,6 +1,6 @@
-<SfAccordion CssClass="sidebar-menu" ExpandMode="ExpandMode.Multiple">
+<SfAccordion CssClass="sidebar-menu rounded-xl shadow-lg bg-white" ExpandMode="ExpandMode.Multiple">
     <AccordionItems>
-        @foreach (var group in Groups)
+        @foreach (var group in Menu.Groups)
         {
             <AccordionItem Header=@group.Title>
                 <ContentTemplate>
@@ -21,18 +21,6 @@
 </SfAccordion>
 
 @code {
-    [Parameter]
-    public List<MenuGroup> Groups { get; set; } = new();
-
-    public class MenuGroup
-    {
-        public string Title { get; set; } = string.Empty;
-        public List<MenuItem> Items { get; set; } = new();
-    }
-
-    public class MenuItem
-    {
-        public string Title { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-    }
+    [Inject]
+    public MenuService Menu { get; set; } = default!;
 }
