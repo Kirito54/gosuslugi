@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IGeoApiClient
 {
@@ -23,12 +24,13 @@ public class GeoApiClient : IGeoApiClient
 
     public async Task<List<GeoObjectDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<GeoObjectDto>>("api/geoobjects") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<GeoObjectDto>>("api/geoobjects");
+        return result ?? new();
     }
 
     public async Task<GeoObjectDto?> GetByIdAsync(int id)
     {
-        return await _http.GetFromJsonAsync<GeoObjectDto>($"api/geoobjects/{id}");
+        return await _http.GetFromJsonSafeAsync<GeoObjectDto>($"api/geoobjects/{id}");
     }
 
     public async Task<GeoObjectDto> CreateAsync(CreateGeoObjectDto dto)
@@ -40,7 +42,8 @@ public class GeoApiClient : IGeoApiClient
 
     public async Task<List<GeoObjectDto>> GetIntersectingAsync(string wkt)
     {
-        return await _http.GetFromJsonAsync<List<GeoObjectDto>>($"api/geoobjects/intersect?wkt={Uri.EscapeDataString(wkt)}") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<GeoObjectDto>>($"api/geoobjects/intersect?wkt={Uri.EscapeDataString(wkt)}");
+        return result ?? new();
     }
 
     public async Task DeleteAsync(int id)

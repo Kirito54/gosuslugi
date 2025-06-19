@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IPermissionGroupApiClient
 {
@@ -19,6 +20,7 @@ public class PermissionGroupApiClient : IPermissionGroupApiClient
 
     public async Task<List<PermissionGroupDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<PermissionGroupDto>>("api/permissiongroups") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<PermissionGroupDto>>("api/permissiongroups");
+        return result ?? new();
     }
 }

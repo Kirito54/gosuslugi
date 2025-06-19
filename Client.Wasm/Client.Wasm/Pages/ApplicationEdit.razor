@@ -12,13 +12,23 @@
         <DataAnnotationsValidator />
         <SfTab>
             <TabItems>
-                <TabItem HeaderText="Основное">
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Основное"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <SfNumericTextBox TValue="int" @bind-Value="model.ServiceId" Placeholder="ID услуги" CssClass="mb-3 w-100" />
                     <SfTextBox TValue="string" Multiline="true" @bind-Value="formData" Placeholder="Данные формы (JSON)" CssClass="mb-3 w-100" Rows="4" />
-                </TabItem>
-                <TabItem HeaderText="Дополнительно">
+                </ContentTemplate>
+</TabItem>
+                <TabItem>
+    <ChildContent>
+        <TabHeader Text="Дополнительно"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                     <!-- дополнительные поля -->
-                </TabItem>
+                </ContentTemplate>
+</TabItem>
             </TabItems>
         </SfTab>
         <div class="text-right mt-3">

@@ -10,11 +10,16 @@
             <DataAnnotationsValidator />
             <SfTab CssClass="e-bootstrap5">
                 <TabItems>
-                    <TabItem HeaderText="Основное">
+                    <TabItem>
+    <ChildContent>
+        <TabHeader Text="Основное"></TabHeader>
+    </ChildContent>
+    <ContentTemplate>
                         <SfTextBox @bind-Value="model.Number" Placeholder="Номер" CssClass="mb-3 w-100" />
                         <SfDatePicker @bind-Value="model.Date" CssClass="mb-3 w-100" />
                         <SfTextBox Multiline="true" @bind-Value="model.Text" Placeholder="Текст" CssClass="mb-3 w-100" Rows="3" />
-                    </TabItem>
+                    </ContentTemplate>
+</TabItem>
                 </TabItems>
             </SfTab>
             <div class="text-right mt-3">

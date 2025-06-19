@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IIntegrationApiClient
 {
@@ -33,7 +34,8 @@ public class IntegrationApiClient : IIntegrationApiClient
 
     public async Task<RosreestrRequestDto> GetRosreestrStatusAsync(string requestId)
     {
-        return await _http.GetFromJsonAsync<RosreestrRequestDto>($"api/integrations/rosreestr/status/{requestId}") ?? new RosreestrRequestDto();
+        var result = await _http.GetFromJsonSafeAsync<RosreestrRequestDto>($"api/integrations/rosreestr/status/{requestId}");
+        return result ?? new RosreestrRequestDto();
     }
 
     public async Task<ZagsRequestDto> SendZagsRequestAsync(CreateZagsRequestDto dto)
@@ -45,12 +47,14 @@ public class IntegrationApiClient : IIntegrationApiClient
 
     public async Task<ZagsRequestDto> GetZagsStatusAsync(string requestId)
     {
-        return await _http.GetFromJsonAsync<ZagsRequestDto>($"api/integrations/zags/status/{requestId}") ?? new ZagsRequestDto();
+        var result = await _http.GetFromJsonSafeAsync<ZagsRequestDto>($"api/integrations/zags/status/{requestId}");
+        return result ?? new ZagsRequestDto();
     }
 
     public async Task<List<SedDocumentLogDto>> GetSedLogsAsync(int applicationId)
     {
-        return await _http.GetFromJsonAsync<List<SedDocumentLogDto>>($"api/integrations/sed/{applicationId}/logs") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<SedDocumentLogDto>>($"api/integrations/sed/{applicationId}/logs");
+        return result ?? new();
     }
 
     public async Task<bool> SendSedDocumentAsync(int applicationId, string documentNumber)

@@ -2,6 +2,7 @@ namespace Client.Wasm.Services;
 
 using System.Net.Http.Json;
 using Client.Wasm.DTOs;
+using Client.Wasm.Helpers;
 
 public interface IServiceTemplateApiClient
 {
@@ -23,12 +24,13 @@ public class ServiceTemplateApiClient : IServiceTemplateApiClient
 
     public async Task<List<ServiceTemplateDto>> GetAllAsync()
     {
-        return await _http.GetFromJsonAsync<List<ServiceTemplateDto>>("api/servicetemplates") ?? new();
+        var result = await _http.GetFromJsonSafeAsync<List<ServiceTemplateDto>>("api/servicetemplates");
+        return result ?? new();
     }
 
     public async Task<ServiceTemplateDto?> GetByIdAsync(int id)
     {
-        return await _http.GetFromJsonAsync<ServiceTemplateDto>($"api/servicetemplates/{id}");
+        return await _http.GetFromJsonSafeAsync<ServiceTemplateDto>($"api/servicetemplates/{id}");
     }
 
     public async Task<ServiceTemplateDto> CreateAsync(CreateServiceTemplateDto dto)
