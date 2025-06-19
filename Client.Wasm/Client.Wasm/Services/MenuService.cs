@@ -75,6 +75,10 @@ public class MenuService
         {
             items.Add(new MenuItem { Title = title, Url = route });
         }
+        else
+        {
+            Console.WriteLine($"Warning: menu link '{title}' -> '{route}' not found");
+        }
     }
 
     public class MenuGroup

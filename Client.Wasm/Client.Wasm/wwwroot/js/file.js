@@ -34,3 +34,12 @@ window.signWithCryptoPro = async (base64) => {
         cadesplugin.async_spawn(run);
     });
 };
+
+window.checkAccordionInit = () => {
+    const acc = document.querySelector('.e-accordion');
+    if (!acc) {
+        console.error('❌ Accordion menu not initialized');
+    } else {
+        console.log('✅ Меню успешно инициализировано и работает');
+    }
+};
