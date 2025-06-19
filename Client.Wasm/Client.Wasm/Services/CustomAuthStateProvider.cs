@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Client.Wasm.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace Client.Wasm.Services;
 
@@ -10,12 +11,14 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _storage;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<CustomAuthStateProvider> _logger;
     private readonly AuthenticationState _anonymous = new(new ClaimsPrincipal(new ClaimsIdentity()));
 
-    public CustomAuthStateProvider(ILocalStorageService storage, HttpClient httpClient)
+    public CustomAuthStateProvider(ILocalStorageService storage, HttpClient httpClient, ILogger<CustomAuthStateProvider> logger)
     {
         _storage = storage;
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -25,10 +28,28 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         {
             return _anonymous;
         }
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        var identity = new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwt");
-        var user = new ClaimsPrincipal(identity);
-        return new AuthenticationState(user);
+
+        try
+        {
+            var claims = JwtParser.ParseClaimsFromJwt(token).ToArray();
+            if (claims.Length == 0)
+            {
+                _logger.LogWarning("Invalid token format in storage: {Token}", token);
+                await RemoveTokenAsync();
+                return _anonymous;
+            }
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var identity = new ClaimsIdentity(claims, "jwt");
+            var user = new ClaimsPrincipal(identity);
+            return new AuthenticationState(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to parse token from storage: {Token}", token);
+            await RemoveTokenAsync();
+            return _anonymous;
+        }
     }
 
     public async Task SetTokenAsync(string token)
