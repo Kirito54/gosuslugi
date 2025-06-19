@@ -24,7 +24,8 @@ public class LoginPageTests : TestContext
         var handler = new MockHttpMessageHandler();
         var http = handler.ToHttpClient();
         var storageMock = new Mock<ILocalStorageService>();
-        var authService = new AuthService(http, new CustomAuthStateProvider(storageMock.Object, http));
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<CustomAuthStateProvider>.Instance;
+        var authService = new AuthService(http, new CustomAuthStateProvider(storageMock.Object, http, logger));
         Services.AddSingleton(authService);
         Services.AddSingleton<IAuthService>(authService);
         Services.AddSingleton<AuthenticationStateProvider>(new TestAuthenticationStateProvider());
@@ -48,7 +49,8 @@ public class LoginPageTests : TestContext
         var http = handler.ToHttpClient();
         http.BaseAddress = new Uri("http://localhost");
         var storageMock = new Mock<ILocalStorageService>();
-        var authService = new AuthService(http, new CustomAuthStateProvider(storageMock.Object, http));
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<CustomAuthStateProvider>.Instance;
+        var authService = new AuthService(http, new CustomAuthStateProvider(storageMock.Object, http, logger));
         Services.AddSingleton(authService);
         Services.AddSingleton<IAuthService>(authService);
         Services.AddSingleton<AuthenticationStateProvider>(new TestAuthenticationStateProvider());

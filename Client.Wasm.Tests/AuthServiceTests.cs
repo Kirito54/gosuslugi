@@ -31,7 +31,8 @@ public class AuthServiceTests
         storageMock.Setup(s => s.SetItemAsync<string>("authToken", It.IsAny<string>()))
             .Returns(ValueTask.CompletedTask);
 
-        var provider = new CustomAuthStateProvider(storageMock.Object, http);
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<CustomAuthStateProvider>.Instance;
+        var provider = new CustomAuthStateProvider(storageMock.Object, http, logger);
         var service = new AuthService(http, provider);
 
         var success = await service.LoginAsync(dto);
@@ -50,7 +51,8 @@ public class AuthServiceTests
         http.BaseAddress = new Uri("http://localhost");
 
         var storageMock = new Mock<ILocalStorageService>();
-        var provider = new CustomAuthStateProvider(storageMock.Object, http);
+        var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<CustomAuthStateProvider>.Instance;
+        var provider = new CustomAuthStateProvider(storageMock.Object, http, logger);
         var service = new AuthService(http, provider);
 
         var success = await service.LoginAsync(new LoginRequestDto());
