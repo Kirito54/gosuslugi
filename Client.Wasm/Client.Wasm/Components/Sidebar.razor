@@ -1,0 +1,38 @@
+<SfAccordion CssClass="sidebar-menu" ExpandMode="ExpandMode.Multiple">
+    <AccordionItems>
+        @foreach (var group in Groups)
+        {
+            <AccordionItem Header=@group.Title>
+                <ContentTemplate>
+                    <ul class="list-unstyled p-2">
+                        @foreach (var item in group.Items)
+                        {
+                            <li class="mb-1">
+                                <NavLink class="nav-link" href="@item.Url">
+                                    @item.Title
+                                </NavLink>
+                            </li>
+                        }
+                    </ul>
+                </ContentTemplate>
+            </AccordionItem>
+        }
+    </AccordionItems>
+</SfAccordion>
+
+@code {
+    [Parameter]
+    public List<MenuGroup> Groups { get; set; } = new();
+
+    public class MenuGroup
+    {
+        public string Title { get; set; } = string.Empty;
+        public List<MenuItem> Items { get; set; } = new();
+    }
+
+    public class MenuItem
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+    }
+}

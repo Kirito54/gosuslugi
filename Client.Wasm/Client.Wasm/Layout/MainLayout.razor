@@ -8,6 +8,7 @@
     {
         <SfToolbar CssClass="e-bootstrap5 top-toolbar">
             <ToolbarItems>
+                <ToolbarItem PrefixIcon="e-menu" TooltipText="Меню" OnClick="ToggleSidebar" />
                 <ToolbarItem PrefixIcon="" Text="">
                     <Template>
                         <a class="navbar-brand" href="/">
@@ -15,14 +16,6 @@
                         </a>
                     </Template>
                 </ToolbarItem>
-                @if (authState?.User?.Identity?.IsAuthenticated == true)
-                {
-                    <ToolbarItem Text="Menu">
-                        <Template>
-                            <SfMenu Items="MenuItems" CssClass="e-bootstrap5"></SfMenu>
-                        </Template>
-                    </ToolbarItem>
-                }
                 <ToolbarItem Align="ItemAlign.Right">
                     <Template>
                         @if (authState?.User?.Identity?.IsAuthenticated == true)
@@ -39,6 +32,10 @@
         </SfToolbar>
     }
 </CascadingAuthenticationState>
+
+<SfSidebar @ref="sidebar" Type="SidebarType.Push" Width="250px" CssClass="sidebar" MediaQuery="(min-width:768px)">
+    <Sidebar Groups="MenuGroups" />
+</SfSidebar>
 
 <div class="content @(Nav.Uri.Contains("/login") ? "login-content" : "p-4")">
     <RedirectToLogin />
@@ -59,30 +56,86 @@
     {
         authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }
-    List<MenuItem> MenuItems = new()
+    SfSidebar sidebar;
+
+    List<Sidebar.MenuGroup> MenuGroups = new()
     {
-        new MenuItem { Text = "Services", Url = "/services" },
-        new MenuItem { Text = "Service Templates", Url = "/service-templates" },
-        new MenuItem { Text = "Workflows", Url = "/workflows" },
-        new MenuItem { Text = "Applications", Url = "/applications" },
-        new MenuItem { Text = "Documents", Url = "/documents/0" },
-        new MenuItem { Text = "Templates", Url = "/templates" },
-        new MenuItem { Text = "Document Templates", Url = "/document-templates" },
-        new MenuItem { Text = "Users", Url = "/users" },
-        new MenuItem { Text = "Permission Groups", Url = "/permission-groups" },
-        new MenuItem { Text = "Актуальные заявления", Url = "/registry/applications" },
-        new MenuItem { Text = "Распоряжения РДЗ", Url = "/registry/rdz-orders" },
-        new MenuItem { Text = "Распоряжения РДИ", Url = "/registry/rdi-orders" },
-        new MenuItem { Text = "Ответы", Url = "/registry/answers" },
-        new MenuItem { Text = "Договоры", Url = "/registry/contracts" },
-        new MenuItem { Text = "Акты", Url = "/registry/acts" },
-        new MenuItem { Text = "Соглашения", Url = "/registry/agreements" },
-        new MenuItem { Text = "Канцелярия", Url = "/registry/clerical" },
-        new MenuItem { Text = "AI Agent", Url = "/agent" }
+        new Sidebar.MenuGroup
+        {
+            Title = "Заявления",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "Все", Url = "/applications" },
+                new Sidebar.MenuItem { Title = "Реестр заявлений", Url = "/registry/applications" },
+                new Sidebar.MenuItem { Title = "Распоряжения РДЗ", Url = "/registry/rdz-orders" },
+                new Sidebar.MenuItem { Title = "Распоряжения РДИ", Url = "/registry/rdi-orders" }
+            }
+        },
+        new Sidebar.MenuGroup
+        {
+            Title = "Документы",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "Все документы", Url = "/documents/0" },
+                new Sidebar.MenuItem { Title = "Договоры", Url = "/registry/contracts" },
+                new Sidebar.MenuItem { Title = "Акты", Url = "/registry/acts" },
+                new Sidebar.MenuItem { Title = "Соглашения", Url = "/registry/agreements" },
+                new Sidebar.MenuItem { Title = "Ответы", Url = "/registry/answers" },
+                new Sidebar.MenuItem { Title = "Канцелярия", Url = "/registry/clerical" }
+            }
+        },
+        new Sidebar.MenuGroup
+        {
+            Title = "Администрирование",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "Сервисы", Url = "/services" },
+                new Sidebar.MenuItem { Title = "Шаблоны услуг", Url = "/service-templates" },
+                new Sidebar.MenuItem { Title = "Рабочие процессы", Url = "/workflows" },
+                new Sidebar.MenuItem { Title = "Шаблоны документов", Url = "/document-templates" },
+                new Sidebar.MenuItem { Title = "Пользователи", Url = "/users" },
+                new Sidebar.MenuItem { Title = "Группы прав", Url = "/permission-groups" },
+                new Sidebar.MenuItem { Title = "Шаблоны номеров", Url = "/number-templates" },
+                new Sidebar.MenuItem { Title = "Справочники", Url = "/dictionaries" }
+            }
+        },
+        new Sidebar.MenuGroup
+        {
+            Title = "Отчеты",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "Дашборд", Url = "/dashboard" }
+            }
+        },
+        new Sidebar.MenuGroup
+        {
+            Title = "Настройки",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "Профиль", Url = "/profile" },
+                new Sidebar.MenuItem { Title = "Пароль", Url = "/profile/change-password" }
+            }
+        },
+        new Sidebar.MenuGroup
+        {
+            Title = "AI",
+            Items = new()
+            {
+                new Sidebar.MenuItem { Title = "AI Agent", Url = "/agent" }
+            }
+        }
     };
 
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
+    }
+
+    private void ToggleSidebar()
+    {
+        if (sidebar != null)
+        {
+            sidebar.IsOpen = !sidebar.IsOpen;
+        }
     }
 }

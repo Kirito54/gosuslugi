@@ -9,7 +9,22 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px);
+}
+
+.sidebar-menu .nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    color: #1f2937;
+    transition: all .2s;
+}
+
+.sidebar-menu .nav-link.active,
+.sidebar-menu .nav-link:hover {
+    background-color: rgba(37,99,235,0.1);
+    color: #2563eb;
 }
 
 .top-row {
