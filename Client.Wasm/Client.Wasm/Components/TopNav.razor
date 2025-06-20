@@ -1,0 +1,60 @@
+@inject MenuService Menu
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
+@inject IAuthService AuthService
+
+<AuthorizeView>
+    <Authorized>
+        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Orientation.Horizontal" ItemSelected="OnMenuItemSelected"></SfMenu>
+        <div class="user-dropdown">
+            <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <SfButton CssClass="e-primary" OnClick="()=>Nav.NavigateTo(\"/login\")">Войти</SfButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private List<MenuItem> MenuItems = new();
+    private List<DropDownMenuItem> UserItems = new()
+    {
+        new DropDownMenuItem{Text="Профиль", Id="profile"},
+        new DropDownMenuItem{Text="Настройки", Id="settings"},
+        new DropDownMenuItem{Text="Выйти", Id="logout"}
+    };
+
+    protected override void OnInitialized()
+    {
+        MenuItems = Menu.Groups.Select(g => new MenuItem
+        {
+            Text = g.Title,
+            Items = g.Items.Select(i => new MenuItem { Text = i.Title, Url = i.Url }).ToList()
+        }).ToList();
+    }
+
+    private void OnMenuItemSelected(MenuEventArgs<MenuItem> args)
+    {
+        if (!string.IsNullOrEmpty(args.Item.Url))
+        {
+            Nav.NavigateTo(args.Item.Url);
+        }
+    }
+
+    private async Task OnUserItemSelected(MenuEventArgs<DropDownMenuItem> args)
+    {
+        switch (args.Item.Id)
+        {
+            case "logout":
+                await AuthService.LogoutAsync();
+                Nav.NavigateTo("/login", true);
+                break;
+            case "profile":
+                Nav.NavigateTo("/profile");
+                break;
+            case "settings":
+                Nav.NavigateTo("/settings");
+                break;
+        }
+    }
+}
