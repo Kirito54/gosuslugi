@@ -1,7 +1,4 @@
 @inherits ErrorBoundary
-@inject ErrorHandlerService ErrorService
-@inject ILogger<CustomErrorBoundary> Logger
-
 @if (CurrentException is not null)
 {
     @ErrorContent
@@ -9,13 +6,4 @@
 else
 {
     @ChildContent
-}
-
-@code {
-    protected override Task OnErrorAsync(Exception exception)
-    {
-        Logger.LogError(exception, "Unhandled exception in component");
-        ErrorService.Handle(exception);
-        return base.OnErrorAsync(exception);
-    }
 }
