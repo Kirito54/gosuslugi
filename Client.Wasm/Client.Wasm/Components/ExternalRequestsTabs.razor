@@ -8,7 +8,10 @@
     <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
         <SfTab>
             <TabItems>
-                <TabItem HeaderText="Росреестр">
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="Росреестр"></TabHeader>
+                    </ChildContent>
                     <ContentTemplate>
                         <SfButton CssClass="e-outline mb-3" OnClick="CreateRosreestr">Создать запрос</SfButton>
                         <SfGrid DataSource="rosreestr" AllowPaging="true" CssClass="e-bootstrap5">
@@ -20,7 +23,10 @@
                         </SfGrid>
                     </ContentTemplate>
                 </TabItem>
-                <TabItem HeaderText="ЗАГС">
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="ЗАГС"></TabHeader>
+                    </ChildContent>
                     <ContentTemplate>
                         <SfButton CssClass="e-outline mb-3" OnClick="CreateZags">Создать запрос</SfButton>
                         <SfGrid DataSource="zags" AllowPaging="true" CssClass="e-bootstrap5">
