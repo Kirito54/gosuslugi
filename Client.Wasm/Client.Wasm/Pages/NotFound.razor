@@ -1,0 +1,18 @@
+@page "/404"
+
+<SfCard CssClass="p-6 rounded-xl shadow-lg bg-white glass-bg text-center">
+    <CardHeader>
+        <h2 class="text-xl font-semibold">Страница не найдена</h2>
+    </CardHeader>
+    <CardContent>
+        <p>Запрашиваемая страница отсутствует.</p>
+    </CardContent>
+    <CardFooter>
+        <SfButton CssClass="e-primary" OnClick="@GoHome">На главную</SfButton>
+    </CardFooter>
+</SfCard>
+
+@code {
+    [Inject] NavigationManager Nav { get; set; } = default!;
+    private void GoHome() => Nav.NavigateTo("/");
+}

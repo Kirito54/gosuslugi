@@ -16,7 +16,9 @@
                     </AuthorizeRouteView>
                 </Found>
                 <NotFound>
-                    <RedirectToLogin />
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <NotFound />
+                    </LayoutView>
                 </NotFound>
             </Router>
         </ChildContent>
