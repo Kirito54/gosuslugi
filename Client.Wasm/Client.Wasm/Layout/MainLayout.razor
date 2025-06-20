@@ -31,23 +31,26 @@
             </ToolbarItems>
         </SfToolbar>
     }
+    <AuthorizeView>
+        <Authorized>
+            <SfSidebar @ref="sidebar" Type="SidebarType.Push" Width="250px" CssClass="sidebar" MediaQuery="(min-width:768px)">
+                <Sidebar />
+            </SfSidebar>
+        </Authorized>
+    </AuthorizeView>
+
+    <div class="content @(Nav.Uri.Contains("/login") ? "login-content" : "p-4")">
+        <RedirectToLogin />
+        @Body
+    </div>
+
+    @if (!Nav.Uri.Contains("/login"))
+    {
+        <footer class="bg-light text-center py-3">
+            &copy; 2025 Госуслуги
+        </footer>
+    }
 </CascadingAuthenticationState>
-
-<SfSidebar @ref="sidebar" Type="SidebarType.Push" Width="250px" CssClass="sidebar" MediaQuery="(min-width:768px)">
-    <Sidebar />
-</SfSidebar>
-
-<div class="content @(Nav.Uri.Contains("/login") ? "login-content" : "p-4")">
-    <RedirectToLogin />
-    @Body
-</div>
-
-@if (!Nav.Uri.Contains("/login"))
-{
-    <footer class="bg-light text-center py-3">
-        &copy; 2025 Госуслуги
-    </footer>
-}
 
 @code {
     private AuthenticationState? authState;
