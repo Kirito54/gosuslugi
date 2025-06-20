@@ -67,6 +67,34 @@ public class MenuService
         {
             Console.WriteLine($"Warning: pages not added to menu: {string.Join(", ", missing)}");
         }
+
+        if (Groups.Count == 0)
+        {
+            Groups.Add(new MenuGroup
+            {
+                Title = "Заявления",
+                Items = new List<MenuItem>
+                {
+                    new() { Title = "Список заявлений", Url = "/applications" }
+                }
+            });
+            Groups.Add(new MenuGroup
+            {
+                Title = "Документы",
+                Items = new List<MenuItem>
+                {
+                    new() { Title = "Список документов", Url = "/documents" }
+                }
+            });
+            Groups.Add(new MenuGroup
+            {
+                Title = "Настройки",
+                Items = new List<MenuItem>
+                {
+                    new() { Title = "Общие", Url = "/settings" }
+                }
+            });
+        }
     }
 
     private static void AddIfExists(List<(string Route, Type Type)> pages, List<MenuItem> items, string route, string title)

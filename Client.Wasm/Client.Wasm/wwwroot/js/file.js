@@ -36,10 +36,16 @@ window.signWithCryptoPro = async (base64) => {
 };
 
 window.checkAccordionInit = () => {
-    const acc = document.querySelector('.e-accordion');
-    if (!acc) {
-        console.error('❌ Accordion menu not initialized');
+    const accEl = document.querySelector('.e-sidebar .e-accordion');
+    if (!accEl) {
+        console.error('❌ Accordion element not found');
+        return;
+    }
+    const accObj = accEl.ej2_instances && accEl.ej2_instances[0];
+    if (!accObj) {
+        console.error('❌ Accordion instance not initialized');
     } else {
-        console.log('✅ Меню успешно инициализировано и работает');
+        console.log('✅ Меню успешно инициализировано');
+        accObj.refresh();
     }
 };
