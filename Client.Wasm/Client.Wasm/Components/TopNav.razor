@@ -2,16 +2,18 @@
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 @inject IAuthService AuthService
+@using LayoutOrientation = Syncfusion.Blazor.Layouts.Orientation
+@using ChartOrientation = Syncfusion.Blazor.Charts.Orientation
 
 <AuthorizeView>
     <Authorized>
-        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Orientation.Horizontal" ItemSelected="OnMenuItemSelected"></SfMenu>
+        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" ItemSelected="OnMenuItemSelected"></SfMenu>
         <div class="user-dropdown">
             <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
         </div>
     </Authorized>
     <NotAuthorized>
-        <SfButton CssClass="e-primary" OnClick="()=>Nav.NavigateTo(\"/login\")">Войти</SfButton>
+        <SfButton CssClass="e-primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</SfButton>
     </NotAuthorized>
 </AuthorizeView>
 
