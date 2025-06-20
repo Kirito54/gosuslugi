@@ -31,12 +31,13 @@
             </ToolbarItems>
         </SfToolbar>
     }
-    <AuthorizeView>
-        <Authorized>
-            <SfSidebar @ref="sidebar" Type="SidebarType.Push" Width="250px" CssClass="sidebar" MediaQuery="(min-width:768px)">
+    <AuthorizeView Context="context">
+        @if (context.User.Identity?.IsAuthenticated == true)
+        {
+            <SfSidebar @ref="sidebar" Type="SidebarType.Push" Width="250px" CssClass="sidebar" MediaQuery="(min-width:768px)" Created="OnSidebarCreated">
                 <Sidebar />
             </SfSidebar>
-        </Authorized>
+        }
     </AuthorizeView>
 
     <div class="content @(Nav.Uri.Contains("/login") ? "login-content" : "p-4")">
@@ -60,6 +61,11 @@
         authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }
     SfSidebar sidebar;
+
+    private void OnSidebarCreated()
+    {
+        Console.WriteLine("Sidebar created");
+    }
 
     private async Task Logout()
     {

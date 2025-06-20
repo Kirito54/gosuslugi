@@ -1,4 +1,4 @@
-<SfAccordion @ref="accordion" CssClass="sidebar-menu rounded-xl shadow-lg bg-white" ExpandMode="ExpandMode.Single">
+<SfAccordion @ref="accordion" CssClass="sidebar-menu rounded-xl shadow-lg bg-white" ExpandMode="ExpandMode.Single" Created="OnAccordionCreated">
     <AccordionItems>
         @foreach (var group in Menu.Groups)
         {
@@ -27,6 +27,11 @@
     public IJSRuntime JS { get; set; } = default!;
 
     private SfAccordion? accordion;
+
+    private async Task OnAccordionCreated()
+    {
+        await JS.InvokeVoidAsync("checkAccordionInit");
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

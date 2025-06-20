@@ -38,6 +38,11 @@ public static class JwtParser
 
     private static byte[] ParseBase64WithoutPadding(string base64)
     {
+        if (string.IsNullOrWhiteSpace(base64))
+        {
+            return Array.Empty<byte>();
+        }
+
         base64 = base64.Replace('-', '+').Replace('_', '/');
 
         switch (base64.Length % 4)
@@ -61,7 +66,7 @@ public static class JwtParser
         catch (FormatException ex)
         {
             Console.Error.WriteLine($"Invalid base64 string: {base64}. {ex}");
-            throw;
+            return Array.Empty<byte>();
         }
     }
 }
