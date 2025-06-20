@@ -8,7 +8,10 @@
     <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
         <SfTab>
             <TabItems>
-                <TabItem HeaderText="Другие заявления заявителя">
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="Другие заявления заявителя"></TabHeader>
+                    </ChildContent>
                     <ContentTemplate>
                         <SfGrid DataSource="@byApplicant" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
                             <GridPageSettings PageSize="5" />
@@ -20,7 +23,10 @@
                         </SfGrid>
                     </ContentTemplate>
                 </TabItem>
-                <TabItem HeaderText="Заявления с этим представителем">
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="Заявления с этим представителем"></TabHeader>
+                    </ChildContent>
                     <ContentTemplate>
                         <SfGrid DataSource="@byRepresentative" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
                             <GridPageSettings PageSize="5" />
@@ -32,7 +38,10 @@
                         </SfGrid>
                     </ContentTemplate>
                 </TabItem>
-                <TabItem HeaderText="По пересечению координат">
+                <TabItem>
+                    <ChildContent>
+                        <TabHeader Text="По пересечению координат"></TabHeader>
+                    </ChildContent>
                     <ContentTemplate>
                         <SfGrid DataSource="@byGeo" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
                             <GridPageSettings PageSize="5" />
