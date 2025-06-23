@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.Forms;
 namespace Client.Wasm.DTOs
 {
     public class CreateDocumentDto
     {
         public int ApplicationId { get; set; }
-        public IFormFile File { get; set; }
+        public IBrowserFile File { get; set; }
     }
 }
