@@ -38,10 +38,19 @@ public class MenuService
         AddIfExists(pages, groupDocs.Items, "/registry/answers", "Ответы");
         if (groupDocs.Items.Count > 0) Groups.Add(groupDocs);
 
-        var groupUsers = new MenuGroup { Title = "👤 Пользователи и роли" };
+        var groupUsers = new MenuGroup { Title = "👤 Пользователи" };
         AddIfExists(pages, groupUsers.Items, "/users", "Пользователи");
-        AddIfExists(pages, groupUsers.Items, "/permission-groups", "Группы прав");
         if (groupUsers.Items.Count > 0) Groups.Add(groupUsers);
+
+        var groupStructure = new MenuGroup { Title = "🏢 Структура" };
+        AddIfExists(pages, groupStructure.Items, "/departments", "Подразделения");
+        AddIfExists(pages, groupStructure.Items, "/positions", "Должности");
+        if (groupStructure.Items.Count > 0) Groups.Add(groupStructure);
+
+        var groupRights = new MenuGroup { Title = "🔐 Права" };
+        AddIfExists(pages, groupRights.Items, "/permissions", "Права доступа");
+        AddIfExists(pages, groupRights.Items, "/permission-groups", "Группы прав");
+        if (groupRights.Items.Count > 0) Groups.Add(groupRights);
 
         var groupSettings = new MenuGroup { Title = "⚙️ Настройки" };
         AddIfExists(pages, groupSettings.Items, "/services", "Сервисы");

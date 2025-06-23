@@ -4,6 +4,7 @@ using GovServices.Server.DTOs;
 using System;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using PositionEntity = GovServices.Server.Entities.Position;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -114,6 +115,17 @@ namespace GovServices.Server.Mappings
             CreateMap<UpdateServiceTemplateDto, ServiceTemplate>();
 
             CreateMap<Dictionary, DictionaryDto>();
+
+            CreateMap<Department, DepartmentDto>().ReverseMap();
+            CreateMap<PositionEntity, PositionDto>().ReverseMap();
+            CreateMap<CreatePositionDto, PositionEntity>();
+            CreateMap<UpdatePositionDto, PositionEntity>();
+            CreateMap<UserProfile, UserProfileDto>().ReverseMap();
+            CreateMap<CreateUserProfileDto, UserProfile>();
+            CreateMap<UpdateUserProfileDto, UserProfile>();
+            CreateMap<Permission, PermissionDto>().ReverseMap();
+            CreateMap<CreatePermissionDto, Permission>();
+            CreateMap<UpdatePermissionDto, Permission>();
         }
 
         private static List<ExecutionStage>? DeserializeStages(string? json)

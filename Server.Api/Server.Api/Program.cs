@@ -130,6 +130,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDocumentStorageService, DocumentStorageService>();
 builder.Services.AddScoped<IDictionaryService, DictionaryService>();
 builder.Services.AddSingleton<IDictionaryCacheService, DictionaryCacheService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 // Регистрация IEmailService (и реализация EmailService)
 builder.Services.AddScoped<IEmailService, EmailService>();
