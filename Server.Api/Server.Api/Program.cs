@@ -161,6 +161,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    await DatabaseInitializer.SeedAsync(scope.ServiceProvider);
     await DataSeeder.SeedAsync(scope.ServiceProvider);
     var cache = scope.ServiceProvider.GetRequiredService<IDictionaryCacheService>();
     await cache.ReloadAsync();

@@ -18,6 +18,7 @@ namespace GovServices.Server.Data
                 RoleNames.Registrar,
                 RoleNames.Analyst,
                 RoleNames.Lawyer,
+                RoleNames.Specialist,
                 RoleNames.DepartmentHead,
                 RoleNames.ManagementHead,
                 RoleNames.Director,
