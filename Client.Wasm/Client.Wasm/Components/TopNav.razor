@@ -12,9 +12,14 @@
                         <span class="h3 mb-0 me-2">🏛️</span>
                         <span class="fw-semibold h5 mb-0">Государственные услуги</span>
                     </a>
-                    <SfMenu Items="@MenuItems" CssClass="top-nav" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
-                        <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
+                    <!-- Основное горизонтальное меню -->
+                    <SfMenu Items="@MenuItems"
+                             CssClass="bootstrap5 top-nav-menu"
+                             Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal"
+                             ShowItemOnClick="true">
+                        <MenuEvents TValue="MenuItem" ItemClicked="OnItemClicked" />
                     </SfMenu>
+                    <!-- Меню пользователя в правом верхнем углу -->
                     <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
                 </div>
             </AppBarContent>
@@ -95,13 +100,13 @@
 
     private List<DropDownMenuItem> UserItems = new()
     {
-        new DropDownMenuItem{ Text = "Профиль", Id = "profile" },
-        new DropDownMenuItem{ Text = "Выход", Id = "logout" }
+        new DropDownMenuItem { Text = "Настройки профиля", Id = "profile" },
+        new DropDownMenuItem { Text = "Выход", Id = "logout" }
     };
 
     protected override Task OnInitializedAsync() => Task.CompletedTask;
 
-    private void OnItemSelected(MenuEventArgs<MenuItem> args)
+    private void OnItemClicked(MenuEventArgs<MenuItem> args)
     {
         Console.WriteLine(args.Item.Text);
         if (!string.IsNullOrEmpty(args.Item.Url))
