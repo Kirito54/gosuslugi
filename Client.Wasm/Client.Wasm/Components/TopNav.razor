@@ -4,10 +4,11 @@
 @inject IAuthService AuthService
 @using LayoutOrientation = Syncfusion.Blazor.Layouts.Orientation
 @using ChartOrientation = Syncfusion.Blazor.Charts.Orientation
+@using Syncfusion.Blazor.Navigations
 
 <AuthorizeView>
     <Authorized>
-        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" MenuItemClicked="OnMenuItemClicked"></SfMenu>
+        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" ItemSelected="OnItemSelected"></SfMenu>
         <div class="user-dropdown">
             <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
         </div>
@@ -35,7 +36,7 @@
         }).ToList();
     }
 
-    private void OnMenuItemClicked(MenuEventArgs<MenuItem> args)
+    private void OnItemSelected(MenuEventArgs<MenuItem> args)
     {
         Console.WriteLine(args.Item.Text);
         if (!string.IsNullOrEmpty(args.Item.Url))
