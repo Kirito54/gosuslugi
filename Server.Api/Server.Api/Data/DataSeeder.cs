@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using GovServices.Server.Entities;
 using GovServices.Server.Authorization;
+using System;
 
 namespace GovServices.Server.Data
 {
@@ -57,10 +58,38 @@ namespace GovServices.Server.Data
                 PermissionNames.ViewClosedServices
             };
 
+            var defaultDepartmentId = SeedData.Departments.IT;
+            if (!context.Departments.Any(d => d.Id == defaultDepartmentId))
+            {
+                context.Departments.Add(new Department { Id = defaultDepartmentId, Name = "IT" });
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Services.Any(s => s.Id == SeedData.DefaultServiceId))
+            {
+                context.Services.Add(new Service
+                {
+                    Id = SeedData.DefaultServiceId,
+                    Name = "Базовая услуга",
+                    Description = "Сервис по умолчанию",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                });
+                await context.SaveChangesAsync();
+            }
+
             foreach (var perm in permissions)
             {
                 if (!context.Permissions.Any(p => p.Name == perm))
-                    context.Permissions.Add(new Permission { Name = perm });
+                {
+                    context.Permissions.Add(new Permission
+                    {
+                        Name = perm,
+                        DepartmentId = defaultDepartmentId,
+                        ServiceId = SeedData.DefaultServiceId,
+                        Role = SeedData.Roles.Specialist
+                    });
+                }
             }
             await context.SaveChangesAsync();
 
