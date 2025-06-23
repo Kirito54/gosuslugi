@@ -13,7 +13,7 @@
             </header>
         }
 
-        <main class="container py-4 flex-grow-1">
+        <main class="container mx-auto py-4 flex-grow-1" style="max-width:1920px;">
             <RedirectToLogin />
             @Body
         </main>
@@ -35,11 +35,4 @@
         authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("checkAccordionInit");
-        }
-    }
 }
