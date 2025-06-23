@@ -36,17 +36,3 @@ window.signWithCryptoPro = async (base64) => {
 };
 
 
-function checkAccordionInit() {
-    if (typeof ej !== "undefined" && ej.base && typeof ej.base.enableRipple === "function") {
-        ej.base.enableRipple(true);
-    }
-
-    const element = document.querySelector(".e-accordion");
-    if (element && !element.ej2_instances) {
-        new ej.navigations.Accordion({}, element);
-    }
-}
-
-window.addEventListener('DOMContentLoaded', function(){
-    if (window.checkAccordionInit) window.checkAccordionInit();
-});

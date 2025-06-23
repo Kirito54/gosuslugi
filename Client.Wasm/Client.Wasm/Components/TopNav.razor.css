@@ -1,0 +1,25 @@
+.appbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+.profile-button {
+    margin-left: 1rem;
+}
+
+.top-nav {
+    background: transparent;
+}
+.top-nav ::deep .e-menu-item {
+    padding: 0 1rem;
+}
+.top-nav ::deep .e-menu-item.e-selected,
+.top-nav ::deep .e-menu-item:hover {
+    background-color: rgba(37,99,235,0.1);
+    border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .profile-button {
+        margin-left: 0;
+    }
+}

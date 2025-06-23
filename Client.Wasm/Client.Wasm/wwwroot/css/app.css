@@ -112,7 +112,18 @@ code {
     background-color: #0D4E8C !important;
 }
 
-.e-primary{background-color:#FF8C00;border-color:#FF8C00;}
+.e-primary {
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    background-color: #2563eb;
+    border-color: #2563eb;
+    transition: opacity .2s, transform .2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.e-primary:hover {
+    opacity: .9;
+}
 
 body { font-family: "Inter", "Segoe UI", sans-serif; font-size: 16px; color:#1f2937; background:#fff; }
 .sf-card { border-radius: 0.75rem; padding:1.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.05); backdrop-filter: blur(12px); background: rgba(255,255,255,0.8); }
