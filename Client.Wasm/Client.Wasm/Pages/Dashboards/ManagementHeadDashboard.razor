@@ -1,0 +1,90 @@
+@page "/dashboard/management"
+@attribute [Authorize(Roles="Начальник управления")]
+@using Syncfusion.Blazor.Charts
+@inject NavigationManager Nav
+
+<div class="container p-4">
+    <h1 class="mb-4">Дашборд начальника управления</h1>
+    <div class="row g-4">
+        <div class="col-md-3 col-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Всего заявлений</h4></CardHeader>
+                <CardContent><h2 class="display-6">@totalApps</h2></CardContent>
+            </SfCard>
+        </div>
+        <div class="col-md-3 col-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>В работе</h4></CardHeader>
+                <CardContent><h2 class="display-6">@inProgress</h2></CardContent>
+            </SfCard>
+        </div>
+        <div class="col-md-3 col-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Ожидают подписи</h4></CardHeader>
+                <CardContent><h2 class="display-6">@pendingSign</h2></CardContent>
+            </SfCard>
+        </div>
+        <div class="col-md-3 col-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Сотрудники</h4></CardHeader>
+                <CardContent><h2 class="display-6">@people</h2></CardContent>
+            </SfCard>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <div class="col-lg-6">
+            <SfAccumulationChart Title="Распределение заявлений" PointClick="OnAppClick">
+                <AccumulationChartSeriesCollection>
+                    <AccumulationChartSeries DataSource="appDistribution" XName="Status" YName="Count" Type="AccumulationType.Pie" DataLabelSettings-Visible="true"></AccumulationChartSeries>
+                </AccumulationChartSeriesCollection>
+            </SfAccumulationChart>
+        </div>
+        <div class="col-lg-6">
+            <SfChart Title="Заявления по дням" PointClick="OnDayClick">
+                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="appsByDay" XName="Day" YName="Count" Type="ChartSeriesType.Line" Marker-Visible="true"></ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    int totalApps = 75;
+    int inProgress = 28;
+    int pendingSign = 11;
+    int people = 14;
+
+    List<StatusCount> appDistribution = new()
+    {
+        new StatusCount("Новые", 20),
+        new StatusCount("В работе", 28),
+        new StatusCount("Закрыты", 27)
+    };
+
+    List<DayCount> appsByDay = new()
+    {
+        new DayCount("Пн", 10),
+        new DayCount("Вт", 12),
+        new DayCount("Ср", 15),
+        new DayCount("Чт", 18),
+        new DayCount("Пт", 20)
+    };
+
+    void OnAppClick(PointEventArgs args)
+    {
+        var item = appDistribution[args.Point.Index];
+        Nav.NavigateTo($"/applications?status={item.Status}");
+    }
+
+    void OnDayClick(PointEventArgs args)
+    {
+        var item = appsByDay[args.Point.Index];
+        Nav.NavigateTo($"/applications?day={item.Day}");
+    }
+
+    record StatusCount(string Status, int Count);
+    record DayCount(string Day, int Count);
+}
