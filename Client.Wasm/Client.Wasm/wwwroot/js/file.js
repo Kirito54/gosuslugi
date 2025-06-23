@@ -36,16 +36,16 @@ window.signWithCryptoPro = async (base64) => {
 };
 
 
-window.checkAccordionInit = function() {
-    var acc = document.querySelector('.e-accordion');
-    if (acc && !acc.ej2_instances) {
-        try {
-            new ej.navigations.Accordion({}, acc);
-        } catch (e) {
-            console.error('Accordion init failed', e);
-        }
+function checkAccordionInit() {
+    if (typeof ej !== "undefined" && ej.base && typeof ej.base.enableRipple === "function") {
+        ej.base.enableRipple(true);
     }
-};
+
+    const element = document.querySelector(".e-accordion");
+    if (element && !element.ej2_instances) {
+        new ej.navigations.Accordion({}, element);
+    }
+}
 
 window.addEventListener('DOMContentLoaded', function(){
     if (window.checkAccordionInit) window.checkAccordionInit();
