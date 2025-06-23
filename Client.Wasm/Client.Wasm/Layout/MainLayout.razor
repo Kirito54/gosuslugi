@@ -5,23 +5,26 @@
 @inject IJSRuntime JS
 
 <CascadingAuthenticationState>
-    @if (!Nav.Uri.Contains("/login"))
-    {
-        <TopNav />
-    }
+    <div class="min-h-screen flex flex-col">
+        @if (!Nav.Uri.Contains("/login"))
+        {
+            <header>
+                <TopNav />
+            </header>
+        }
 
+        <main class="flex-1 p-4 @(Nav.Uri.Contains("/login") ? "" : "container mx-auto")">
+            <RedirectToLogin />
+            @Body
+        </main>
 
-    <div class="content @(Nav.Uri.Contains("/login") ? "login-content" : "p-4")">
-        <RedirectToLogin />
-        @Body
+        @if (!Nav.Uri.Contains("/login"))
+        {
+            <footer class="bg-light text-center py-3 mt-auto">
+                &copy; 2025 Госуслуги
+            </footer>
+        }
     </div>
-
-    @if (!Nav.Uri.Contains("/login"))
-    {
-        <footer class="bg-light text-center py-3">
-            &copy; 2025 Госуслуги
-        </footer>
-    }
 </CascadingAuthenticationState>
 
 @code {
