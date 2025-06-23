@@ -17,7 +17,7 @@
 }
 .top-nav ::deep .e-menu-item.e-selected,
 .top-nav ::deep .e-menu-item:hover {
-    background-color: rgba(37,99,235,0.1);
+    background-color: rgba(37, 99, 235, 0.1);
     border-radius: 0.5rem;
 }
 
