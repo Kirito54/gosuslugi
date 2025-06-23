@@ -7,7 +7,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" ItemSelected="OnMenuItemSelected"></SfMenu>
+        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" OnItemSelected="OnMenuItemSelected"></SfMenu>
         <div class="user-dropdown">
             <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
         </div>
