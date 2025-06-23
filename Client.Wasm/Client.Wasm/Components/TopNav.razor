@@ -1,29 +1,21 @@
-@inject MenuService Menu
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 @inject IAuthService AuthService
-@using LayoutOrientation = Syncfusion.Blazor.Layouts.Orientation
-@using ChartOrientation = Syncfusion.Blazor.Charts.Orientation
 @using Syncfusion.Blazor.Navigations
 
 <AuthorizeView>
     <Authorized>
         <SfAppBar CssClass="appbar e-appbar e-light">
             <AppBarContent>
-                <div class="container flex justify-between items-center" style="max-width:1920px;">
-                    <div class="flex items-center">
-                        <a href="/" class="flex items-center mr-4 text-decoration-none hover:opacity-80 transition-all">
-                            <span class="text-2xl mr-2">🏛️</span>
-                            <span class="fw-semibold h5 mb-0">Государственные услуги</span>
-                        </a>
-                        <SfMenu Items="@MenuItems" CssClass="top-nav e-menu-wrapper e-horizontal" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
-                            <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
-                        </SfMenu>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <SfButton CssClass="e-flat" IconCss="e-icons e-bell" ></SfButton>
-                        <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Content="@UserDisplayName" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
-                    </div>
+                <div class="container d-flex align-items-center justify-content-between">
+                    <a href="/" class="d-flex align-items-center text-decoration-none me-4">
+                        <span class="h3 mb-0 me-2">🏛️</span>
+                        <span class="fw-semibold h5 mb-0">Государственные услуги</span>
+                    </a>
+                    <SfMenu Items="@MenuItems" CssClass="top-nav" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
+                        <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
+                    </SfMenu>
+                    <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
                 </div>
             </AppBarContent>
         </SfAppBar>
@@ -40,37 +32,74 @@
 </AuthorizeView>
 
 @code {
-    private string UserDisplayName = "Пользователь";
-    private List<MenuItem> MenuItems = new();
-    private List<DropDownMenuItem> UserItems = new()
+    private List<MenuItem> MenuItems = new()
     {
-        new DropDownMenuItem{Text="Профиль", Id="profile"},
-        new DropDownMenuItem{Text="Выход", Id="logout"}
-    };
-
-    protected override async Task OnInitializedAsync()
-    {
-        MenuItems = Menu.Groups.Select(g => new MenuItem
+        new MenuItem
         {
-            Text = g.Title,
-            Items = g.Items.Select(i => new MenuItem { Text = i.Title, Url = i.Url }).ToList()
-        }).ToList();
-
-        var state = await AuthProvider.GetAuthenticationStateAsync();
-        var name = state.User.Identity?.Name ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(name))
-        {
-            var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length > 1)
+            Text = "📄 Заявления",
+            Items = new List<MenuItem>
             {
-                UserDisplayName = $"{parts[0]} {string.Join(string.Empty, parts.Skip(1).Select(p => p[0] + "."))}";
+                new MenuItem{ Text = "Все заявления", Url = "/applications" },
+                new MenuItem{ Text = "Реестр", Url = "/registry/applications" },
+                new MenuItem{ Text = "РДЗ", Url = "/registry/rdz-orders" },
+                new MenuItem{ Text = "РДИ", Url = "/registry/rdi-orders" }
             }
-            else
+        },
+        new MenuItem
+        {
+            Text = "📑 Документы",
+            Items = new List<MenuItem>
             {
-                UserDisplayName = name;
+                new MenuItem{ Text = "Договоры", Url = "/registry/contracts" },
+                new MenuItem{ Text = "Акты", Url = "/registry/acts" },
+                new MenuItem{ Text = "Соглашения", Url = "/registry/agreements" }
+            }
+        },
+        new MenuItem
+        {
+            Text = "👤 Пользователи и роли",
+            Items = new List<MenuItem>
+            {
+                new MenuItem{ Text = "Список пользователей", Url = "/users" },
+                new MenuItem{ Text = "Роли и доступ", Url = "/roles" }
+            }
+        },
+        new MenuItem
+        {
+            Text = "⚙️ Настройки",
+            Items = new List<MenuItem>
+            {
+                new MenuItem{ Text = "Общие", Url = "/settings" },
+                new MenuItem{ Text = "Интеграции", Url = "/settings/integrations" }
+            }
+        },
+        new MenuItem
+        {
+            Text = "📊 Отчёты",
+            Items = new List<MenuItem>
+            {
+                new MenuItem{ Text = "Статистика", Url = "/reports/stats" },
+                new MenuItem{ Text = "Выгрузки", Url = "/reports/export" }
+            }
+        },
+        new MenuItem
+        {
+            Text = "🤖 ИИ",
+            Items = new List<MenuItem>
+            {
+                new MenuItem{ Text = "Модель ИИ", Url = "/ai" },
+                new MenuItem{ Text = "Настройки ИИ", Url = "/ai/settings" }
             }
         }
-    }
+    };
+
+    private List<DropDownMenuItem> UserItems = new()
+    {
+        new DropDownMenuItem{ Text = "Профиль", Id = "profile" },
+        new DropDownMenuItem{ Text = "Выход", Id = "logout" }
+    };
+
+    protected override Task OnInitializedAsync() => Task.CompletedTask;
 
     private void OnItemSelected(MenuEventArgs<MenuItem> args)
     {
