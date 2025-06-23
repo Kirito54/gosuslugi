@@ -6,6 +6,7 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace GovServices.Server.Mappings
 {
@@ -71,9 +72,16 @@ namespace GovServices.Server.Mappings
                 .ForMember(d => d.Attachments, o => o.Ignore());
             CreateMap<CreateRosreestrRequestDto, RosreestrRequest>();
             CreateMap<SedDocumentLog, SedDocumentLogDto>().ReverseMap();
-            CreateMap<Service, ServiceDto>().ReverseMap();
-            CreateMap<CreateServiceDto, Service>();
-            CreateMap<UpdateServiceDto, Service>();
+            CreateMap<Service, ServiceDto>()
+                .ForMember(d => d.ExecutionStages, o => o.MapFrom(s => DeserializeStages(s.ExecutionStagesJson)))
+                .ReverseMap()
+                .ForMember(d => d.ExecutionStagesJson, o => o.MapFrom(s => SerializeStages(s.ExecutionStages)));
+
+            CreateMap<CreateServiceDto, Service>()
+                .ForMember(d => d.ExecutionStagesJson, o => o.MapFrom(s => SerializeStages(s.ExecutionStages)));
+
+            CreateMap<UpdateServiceDto, Service>()
+                .ForMember(d => d.ExecutionStagesJson, o => o.MapFrom(s => SerializeStages(s.ExecutionStages)));
             CreateMap<Template, TemplateDto>().ReverseMap();
             CreateMap<CreateTemplateDto, Template>();
             CreateMap<UpdateTemplateDto, Template>();
@@ -106,6 +114,18 @@ namespace GovServices.Server.Mappings
             CreateMap<UpdateServiceTemplateDto, ServiceTemplate>();
 
             CreateMap<Dictionary, DictionaryDto>();
+        }
+
+        private static List<ExecutionStage>? DeserializeStages(string? json)
+        {
+            return string.IsNullOrEmpty(json)
+                ? null
+                : JsonSerializer.Deserialize<List<ExecutionStage>>(json!);
+        }
+
+        private static string? SerializeStages(List<ExecutionStage>? stages)
+        {
+            return stages != null ? JsonSerializer.Serialize(stages) : null;
         }
     }
 }
