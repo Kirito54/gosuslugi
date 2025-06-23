@@ -1,3 +1,4 @@
+using System.IO;
 using Syncfusion.Blazor.Popups;
 using Syncfusion.Blazor.Notifications;
 
@@ -11,6 +12,12 @@ public class ErrorHandlerService
     public void Handle(Exception ex)
     {
         _lastError = ex;
+        try
+        {
+            Directory.CreateDirectory("logs");
+            File.AppendAllText("logs/errors.log", $"{DateTime.Now:o} {ex.Message}\n");
+        }
+        catch {}
         OnError?.Invoke();
     }
 

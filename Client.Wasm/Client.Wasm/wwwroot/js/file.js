@@ -35,3 +35,18 @@ window.signWithCryptoPro = async (base64) => {
     });
 };
 
+
+window.checkAccordionInit = function() {
+    var acc = document.querySelector('.e-accordion');
+    if (acc && !acc.ej2_instances) {
+        try {
+            new ej.navigations.Accordion({}, acc);
+        } catch (e) {
+            console.error('Accordion init failed', e);
+        }
+    }
+};
+
+window.addEventListener('DOMContentLoaded', function(){
+    if (window.checkAccordionInit) window.checkAccordionInit();
+});
