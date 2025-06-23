@@ -17,7 +17,7 @@
                              CssClass="bootstrap5 top-nav-menu"
                              Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal"
                              ShowItemOnClick="true">
-                        <MenuEvents TValue="MenuItem" ItemClicked="OnItemClicked" />
+                        <MenuEvents TValue="MenuItem" OnItemSelected="HandleMenuItemSelected" />
                     </SfMenu>
                     <!-- Меню пользователя в правом верхнем углу -->
                     <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
@@ -106,7 +106,7 @@
 
     protected override Task OnInitializedAsync() => Task.CompletedTask;
 
-    private void OnItemClicked(MenuEventArgs<MenuItem> args)
+    private void HandleMenuItemSelected(MenuEventArgs<MenuItem> args)
     {
         Console.WriteLine(args.Item.Text);
         if (!string.IsNullOrEmpty(args.Item.Url))
