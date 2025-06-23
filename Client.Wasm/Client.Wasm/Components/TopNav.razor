@@ -7,7 +7,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" OnItemSelected="OnMenuItemSelected"></SfMenu>
+        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal" MenuItemClicked="OnMenuItemClicked"></SfMenu>
         <div class="user-dropdown">
             <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
         </div>
@@ -35,8 +35,9 @@
         }).ToList();
     }
 
-    private void OnMenuItemSelected(MenuEventArgs<MenuItem> args)
+    private void OnMenuItemClicked(MenuEventArgs<MenuItem> args)
     {
+        Console.WriteLine(args.Item.Text);
         if (!string.IsNullOrEmpty(args.Item.Url))
         {
             Nav.NavigateTo(args.Item.Url);
