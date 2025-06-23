@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Server.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250618132104_Initial")]
+    [Migration("20250623130857_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -814,7 +814,20 @@ namespace Server.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("ExecutionDeadlineDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ExecutionDeadlineDays")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ExecutionStagesJson")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
 
