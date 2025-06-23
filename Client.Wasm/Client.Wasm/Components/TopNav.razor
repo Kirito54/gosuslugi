@@ -10,11 +10,11 @@
     <Authorized>
         <SfAppBar Color="AppBarColor.Light" CssClass="appbar">
             <AppBarContent>
-                <div class="flex justify-between items-center w-full">
-                    <div class="flex items-center">
-                        <a href="/" class="flex items-center mr-4 hover:opacity-80 transition-all">
-                            <img src="logo.svg" alt="Logo" class="h-8 w-8 mr-2" />
-                            <span class="font-semibold text-lg">Государственные услуги</span>
+                <div class="container d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <a href="/" class="d-flex align-items-center me-4 text-decoration-none hover:opacity-80 transition-all">
+                            <img src="logo.svg" alt="Logo" class="me-2" style="height:32px;width:32px;" />
+                            <span class="fw-semibold h5 mb-0">Государственные услуги</span>
                         </a>
                         <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
                             <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
@@ -28,7 +28,7 @@
     <NotAuthorized>
         <SfAppBar Color="AppBarColor.Light" CssClass="appbar">
             <AppBarContent>
-                <div class="flex justify-end items-center w-full">
+                <div class="container d-flex justify-content-end align-items-center">
                     <SfButton CssClass="e-primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</SfButton>
                 </div>
             </AppBarContent>
