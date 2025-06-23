@@ -1,5 +1,6 @@
 using GovServices.Server.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GovServices.Server.Data
@@ -131,6 +132,67 @@ namespace GovServices.Server.Data
                 .HasOne(p => p.Department)
                 .WithMany()
                 .HasForeignKey(p => p.DepartmentId);
+
+            var createdAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            builder.Entity<Department>().HasData(
+                new Department { Id = SeedData.Departments.IT, Name = "IT" },
+                new Department { Id = SeedData.Departments.Legal, Name = "Юридический" },
+                new Department { Id = SeedData.Departments.HR, Name = "Кадры" }
+            );
+
+            builder.Entity<Service>().HasData(
+                new Service
+                {
+                    Id = SeedData.DefaultServiceId,
+                    Name = "Базовая услуга",
+                    Description = "Сервис по умолчанию",
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt
+                }
+            );
+
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = "8fd9f63e-0001-4000-8000-000000000001",
+                    Name = SeedData.Roles.Specialist,
+                    NormalizedName = SeedData.Roles.Specialist.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = "8fd9f63e-0002-4000-8000-000000000002",
+                    Name = SeedData.Roles.DepartmentHead,
+                    NormalizedName = SeedData.Roles.DepartmentHead.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = "8fd9f63e-0003-4000-8000-000000000003",
+                    Name = SeedData.Roles.ManagementHead,
+                    NormalizedName = SeedData.Roles.ManagementHead.ToUpper()
+                }
+            );
+
+            builder.Entity<Permission>().HasData(
+                new Permission
+                {
+                    Id = SeedData.Permissions.AccessApplications,
+                    Name = "Доступ к заявлениям",
+                    DepartmentId = SeedData.Departments.IT,
+                    Role = SeedData.Roles.Specialist,
+                    ServiceId = SeedData.DefaultServiceId,
+                    CanView = true
+                },
+                new Permission
+                {
+                    Id = SeedData.Permissions.EditContracts,
+                    Name = "Редактирование договоров",
+                    DepartmentId = SeedData.Departments.Legal,
+                    Role = SeedData.Roles.DepartmentHead,
+                    ServiceId = SeedData.DefaultServiceId,
+                    CanEdit = true
+                }
+            );
         }
     }
 }
