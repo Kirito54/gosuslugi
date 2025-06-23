@@ -12,7 +12,10 @@
             <AppBarContent>
                 <div class="flex justify-between items-center w-full">
                     <div class="flex items-center">
-                        <a href="/" class="font-semibold text-lg mr-4">GovServices</a>
+                        <a href="/" class="flex items-center mr-4 hover:opacity-80 transition-all">
+                            <img src="logo.svg" alt="Logo" class="h-8 w-8 mr-2" />
+                            <span class="font-semibold text-lg">Государственные услуги</span>
+                        </a>
                         <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
                             <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
                         </SfMenu>
