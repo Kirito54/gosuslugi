@@ -8,19 +8,19 @@
 
 <AuthorizeView>
     <Authorized>
-        <SfAppBar Color="AppBarColor.Light" CssClass="appbar">
+        <SfAppBar CssClass="appbar e-appbar e-light">
             <AppBarContent>
-                <div class="container d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                        <a href="/" class="d-flex align-items-center me-4 text-decoration-none hover:opacity-80 transition-all">
-                            <img src="logo.svg" alt="Logo" class="me-2" style="height:32px;width:32px;" />
+                <div class="container flex justify-between items-center">
+                    <div class="flex items-center">
+                        <a href="/" class="flex items-center mr-4 text-decoration-none hover:opacity-80 transition-all">
+                            <img src="logo.svg" alt="Logo" class="mr-2" style="height:32px;width:32px;" />
                             <span class="fw-semibold h5 mb-0">Государственные услуги</span>
                         </a>
-                        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
+                        <SfMenu Items="@MenuItems" CssClass="top-nav e-menu-wrapper e-horizontal" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
                             <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
                         </SfMenu>
                     </div>
-                    <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
+                    <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Content="@UserDisplayName" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
                 </div>
             </AppBarContent>
         </SfAppBar>
@@ -37,6 +37,7 @@
 </AuthorizeView>
 
 @code {
+    private string UserDisplayName = "Пользователь";
     private List<MenuItem> MenuItems = new();
     private List<DropDownMenuItem> UserItems = new()
     {
@@ -45,13 +46,28 @@
         new DropDownMenuItem{Text="Выйти", Id="logout"}
     };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         MenuItems = Menu.Groups.Select(g => new MenuItem
         {
             Text = g.Title,
             Items = g.Items.Select(i => new MenuItem { Text = i.Title, Url = i.Url }).ToList()
         }).ToList();
+
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        var name = state.User.Identity?.Name ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length > 1)
+            {
+                UserDisplayName = $"{parts[0]} {string.Join(string.Empty, parts.Skip(1).Select(p => p[0] + "."))}";
+            }
+            else
+            {
+                UserDisplayName = name;
+            }
+        }
     }
 
     private void OnItemSelected(MenuEventArgs<MenuItem> args)
