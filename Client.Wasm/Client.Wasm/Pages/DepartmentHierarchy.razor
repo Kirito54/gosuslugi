@@ -1,0 +1,27 @@
+@page "/departments"
+@inject IDepartmentApiClient ApiClient
+@using Client.Wasm.DTOs
+@using Syncfusion.Blazor.TreeGrid
+
+<SfCard CssClass="mb-4">
+    <CardHeader>
+        <h2>Подразделения</h2>
+    </CardHeader>
+    <CardContent>
+        <SfTreeGrid TValue="DepartmentDto" DataSource="@items" IdMapping="Id" ParentIdMapping="ParentDepartmentId" CssClass="e-bootstrap5">
+            <TreeGridColumns>
+                <TreeGridColumn Field="Name" HeaderText="Название" Width="250" />
+                <TreeGridColumn Field="Description" HeaderText="Описание" />
+            </TreeGridColumns>
+        </SfTreeGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<DepartmentDto> items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ApiClient.GetAllAsync();
+    }
+}

@@ -38,6 +38,8 @@ namespace GovServices.Server.Data
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
         public DbSet<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
         public DbSet<UserPermissionGroup> UserPermissionGroups { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<NumberTemplate> NumberTemplates { get; set; }
         public DbSet<NumberTemplateCounter> NumberTemplateCounters { get; set; }
@@ -82,6 +84,53 @@ namespace GovServices.Server.Data
             builder.Entity<NumberTemplateCounter>()
                 .HasIndex(c => new { c.TemplateId, c.ScopeKey })
                 .IsUnique();
+
+            builder.Entity<Department>()
+                .HasOne(d => d.ParentDepartment)
+                .WithMany(d => d.ChildDepartments)
+                .HasForeignKey(d => d.ParentDepartmentId);
+
+            builder.Entity<Position>()
+                .HasOne(p => p.Department)
+                .WithMany(d => d.Positions)
+                .HasForeignKey(p => p.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserProfile>()
+                .HasOne(u => u.User)
+                .WithOne()
+                .HasForeignKey<UserProfile>(u => u.UserId);
+
+            builder.Entity<UserProfile>()
+                .HasOne(u => u.Position)
+                .WithMany(p => p.UserProfiles)
+                .HasForeignKey(u => u.PositionId);
+
+            builder.Entity<UserProfile>()
+                .HasOne(u => u.Department)
+                .WithMany()
+                .HasForeignKey(u => u.DepartmentId);
+
+            builder.Entity<UserProfile>()
+                .HasOne(u => u.Supervisor)
+                .WithMany(s => s.Subordinates)
+                .HasForeignKey(u => u.SupervisorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Service>()
+                .HasOne(s => s.ResponsibleDepartment)
+                .WithMany()
+                .HasForeignKey(s => s.ResponsibleDepartmentId);
+
+            builder.Entity<Permission>()
+                .HasOne(p => p.Service)
+                .WithMany()
+                .HasForeignKey(p => p.ServiceId);
+
+            builder.Entity<Permission>()
+                .HasOne(p => p.Department)
+                .WithMany()
+                .HasForeignKey(p => p.DepartmentId);
         }
     }
 }
