@@ -8,15 +8,28 @@
 
 <AuthorizeView>
     <Authorized>
-        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
-            <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
-        </SfMenu>
-        <div class="user-dropdown">
-            <SfDropDownButton CssClass="e-flat" IconCss="user-icon" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
-        </div>
+        <SfAppBar Color="AppBarColor.Light" CssClass="appbar">
+            <AppBarContent>
+                <div class="flex justify-between items-center w-full">
+                    <div class="flex items-center">
+                        <a href="/" class="font-semibold text-lg mr-4">GovServices</a>
+                        <SfMenu Items="@MenuItems" CssClass="top-nav" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
+                            <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
+                        </SfMenu>
+                    </div>
+                    <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
+                </div>
+            </AppBarContent>
+        </SfAppBar>
     </Authorized>
     <NotAuthorized>
-        <SfButton CssClass="e-primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</SfButton>
+        <SfAppBar Color="AppBarColor.Light" CssClass="appbar">
+            <AppBarContent>
+                <div class="flex justify-end items-center w-full">
+                    <SfButton CssClass="e-primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</SfButton>
+                </div>
+            </AppBarContent>
+        </SfAppBar>
     </NotAuthorized>
 </AuthorizeView>
 
