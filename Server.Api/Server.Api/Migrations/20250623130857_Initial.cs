@@ -177,6 +177,10 @@ namespace Server.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    ExecutionDeadlineDays = table.Column<int>(type: "integer", nullable: true),
+                    ExecutionDeadlineDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ExecutionStagesJson = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
