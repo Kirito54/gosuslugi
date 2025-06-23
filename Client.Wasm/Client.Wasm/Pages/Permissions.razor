@@ -1,0 +1,48 @@
+@page "/permissions"
+@inject IPermissionApiClient ApiClient
+@using Client.Wasm.DTOs
+@using Syncfusion.Blazor.Grids
+
+<SfCard CssClass="mb-4">
+    <CardHeader>
+        <h2>Права доступа</h2>
+    </CardHeader>
+    <CardContent>
+        <SfGrid TValue="PermissionDto" DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5">
+            <GridColumns>
+                <GridColumn Field="Role" HeaderText="Роль" Width="150" />
+                <GridColumn Field="ServiceId" HeaderText="Услуга" Width="120" />
+                <GridColumn Field="DepartmentId" HeaderText="Отдел" Width="120" />
+                <GridColumn HeaderText="Просмотр" TextAlign="TextAlign.Center" Width="80">
+                    <Template>
+                        @((context as PermissionDto).CanView ? "✓" : "-")
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderText="Изменение" TextAlign="TextAlign.Center" Width="80">
+                    <Template>
+                        @((context as PermissionDto).CanEdit ? "✓" : "-")
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderText="Утверждение" TextAlign="TextAlign.Center" Width="80">
+                    <Template>
+                        @((context as PermissionDto).CanApprove ? "✓" : "-")
+                    </Template>
+                </GridColumn>
+                <GridColumn HeaderText="Удаление" TextAlign="TextAlign.Center" Width="80">
+                    <Template>
+                        @((context as PermissionDto).CanDelete ? "✓" : "-")
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<PermissionDto> items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ApiClient.GetAllAsync();
+    }
+}

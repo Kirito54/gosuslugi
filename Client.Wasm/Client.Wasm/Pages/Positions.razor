@@ -1,0 +1,28 @@
+@page "/positions"
+@inject IPositionApiClient ApiClient
+@using Client.Wasm.DTOs
+@using Syncfusion.Blazor.Grids
+
+<SfCard CssClass="mb-4">
+    <CardHeader>
+        <h2>Должности</h2>
+    </CardHeader>
+    <CardContent>
+        <SfGrid TValue="PositionDto" DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5">
+            <GridColumns>
+                <GridColumn Field="Name" HeaderText="Название" Width="200" />
+                <GridColumn Field="DepartmentId" HeaderText="Отдел" Width="120" />
+                <GridColumn Field="StaffLimit" HeaderText="Штат" Width="100" />
+            </GridColumns>
+        </SfGrid>
+    </CardContent>
+</SfCard>
+
+@code {
+    List<PositionDto> items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ApiClient.GetAllAsync();
+    }
+}
