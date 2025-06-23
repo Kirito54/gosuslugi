@@ -10,17 +10,20 @@
     <Authorized>
         <SfAppBar CssClass="appbar e-appbar e-light">
             <AppBarContent>
-                <div class="container flex justify-between items-center">
+                <div class="container flex justify-between items-center" style="max-width:1920px;">
                     <div class="flex items-center">
                         <a href="/" class="flex items-center mr-4 text-decoration-none hover:opacity-80 transition-all">
-                            <img src="logo.svg" alt="Logo" class="mr-2" style="height:32px;width:32px;" />
+                            <span class="text-2xl mr-2">🏛️</span>
                             <span class="fw-semibold h5 mb-0">Государственные услуги</span>
                         </a>
                         <SfMenu Items="@MenuItems" CssClass="top-nav e-menu-wrapper e-horizontal" HamburgerMode="true" Orientation="Syncfusion.Blazor.Navigations.Orientation.Horizontal">
                             <MenuEvents TValue="MenuItem" ItemSelected="OnItemSelected"></MenuEvents>
                         </SfMenu>
                     </div>
-                    <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Content="@UserDisplayName" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
+                    <div class="flex items-center space-x-2">
+                        <SfButton CssClass="e-flat" IconCss="e-icons e-bell" ></SfButton>
+                        <SfDropDownButton CssClass="e-flat profile-button" IconCss="e-icons e-user" Content="@UserDisplayName" Items="UserItems" ItemSelected="OnUserItemSelected"></SfDropDownButton>
+                    </div>
                 </div>
             </AppBarContent>
         </SfAppBar>
@@ -42,8 +45,7 @@
     private List<DropDownMenuItem> UserItems = new()
     {
         new DropDownMenuItem{Text="Профиль", Id="profile"},
-        new DropDownMenuItem{Text="Настройки", Id="settings"},
-        new DropDownMenuItem{Text="Выйти", Id="logout"}
+        new DropDownMenuItem{Text="Выход", Id="logout"}
     };
 
     protected override async Task OnInitializedAsync()
@@ -89,9 +91,6 @@
                 break;
             case "profile":
                 Nav.NavigateTo("/profile");
-                break;
-            case "settings":
-                Nav.NavigateTo("/settings");
                 break;
         }
     }
