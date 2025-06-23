@@ -16,6 +16,8 @@
     <ContentTemplate>
                     <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
                     <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
+                    <SfNumericTextBox TValue="int?" @bind-Value="model.ExecutionDeadlineDays" Placeholder="Срок (дней)" CssClass="mb-3 w-100" />
+                    <SfDatePicker TValue="DateTime?" @bind-Value="model.ExecutionDeadlineDate" Placeholder="Точная дата" CssClass="mb-3 w-100" />
                 </ContentTemplate>
 </TabItem>
             </TabItems>
@@ -34,7 +36,15 @@
 
     public void Show(CreateServiceDto dto)
     {
-        model = new ServiceDto();
+        model = new ServiceDto
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            ExecutionDeadlineDays = dto.ExecutionDeadlineDays,
+            ExecutionDeadlineDate = dto.ExecutionDeadlineDate,
+            ExecutionStages = dto.ExecutionStages,
+            Status = dto.Status
+        };
         header = "Новая услуга";
         _ = dlg.ShowAsync();
     }
@@ -51,9 +61,25 @@
     async Task HandleSave()
     {
         if (model.Id == 0)
-            await ApiClient.CreateAsync(new CreateServiceDto { Name = model.Name, Description = model.Description });
+            await ApiClient.CreateAsync(new CreateServiceDto
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ExecutionDeadlineDays = model.ExecutionDeadlineDays,
+                ExecutionDeadlineDate = model.ExecutionDeadlineDate,
+                ExecutionStages = model.ExecutionStages,
+                Status = model.Status
+            });
         else
-            await ApiClient.UpdateAsync(model.Id, new UpdateServiceDto { Name = model.Name, Description = model.Description });
+            await ApiClient.UpdateAsync(model.Id, new UpdateServiceDto
+            {
+                Name = model.Name,
+                Description = model.Description,
+                ExecutionDeadlineDays = model.ExecutionDeadlineDays,
+                ExecutionDeadlineDate = model.ExecutionDeadlineDate,
+                ExecutionStages = model.ExecutionStages,
+                Status = model.Status
+            });
         await dlg.HideAsync();
         if (OnSaved.HasDelegate)
         {
