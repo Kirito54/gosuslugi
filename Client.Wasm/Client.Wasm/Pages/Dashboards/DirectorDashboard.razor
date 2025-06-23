@@ -1,0 +1,60 @@
+@page "/dashboard/director"
+@attribute [Authorize(Roles="Директор")]
+@using Syncfusion.Blazor.Charts
+@inject NavigationManager Nav
+
+<div class="container p-4">
+    <h1 class="mb-4">Дашборд директора</h1>
+    <div class="row g-4">
+        <div class="col-md-4 col-sm-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Всего заявлений</h4></CardHeader>
+                <CardContent><h2 class="display-6">@total</h2></CardContent>
+            </SfCard>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Среднее время</h4></CardHeader>
+                <CardContent><h2 class="display-6">@avg ч.</h2></CardContent>
+            </SfCard>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <CardHeader><h4>Активные распоряжения</h4></CardHeader>
+                <CardContent><h2 class="display-6">@orders</h2></CardContent>
+            </SfCard>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <div class="col-lg-12">
+            <SfChart Title="Заявления по подразделениям" PointClick="OnDeptClick">
+                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="appsByDept" XName="Dept" YName="Count" Type="ChartSeriesType.Column"></ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    int total = 320;
+    double avg = 2.7;
+    int orders = 14;
+
+    List<DeptCount> appsByDept = new()
+    {
+        new DeptCount("Отдел 1", 80),
+        new DeptCount("Отдел 2", 100),
+        new DeptCount("Отдел 3", 140)
+    };
+
+    void OnDeptClick(PointEventArgs args)
+    {
+        var item = appsByDept[args.Point.Index];
+        Nav.NavigateTo($"/dashboard/department?dept={item.Dept}");
+    }
+
+    record DeptCount(string Dept, int Count);
+}

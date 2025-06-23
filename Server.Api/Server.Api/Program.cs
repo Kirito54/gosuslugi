@@ -151,6 +151,7 @@ builder.Services.AddHostedService<ExampleBackgroundService>();
 builder.Services.AddHostedService<PasswordReminderService>();
 builder.Services.AddHostedService<StatusNotificationService>();
 builder.Services.AddHostedService<ExtractMonitoringService>();
+builder.Services.AddHostedService<DeadlineMonitoringService>();
 
 var app = builder.Build();
 

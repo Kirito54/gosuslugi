@@ -4,6 +4,7 @@
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
+@using Syncfusion.Blazor.Grids
 
 <div class="container p-4">
     <SfCard CssClass="mb-4">
@@ -18,6 +19,9 @@
                 <GridColumn Field=@nameof(ServiceDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
             <GridColumn Field=@nameof(ServiceDto.Name) HeaderText="Название" Width="200" />
             <GridColumn Field=@nameof(ServiceDto.Description) HeaderText="Описание" Width="200" />
+            <GridColumn Field=@nameof(ServiceDto.ExecutionDeadlineDays) HeaderText="Срок (дней)" Width="120" />
+            <GridColumn Field=@nameof(ServiceDto.ExecutionDeadlineDate) HeaderText="Дедлайн" Format="d" Width="120" />
+            <GridColumn Field=@nameof(ServiceDto.Status) HeaderText="Статус" Width="120" />
             <GridColumn Field=@nameof(ServiceDto.CreatedAt) HeaderText="Создана" Format="d" Width="120" />
             <GridColumn Field=@nameof(ServiceDto.UpdatedAt) HeaderText="Обновлена" Format="d" Width="120" />
             <GridColumn HeaderText="" Width="120" TextAlign="TextAlign.Center">
@@ -49,6 +53,7 @@
     void OpenNew() => editDialog.Show(new CreateServiceDto());
 
     void Edit(int id) => editDialog.Load(id);
+
 
     async Task Delete(int id)
     {

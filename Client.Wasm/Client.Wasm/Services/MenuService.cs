@@ -53,7 +53,11 @@ public class MenuService
         if (groupSettings.Items.Count > 0) Groups.Add(groupSettings);
 
         var groupReports = new MenuGroup { Title = "📊 Отчёты" };
-        AddIfExists(pages, groupReports.Items, "/dashboard", "Дашборд");
+        AddIfExists(pages, groupReports.Items, "/dashboard", "Общий дашборд");
+        AddIfExists(pages, groupReports.Items, "/dashboard/specialist", "Специалист");
+        AddIfExists(pages, groupReports.Items, "/dashboard/department", "Отдел");
+        AddIfExists(pages, groupReports.Items, "/dashboard/management", "Управление");
+        AddIfExists(pages, groupReports.Items, "/dashboard/director", "Директор");
         if (groupReports.Items.Count > 0) Groups.Add(groupReports);
 
         var groupAi = new MenuGroup { Title = "AI" };
