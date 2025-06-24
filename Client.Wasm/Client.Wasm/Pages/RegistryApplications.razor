@@ -1,20 +1,23 @@
 @page "/registry/applications"
 @attribute [Authorize]
 
-<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
-    <CardHeader>
-        <h1>Актуальные заявления</h1>
-    </CardHeader>
-    <CardContent>
-        <SfGrid DataSource="@applications" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(ApplicationRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(ApplicationRow.Name) HeaderText="Название" Width="200" />
-            </GridColumns>
-        </SfGrid>
-    </CardContent>
-</SfCard>
+<MudCard Class="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Актуальные заявления</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@applications" Dense="true">
+            <HeaderContent>
+                <MudTh>ID</MudTh>
+                <MudTh>Название</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="ID">@context.Id</MudTd>
+                <MudTd DataLabel="Название">@context.Name</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
 
 @code {
     List<ApplicationRow> applications = new();
