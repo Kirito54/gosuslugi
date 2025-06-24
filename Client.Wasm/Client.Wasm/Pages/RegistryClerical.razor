@@ -1,39 +1,46 @@
 @page "/registry/clerical"
 @attribute [Authorize(Roles = "Канцелярия")]
 
-<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
-    <CardHeader>
-        <h1>Реестр канцелярии</h1>
-    </CardHeader>
-    <CardContent>
-        <SfButton CssClass="e-primary mb-4" OnClick="ShowDialog">Зарегистрировать ответ</SfButton>
-        <SfGrid DataSource="@answers" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(AnswerRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(AnswerRow.Subject) HeaderText="Тема" Width="200" />
-            </GridColumns>
-        </SfGrid>
-        <SfDialog Width="450px" IsModal="true" ShowCloseIcon="true" Visible="@dialogVisible" Header="Регистрация ответа" CssClass="e-bootstrap5">
-            <EditForm Model="newAnswer" OnValidSubmit="Save">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <SfTextBox @bind-Value="newAnswer.Subject" Placeholder="Тема" CssClass="form-field" />
-                <SfUploader AutoUpload="false" CssClass="form-field" />
-                <div class="text-right">
-                    <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-                    <SfButton CssClass="e-flat" OnClick="HideDialog">Отмена</SfButton>
-                </div>
-            </EditForm>
-        </SfDialog>
-    </CardContent>
-</SfCard>
+<MudCard Class="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">Реестр канцелярии</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudButton Color="Color.Primary" Class="mb-4" OnClick="ShowDialog">Зарегистрировать ответ</MudButton>
+        <MudTable Items="@answers" Hover="true">
+            <HeaderContent>
+                <MudTh>ID</MudTh>
+                <MudTh>Тема</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="ID">@context.Id</MudTd>
+                <MudTd DataLabel="Тема">@context.Subject</MudTd>
+            </RowTemplate>
+        </MudTable>
+        <MudDialog @bind-Visible="dialogVisible" MaxWidth="MaxWidth.Small">
+            <DialogContent>
+                <MudText Typo="Typo.h6" Class="mb-2">Регистрация ответа</MudText>
+                <EditForm Model="newAnswer" OnValidSubmit="Save">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <MudTextField @bind-Value="newAnswer.Subject" Label="Тема" Class="form-field" />
+                    <InputFile OnChange="OnFileChange" class="form-field" />
+                    <!-- TODO: заменить на MudBlazor загрузчик с прогрессом -->
+                    <div class="text-right">
+                        <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                        <MudButton Variant="Variant.Text" OnClick="HideDialog">Отмена</MudButton>
+                    </div>
+                </EditForm>
+            </DialogContent>
+        </MudDialog>
+    </MudCardContent>
+</MudCard>
 
 @code {
     List<AnswerRow> answers = new();
     bool dialogVisible;
     AnswerRow newAnswer = new();
-    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
+    IBrowserFile? uploadedFile;
 
     protected override void OnInitialized()
     {
@@ -42,6 +49,8 @@
 
     void ShowDialog() => dialogVisible = true;
     void HideDialog() => dialogVisible = false;
+
+    void OnFileChange(InputFileChangeEventArgs e) => uploadedFile = e.File;
 
     Task Save()
     {
