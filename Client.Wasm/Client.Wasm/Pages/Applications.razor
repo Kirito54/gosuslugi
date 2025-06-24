@@ -5,40 +5,52 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
-<div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Заявки</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => OpenNew() )">Новая заявка</SfButton>
-            <SfGrid TItem="ApplicationDto" DataSource="@items" AllowPaging="true" Toolbar="@toolbar" Width="100%" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(ApplicationDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-            <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="Номер" Width="120" />
-            <GridColumn Field=@nameof(ApplicationDto.ServiceName) HeaderText="Услуга" Width="200" />
-            <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="120" />
-            <GridColumn Field=@nameof(ApplicationDto.UpdatedAt) HeaderText="Обновлено" Format="d" Width="120" />
-            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="180">
-                <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-open" OnClick="@( (MouseEventArgs e) => Details((context as ApplicationDto).Id) )"></SfButton>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => Edit((context as ApplicationDto).Id) )"></SfButton>
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as ApplicationDto).Id) )"></SfButton>
-                </Template>
-            </GridColumn>
-            </GridColumns>
-        </SfGrid>
-        </CardContent>
-    </SfCard>
+<MudContainer MaxWidth="MaxWidth.False" Class="p-4">
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Заявки</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTextField @bind-Value="searchString" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="mb-3" />
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="OpenNew">Новая заявка</MudButton>
+            <MudTable Items="@filteredItems" Hover="true" Dense="true">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Номер</MudTh>
+                    <MudTh>Услуга</MudTh>
+                    <MudTh>Статус</MudTh>
+                    <MudTh>Обновлено</MudTh>
+                    <MudTh Class="text-center">Действия</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Номер">@context.Number</MudTd>
+                    <MudTd DataLabel="Услуга">@context.ServiceName</MudTd>
+                    <MudTd DataLabel="Статус">@context.Status</MudTd>
+                    <MudTd DataLabel="Обновлено">@context.UpdatedAt.ToShortDateString()</MudTd>
+                    <MudTd Class="text-center" DataLabel="Действия">
+                        <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" OnClick="@(() => Details(context.Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => Edit(context.Id))" />
+                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(() => Delete(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
 
     <ApplicationEdit @ref="edit" OnSaved="LoadData" />
-</div>
+</MudContainer>
 
 @code {
     List<ApplicationDto> items = new();
-    string[] toolbar = new[] { "Search" };
     ApplicationEdit edit;
+    string searchString = string.Empty;
+    IEnumerable<ApplicationDto> filteredItems => string.IsNullOrWhiteSpace(searchString)
+        ? items
+        : items.Where(x =>
+            (x.Number != null && x.Number.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            (x.ServiceName != null && x.ServiceName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+            (x.Status != null && x.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase)));
 
     protected override async Task OnInitializedAsync() => await LoadData();
     async Task LoadData() => items = await ApiClient.GetAllAsync();
