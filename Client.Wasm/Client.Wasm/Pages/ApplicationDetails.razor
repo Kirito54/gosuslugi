@@ -13,66 +13,71 @@
     }
     else
     {
-        <SfCard CssClass="mb-3">
-            <SfCardHeader>
-                <h2>@app.Number</h2>
-            </SfCardHeader>
-            <SfCardContent>
+        <MudCard Class="mb-3">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">@app.Number</MudText>
+            </MudCardHeader>
+            <MudCardContent>
                 <p><b>Услуга:</b> @app.ServiceName</p>
                 <p><b>Статус:</b> @app.Status</p>
                 <p><b>Создана:</b> @app.CreatedAt.ToShortDateString()</p>
                 <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
-            </SfCardContent>
-        </SfCard>
-        <SfCard CssClass="mb-3">
-            <SfCardHeader>
-                <h3>Результаты</h3>
-            </SfCardHeader>
-            <SfCardContent>
-                <SfGrid TItem="ApplicationResultDto" DataSource="results" AllowPaging="true" Width="100%">
-                    <GridPageSettings PageSize="5" />
-                    <GridColumns>
-                        <GridColumn Field=@nameof(ApplicationResultDto.Type) HeaderText="Тип" Width="150" />
-                        <GridColumn Field=@nameof(ApplicationResultDto.LinkedAt) HeaderText="Дата" Format="g" Width="150" />
-                        <GridColumn HeaderText="Документ" Width="100">
-                            <Template>
-                                <a href="/documents/@(context as ApplicationResultDto).DocumentId" target="_blank">Открыть</a>
-                            </Template>
-                        </GridColumn>
-                    </GridColumns>
-                </SfGrid>
-            </SfCardContent>
-        </SfCard>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Class="mb-3">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">Результаты</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTable Items="@results" Dense="true">
+                    <HeaderContent>
+                        <MudTh>Тип</MudTh>
+                        <MudTh>Дата</MudTh>
+                        <MudTh>Документ</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Тип">@context.Type</MudTd>
+                        <MudTd DataLabel="Дата">@context.LinkedAt.ToString("g")</MudTd>
+                        <MudTd DataLabel="Документ">
+                            <a href="/documents/@context.DocumentId" target="_blank">Открыть</a>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudCardContent>
+        </MudCard>
 
-        <SfCard CssClass="mb-3">
-            <SfCardHeader>
+        <MudCard Class="mb-3">
+            <MudCardHeader>
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="m-0">Пересмотры</h3>
-                    <SfButton CssClass="e-outline" OnClick="@(() => revisionModal.Show(app.Id))">Пересмотреть</SfButton>
+                    <MudText Typo="Typo.h6" Class="m-0">Пересмотры</MudText>
+                    <MudButton Variant="Variant.Outlined" OnClick="@(() => revisionModal.Show(app.Id))">Пересмотреть</MudButton>
                 </div>
-            </SfCardHeader>
-            <SfCardContent>
-                <SfGrid TItem="ApplicationRevisionDto" DataSource="revisions" AllowPaging="true" Width="100%">
-                    <GridPageSettings PageSize="5" />
-                    <GridColumns>
-                        <GridColumn Field=@nameof(ApplicationRevisionDto.Type) HeaderText="Тип" Width="150" />
-                        <GridColumn Field=@nameof(ApplicationRevisionDto.DocumentNumber) HeaderText="Номер" Width="150" />
-                        <GridColumn Field=@nameof(ApplicationRevisionDto.CreatedAt) HeaderText="Дата" Format="g" Width="150" />
-                        <GridColumn HeaderText="Документ" Width="120">
-                            <Template>
-                                <a href="@((context as ApplicationRevisionDto).SedLink)" target="_blank">Ссылка</a>
-                            </Template>
-                        </GridColumn>
-                    </GridColumns>
-        </SfGrid>
-    </SfCardContent>
-</SfCard>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTable Items="@revisions" Dense="true">
+                    <HeaderContent>
+                        <MudTh>Тип</MudTh>
+                        <MudTh>Номер</MudTh>
+                        <MudTh>Дата</MudTh>
+                        <MudTh>Документ</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Тип">@context.Type</MudTd>
+                        <MudTd DataLabel="Номер">@context.DocumentNumber</MudTd>
+                        <MudTd DataLabel="Дата">@context.CreatedAt.ToString("g")</MudTd>
+                        <MudTd DataLabel="Документ">
+                            <a href="@context.SedLink" target="_blank">Ссылка</a>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudCardContent>
+        </MudCard>
 
         <ExternalRequestsTabs ApplicationId="@app.Id" />
         <RelatedApplicationsTabs appId="@app.Id" />
 
         <RevisionModal @ref="revisionModal" OnSubmit="AddRevision" />
-        <SfButton CssClass="e-flat" IconCss="e-icons e-arrow-left" OnClick="@( (MouseEventArgs e) => NavigationManager.NavigateTo("/applications") )">Назад</SfButton>
+        <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" Variant="Variant.Text" OnClick="@((MouseEventArgs e) => NavigationManager.NavigateTo("/applications"))">Назад</MudButton>
     }
 </div>
 
