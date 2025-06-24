@@ -1,0 +1,13 @@
+@inherits LayoutComponentBase
+
+<MudThemeProviderWrapper Theme="@_theme">
+    <div class="login-wrapper">
+        <MudCard Class="login-card">
+            @Body
+        </MudCard>
+    </div>
+</MudThemeProviderWrapper>
+
+@code {
+    private MudTheme _theme = new MudTheme();
+}

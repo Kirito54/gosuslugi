@@ -8,10 +8,9 @@
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                         <NotAuthorized>
-                            @if (!NavigationManager.Uri.Contains("/login"))
-                            {
-                                NavigationManager.NavigateTo("/login", forceLoad: true);
-                            }
+                            <LayoutView Layout="@typeof(LoginLayout)">
+                                <Login />
+                            </LayoutView>
                         </NotAuthorized>
                     </AuthorizeRouteView>
                 </Found>
