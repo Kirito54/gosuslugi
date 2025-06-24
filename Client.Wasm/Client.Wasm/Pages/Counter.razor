@@ -2,15 +2,15 @@
 @page "/counter"
 
 <div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Счётчик</h1>
-        </CardHeader>
-        <CardContent>
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Счётчик</MudText>
+        </MudCardHeader>
+        <MudCardContent>
             <p class="mb-3">Текущее значение: @currentCount</p>
-            <SfButton CssClass="e-primary" OnClick="IncrementCount">Увеличить</SfButton>
-        </CardContent>
-    </SfCard>
+            <MudButton Color="Color.Primary" OnClick="IncrementCount">Увеличить</MudButton>
+        </MudCardContent>
+    </MudCard>
 </div>
 
 @code {
