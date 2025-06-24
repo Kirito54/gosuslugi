@@ -6,21 +6,8 @@
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Исходящие документы</h1>
-        </CardHeader>
-        <CardContent>
-            <SfGrid TItem="OutgoingDocumentDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(OutgoingDocumentDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(OutgoingDocumentDto.FileName) HeaderText="Файл" Width="*" />
-                <GridColumn Field=@nameof(OutgoingDocumentDto.Date) HeaderText="Дата" Format="d" Width="120" />
-            </GridColumns>
-            </SfGrid>
-        </CardContent>
-    </SfCard>
+    @* TODO: заменить на MudBlazor *@
+    <div></div>
 </div>
 
 @code {

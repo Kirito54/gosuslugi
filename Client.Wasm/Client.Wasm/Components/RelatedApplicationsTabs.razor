@@ -3,57 +3,8 @@
 
 @if (appId != 0)
 {
-    <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
-        <SfTab>
-            <TabItems>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="Другие заявления заявителя"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <SfGrid DataSource="@byApplicant" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
-                            <GridPageSettings PageSize="5" />
-                            <GridColumns>
-                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
-                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
-                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
-                            </GridColumns>
-                        </SfGrid>
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="Заявления с этим представителем"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <SfGrid DataSource="@byRepresentative" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
-                            <GridPageSettings PageSize="5" />
-                            <GridColumns>
-                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
-                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
-                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
-                            </GridColumns>
-                        </SfGrid>
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="По пересечению координат"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <SfGrid DataSource="@byGeo" AllowPaging="true" RowSelected="OnRowSelected" CssClass="e-bootstrap5">
-                            <GridPageSettings PageSize="5" />
-                            <GridColumns>
-                                <GridColumn Field=@nameof(ApplicationDto.Number) HeaderText="№" Width="120" />
-                                <GridColumn Field=@nameof(ApplicationDto.CreatedAt) HeaderText="Дата" Format="d" Width="150" />
-                                <GridColumn Field=@nameof(ApplicationDto.Status) HeaderText="Статус" Width="150" />
-                            </GridColumns>
-                        </SfGrid>
-                    </ContentTemplate>
-                </TabItem>
-            </TabItems>
-        </SfTab>
-    </SfCard>
+    @* TODO: заменить на MudBlazor *@
+    <div></div>
 }
 
 @code {
@@ -73,8 +24,9 @@
         }
     }
 
-    void OnRowSelected(RowSelectEventArgs<ApplicationDto> args)
-    {
-        Nav.NavigateTo($"/applications/details/{args.Data.Id}");
-    }
+    // TODO: заменить на MudBlazor обработчик выбора строки
+    // void OnRowSelected(RowSelectEventArgs<ApplicationDto> args)
+    // {
+    //     Nav.NavigateTo($"/applications/details/{args.Data.Id}");
+    // }
 }

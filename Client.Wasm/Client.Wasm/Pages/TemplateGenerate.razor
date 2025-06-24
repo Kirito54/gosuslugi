@@ -2,23 +2,12 @@
 @using Client.Wasm.DTOs
 @inject ITemplateApiClient ApiClient
 
-<SfDialog @ref="dlg" Width="400px" Header="Генерация PDF" ShowCloseIcon="true">
-    <EditForm Model="model" OnValidSubmit="Generate">
-        <DataAnnotationsValidator />
-        <SfNumericTextBox TValue="int" @bind-Value="model.ApplicationId" Placeholder="ID заявки" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.ApplicantName" Placeholder="Заявитель" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.ServiceName" Placeholder="Услуга" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.StepName" Placeholder="Шаг" CssClass="mb-3 w-100" />
-        <SfDatePicker TValue="DateTime" @bind-Value="model.Date" Placeholder="Дата" CssClass="mb-3 w-100" />
-        <div class="text-right">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сгенерировать</SfButton>
-            <SfButton CssClass="e-flat" OnClick="@( (MouseEventArgs e) => dlg.HideAsync() )">Отмена</SfButton>
-        </div>
-    </EditForm>
-</SfDialog>
+@* TODO: заменить на MudBlazor *@
+<div></div>
 
 @code {
-    SfDialog dlg;
+    // TODO: заменить на MudBlazor
+    // SfDialog dlg;
     TemplateModel model = new();
     int templateId;
 
@@ -26,13 +15,15 @@
     {
         templateId = id;
         model = new TemplateModel { Date = DateTime.Today };
-        _ = dlg.ShowAsync();
+        // TODO: заменить на MudBlazor
+        // _ = dlg.ShowAsync();
     }
 
     async Task Generate()
     {
         var bytes = await ApiClient.GeneratePdfAsync(templateId, model);
         // здесь могла бы быть логика скачивания файла
-        _ = dlg.HideAsync();
+        // TODO: заменить на MudBlazor
+        // _ = dlg.HideAsync();
     }
 }

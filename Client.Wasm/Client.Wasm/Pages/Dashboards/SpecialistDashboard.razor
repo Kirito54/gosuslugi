@@ -5,48 +5,11 @@
 <div class="container p-4">
     <h1 class="mb-4">Дашборд специалиста</h1>
     <div class="row g-4">
-        <div class="col-md-3 col-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Заявления</h4></CardHeader>
-                <CardContent><h2 class="display-6">@applications</h2></CardContent>
-            </SfCard>
-        </div>
-        <div class="col-md-3 col-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Документы</h4></CardHeader>
-                <CardContent><h2 class="display-6">@documents</h2></CardContent>
-            </SfCard>
-        </div>
-        <div class="col-md-3 col-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Распоряжения</h4></CardHeader>
-                <CardContent><h2 class="display-6">@orders</h2></CardContent>
-            </SfCard>
-        </div>
-        <div class="col-md-3 col-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Среднее время</h4></CardHeader>
-                <CardContent><h2 class="display-6">@avgTime ч.</h2></CardContent>
-            </SfCard>
-        </div>
+        @* TODO: заменить на MudBlazor карточки *@
     </div>
 
     <div class="row g-4 mt-4">
-        <div class="col-lg-6">
-            <SfChart @ref="appChart" Title="Заявления по месяцам" PointClick="OnAppPointClick">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="appByMonth" Type="ChartSeriesType.Column" XName="Month" YName="Count"></ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
-        </div>
-        <div class="col-lg-6">
-            <SfAccumulationChart Title="Документы по статусу" PointClick="OnDocPointClick">
-                <AccumulationChartSeriesCollection>
-                    <AccumulationChartSeries DataSource="docsByStatus" XName="Status" YName="Count" Type="AccumulationType.Pie" DataLabelSettings-Visible="true"></AccumulationChartSeries>
-                </AccumulationChartSeriesCollection>
-            </SfAccumulationChart>
-        </div>
+        @* TODO: заменить на MudBlazor графики *@
     </div>
 </div>
 
@@ -56,7 +19,8 @@
     int orders = 5;
     double avgTime = 2.3;
 
-    SfChart? appChart;
+    // TODO: заменить на MudBlazor
+    // SfChart? appChart;
 
     List<MonthlyCount> appByMonth = new()
     {
@@ -73,17 +37,18 @@
         new StatusCount("Черновик", 3)
     };
 
-    void OnAppPointClick(PointEventArgs args)
-    {
-        var item = appByMonth[args.Point.Index];
-        Nav.NavigateTo($"/applications?month={item.Month}");
-    }
+    // TODO: заменить на MudBlazor обработчики кликов
+    // void OnAppPointClick(PointEventArgs args)
+    // {
+    //     var item = appByMonth[args.Point.Index];
+    //     Nav.NavigateTo($"/applications?month={item.Month}");
+    // }
 
-    void OnDocPointClick(PointEventArgs args)
-    {
-        var item = docsByStatus[args.Point.Index];
-        Nav.NavigateTo($"/documents?status={item.Status}");
-    }
+    // void OnDocPointClick(PointEventArgs args)
+    // {
+    //     var item = docsByStatus[args.Point.Index];
+    //     Nav.NavigateTo($"/documents?status={item.Status}");
+    // }
 
     record MonthlyCount(string Month, int Count);
     record StatusCount(string Status, int Count);

@@ -3,42 +3,8 @@
 
 @if (ApplicationId != 0)
 {
-    <SfCard CssClass="rounded-xl shadow-lg glass-effect mb-4 p-6">
-        <SfTab>
-            <TabItems>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="Росреестр"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <SfButton CssClass="e-outline mb-3" OnClick="CreateRosreestr">Создать запрос</SfButton>
-                        <SfGrid DataSource="rosreestr" AllowPaging="true" CssClass="e-bootstrap5">
-                            <GridPageSettings PageSize="5" />
-                            <GridColumns>
-                                <GridColumn Field=@nameof(RosreestrRequestDto.RequestId) HeaderText="ID" Width="150" />
-                                <GridColumn Field=@nameof(RosreestrRequestDto.Status) HeaderText="Статус" Width="120" />
-                            </GridColumns>
-                        </SfGrid>
-                    </ContentTemplate>
-                </TabItem>
-                <TabItem>
-                    <ChildContent>
-                        <TabHeader Text="ЗАГС"></TabHeader>
-                    </ChildContent>
-                    <ContentTemplate>
-                        <SfButton CssClass="e-outline mb-3" OnClick="CreateZags">Создать запрос</SfButton>
-                        <SfGrid DataSource="zags" AllowPaging="true" CssClass="e-bootstrap5">
-                            <GridPageSettings PageSize="5" />
-                            <GridColumns>
-                                <GridColumn Field=@nameof(ZagsRequestDto.RequestId) HeaderText="ID" Width="150" />
-                                <GridColumn Field=@nameof(ZagsRequestDto.Status) HeaderText="Статус" Width="120" />
-                            </GridColumns>
-                        </SfGrid>
-                    </ContentTemplate>
-                </TabItem>
-            </TabItems>
-        </SfTab>
-    </SfCard>
+    @* TODO: заменить на MudBlazor *@
+    <div></div>
 }
 
 @code {
