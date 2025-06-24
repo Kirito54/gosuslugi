@@ -6,29 +6,32 @@
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Маршруты</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show() )">Новый маршрут</SfButton>
-            <SfGrid TItem="WorkflowDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(WorkflowDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-            <GridColumn Field=@nameof(WorkflowDto.Name) HeaderText="Название" Width="*"/>
-            <GridColumn Field=@nameof(WorkflowDto.Description) HeaderText="Описание" Width="2*"/>
-            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
-                <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as WorkflowDto).Id) )" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as WorkflowDto).Id) )" />
-                </Template>
-            </GridColumn>
-            </GridColumns>
-        </SfGrid>
-        </CardContent>
-    </SfCard>
-    <WorkflowEdit @ref="edit" OnSaved="LoadData"/>
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Маршруты</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="@(()=> edit.Show())">Новый маршрут</MudButton>
+            <MudTable Items="@items" Hover="true" Dense="true" RowsPerPage="10">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Название</MudTh>
+                    <MudTh>Описание</MudTh>
+                    <MudTh Class="text-center">Действия</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Название">@context.Name</MudTd>
+                    <MudTd DataLabel="Описание">@context.Description</MudTd>
+                    <MudTd DataLabel="Действия" Class="text-center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(()=> edit.Load(context.Id))" />
+                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> Delete(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
+    <WorkflowEdit @ref="edit" OnSaved="LoadData" />
 </div>
 
 @code {
