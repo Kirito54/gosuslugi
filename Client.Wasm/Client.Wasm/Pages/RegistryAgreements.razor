@@ -1,24 +1,11 @@
 @page "/registry/agreements"
 @attribute [Authorize]
 
-<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
-    <CardHeader>
-        <h1>Соглашения</h1>
-    </CardHeader>
-    <CardContent>
-        <SfGrid DataSource="@agreements" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(AgreementRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(AgreementRow.Name) HeaderText="Название" Width="200" />
-            </GridColumns>
-        </SfGrid>
-    </CardContent>
-</SfCard>
+@* TODO: заменить на MudBlazor *@
+<div></div>
 
 @code {
     List<AgreementRow> agreements = new();
-    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
 
     protected override void OnInitialized()
     {

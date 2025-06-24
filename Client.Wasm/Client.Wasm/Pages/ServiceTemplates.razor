@@ -5,38 +5,11 @@
 @inject IJSRuntime Js
 @using Client.Wasm.DTOs
 
-<div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Конструктор услуг</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" OnClick="NewTemplate">Создать услугу</SfButton>
-            <SfGrid TItem="ServiceTemplateDto" DataSource="templates" AllowPaging="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
-                <GridPageSettings PageSize="10" />
-                <GridColumns>
-                    <GridColumn Field=@nameof(ServiceTemplateDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                    <GridColumn Field=@nameof(ServiceTemplateDto.ServiceName) HeaderText="Название" Width="200" />
-                    <GridColumn Field=@nameof(ServiceTemplateDto.IsActive) HeaderText="Активна" Type="ColumnType.Boolean" Width="100" />
-                    <GridColumn Field=@nameof(ServiceTemplateDto.UpdatedAt) HeaderText="Последнее изменение" Format="d" Width="150" />
-                    <GridColumn Field=@nameof(ServiceTemplateDto.UpdatedByName) HeaderText="Кто изменил" Width="180" />
-                    <GridColumn HeaderText="" Width="200" TextAlign="TextAlign.Center">
-                        <Template>
-                            <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@(() => EditTemplate((context as ServiceTemplateDto).Id))"></SfButton>
-                            <SfButton CssClass="e-flat" IconCss="e-icons e-settings" OnClick="@(() => ConfigureTemplate((context as ServiceTemplateDto).Id))"></SfButton>
-                            <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@(() => DeleteTemplate((context as ServiceTemplateDto).Id))"></SfButton>
-                        </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
-        </CardContent>
-    </SfCard>
-    <ServiceTemplateEdit @ref="editor" OnSaved="LoadData" />
-</div>
+@* TODO: заменить на MudBlazor *@
+<div></div>
 
 @code {
     List<ServiceTemplateDto> templates = new();
-    string[] toolbar = new[] { "Search" };
     ServiceTemplateEdit? editor;
 
     protected override async Task OnInitializedAsync()

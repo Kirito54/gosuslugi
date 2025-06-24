@@ -1,24 +1,11 @@
 @page "/registry/rdz-orders"
 @attribute [Authorize]
 
-<SfCard CssClass="glass-effect rounded-xl shadow-lg p-6 mb-4">
-    <CardHeader>
-        <h1>Распоряжения РДЗ</h1>
-    </CardHeader>
-    <CardContent>
-        <SfGrid DataSource="@orders" AllowPaging="true" AllowSorting="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar="@toolbar" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(OrderRow.Id) HeaderText="ID" Width="80" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(OrderRow.Number) HeaderText="Номер" Width="120" />
-            </GridColumns>
-        </SfGrid>
-    </CardContent>
-</SfCard>
+@* TODO: заменить на MudBlazor *@
+<div></div>
 
 @code {
     List<OrderRow> orders = new();
-    string[] toolbar = new[] { "Search", "ExcelExport", "PdfExport" };
 
     protected override void OnInitialized()
     {

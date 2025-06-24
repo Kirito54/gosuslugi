@@ -11,7 +11,8 @@
                 <MudTabs>
                     <MudTabPanel Text="Основное">
                         <MudTextField @bind-Value="model.Number" Label="Номер" Class="mb-3 w-100" />
-                        <MudDatePicker @bind-Date="model.Date" Class="mb-3 w-100" />
+                        @* TODO: заменить на MudBlazor DatePicker *@
+                        <MudTextField T="string" Label="Дата" Class="mb-3 w-100" />
                         <MudTextField Lines="3" @bind-Value="model.Text" Label="Текст" Class="mb-3 w-100" />
                     </MudTabPanel>
                 </MudTabs>

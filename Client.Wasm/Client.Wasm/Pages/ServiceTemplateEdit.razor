@@ -17,14 +17,14 @@
                         <MudTh>Обяз.</MudTh>
                         <MudTh Class="text-center"></MudTh>
                     </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Название">@context.Name</MudTd>
-                        <MudTd DataLabel="Тип">@context.Type</MudTd>
+                    <RowTemplate Context="row">
+                        <MudTd DataLabel="Название">@row.Name</MudTd>
+                        <MudTd DataLabel="Тип">@row.Type</MudTd>
                         <MudTd DataLabel="Обяз.">
-                            <MudCheckBox @bind-Checked="context.Required" Disabled="true" />
+                            <MudCheckBox T="bool" @bind-Checked="row.Required" Disabled="true" />
                         </MudTd>
                         <MudTd Class="text-center">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveField(context))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveField(row))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -39,13 +39,13 @@
                         <MudTh>Обяз.</MudTh>
                         <MudTh Class="text-center"></MudTh>
                     </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Название">@context.Name</MudTd>
+                    <RowTemplate Context="row">
+                        <MudTd DataLabel="Название">@row.Name</MudTd>
                         <MudTd DataLabel="Обяз.">
-                            <MudCheckBox @bind-Checked="context.Required" Disabled="true" />
+                            <MudCheckBox T="bool" @bind-Checked="row.Required" Disabled="true" />
                         </MudTd>
                         <MudTd Class="text-center">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveDocument(context))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveDocument(row))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -57,7 +57,7 @@
                 <div class="p-3">
                     @foreach(var cat in categories)
                     {
-                        <MudCheckBox Label="@cat" Checked="CategoryChecked(cat)" CheckedChanged="val => ToggleCategory(cat, val)" Class="mb-2" />
+                        <MudCheckBox T="bool" Label="@cat" Checked="CategoryChecked(cat)" CheckedChanged="val => ToggleCategory(cat, val)" Class="mb-2" />
                     }
                 </div>
             </MudTabPanel>
@@ -69,12 +69,12 @@
                         <MudTh>Порядок</MudTh>
                         <MudTh Class="text-center"></MudTh>
                     </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Этап">@context.Name</MudTd>
-                        <MudTd DataLabel="Роль">@context.Role</MudTd>
-                        <MudTd DataLabel="Порядок">@context.Order</MudTd>
+                    <RowTemplate Context="row">
+                        <MudTd DataLabel="Этап">@row.Name</MudTd>
+                        <MudTd DataLabel="Роль">@row.Role</MudTd>
+                        <MudTd DataLabel="Порядок">@row.Order</MudTd>
                         <MudTd Class="text-center">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveStep(context))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveStep(row))" />
                         </MudTd>
                     </RowTemplate>
                 </MudTable>
@@ -90,15 +90,15 @@
                             <label>@f.Name</label>
                             @if(f.Type == "text")
                             {
-                                <MudTextField Class="w-100" Placeholder="@f.Name" />
+                                <MudTextField T="string" Class="w-100" Placeholder="@f.Name" />
                             }
                             else if(f.Type == "date")
                             {
-                                <MudDatePicker Class="w-100" />
+                                <MudDatePicker Date="@DateTime.Now" Class="w-100" />
                             }
                             else if(f.Type == "checkbox")
                             {
-                                <MudCheckBox Label="@f.Name" />
+                                <MudCheckBox T="bool" Label="@f.Name" />
                             }
                         </div>
                     }

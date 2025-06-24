@@ -40,13 +40,8 @@
 @code {
     private bool _drawerOpen;
 
-    private MudTheme _theme = new MudTheme
-    {
-        Palette = new Palette
-        {
-            Background = "#121212"
-        }
-    };
+    // TODO: настроить тему MudBlazor
+    private MudTheme _theme = new MudTheme();
 
     void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 }
