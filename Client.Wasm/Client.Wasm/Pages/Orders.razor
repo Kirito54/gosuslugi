@@ -2,32 +2,34 @@
 @page "/orders"
 
 @using Client.Wasm.DTOs
-@inject IJSRuntime Js
-@inject NavigationManager NavigationManager
-<div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Приказы</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" OnClick="(() => edit.Show(new OrderDto()))">Добавить приказ</SfButton>
-            <SfGrid DataSource="@orders" AllowPaging="true" CssClass="e-bootstrap5">
-            <GridPageSettings PageSize="10" />
-            <GridColumns>
-                <GridColumn Field=@nameof(OrderDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" />
-            <GridColumn Field=@nameof(OrderDto.Number) HeaderText="Номер" Width="120" />
-            <GridColumn Field=@nameof(OrderDto.Date) HeaderText="Дата" Format="d" Width="120" />
-            <GridColumn HeaderText="" Width="120" TextAlign="TextAlign.Center">
-                <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as OrderDto).Id) )"></SfButton>
-                </Template>
-            </GridColumn>
-            </GridColumns>
-        </SfGrid>
-        </CardContent>
-    </SfCard>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="p-4">
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Приказы</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="(() => edit.Show(new OrderDto()))">Добавить приказ</MudButton>
+            <MudTable Items="@orders" Hover="true" Dense="true">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Номер</MudTh>
+                    <MudTh>Дата</MudTh>
+                    <MudTh Class="text-center"></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Номер">@context.Number</MudTd>
+                    <MudTd DataLabel="Дата">@context.Date.ToShortDateString()</MudTd>
+                    <MudTd Class="text-center" DataLabel="">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => edit.Load(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
     <OrderEdit @ref="edit" OnSaved="Reload" />
-</div>
+</MudContainer>
 
 @code {
     List<OrderDto> orders = new();
