@@ -4,30 +4,34 @@
 @using Client.Wasm.DTOs
 
 <div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Справочники</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" OnClick="OpenUpload">Загрузить</SfButton>
-            <SfGrid DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5" Toolbar="@toolbarOptions">
-                <GridPageSettings PageSize="10" />
-                <GridColumns>
-                    <GridColumn Field=@nameof(DictionaryDto.Name) HeaderText="Название" Width="200" />
-                    <GridColumn Field=@nameof(DictionaryDto.Description) HeaderText="Описание" Width="250" />
-                    <GridColumn Field=@nameof(DictionaryDto.RecordCount) HeaderText="Записей" Width="100" TextAlign="TextAlign.Center" />
-                    <GridColumn Field=@nameof(DictionaryDto.UpdatedAt) HeaderText="Обновлён" Format="d" Width="120" />
-                </GridColumns>
-            </SfGrid>
-        </CardContent>
-    </SfCard>
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Справочники</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudButton Color="Color.Primary" Class="mb-3" OnClick="OpenUpload">Загрузить</MudButton>
+            <MudTable Items="@items" Hover="true">
+                <HeaderContent>
+                    <MudTh>Название</MudTh>
+                    <MudTh>Описание</MudTh>
+                    <MudTh Align="Right">Записей</MudTh>
+                    <MudTh>Обновлён</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Название">@context.Name</MudTd>
+                    <MudTd DataLabel="Описание">@context.Description</MudTd>
+                    <MudTd DataLabel="Записей" Align="Right">@context.RecordCount</MudTd>
+                    <MudTd DataLabel="Обновлён">@context.UpdatedAt.ToShortDateString()</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
 
     <DictionaryUpload @ref="uploadDialog" OnUploaded="Reload" />
 </div>
 
 @code {
     List<DictionaryDto> items = new();
-    string[] toolbarOptions = new[] { "Search" };
     DictionaryUpload? uploadDialog;
 
     protected override async Task OnInitializedAsync()
