@@ -2,40 +2,33 @@
 @inject IPermissionApiClient ApiClient
 @using Client.Wasm.DTOs
 
-<SfCard CssClass="mb-4">
-    <CardHeader>
-        <h2>Права доступа</h2>
-    </CardHeader>
-    <CardContent>
-        <SfGrid TValue="PermissionDto" DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5">
-            <GridColumns>
-                <GridColumn Field="Role" HeaderText="Роль" Width="150" />
-                <GridColumn Field="ServiceId" HeaderText="Услуга" Width="120" />
-                <GridColumn Field="DepartmentId" HeaderText="Отдел" Width="120" />
-                <GridColumn HeaderText="Просмотр" TextAlign="TextAlign.Center" Width="80">
-                    <Template>
-                        @((context as PermissionDto).CanView ? "✓" : "-")
-                    </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Изменение" TextAlign="TextAlign.Center" Width="80">
-                    <Template>
-                        @((context as PermissionDto).CanEdit ? "✓" : "-")
-                    </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Утверждение" TextAlign="TextAlign.Center" Width="80">
-                    <Template>
-                        @((context as PermissionDto).CanApprove ? "✓" : "-")
-                    </Template>
-                </GridColumn>
-                <GridColumn HeaderText="Удаление" TextAlign="TextAlign.Center" Width="80">
-                    <Template>
-                        @((context as PermissionDto).CanDelete ? "✓" : "-")
-                    </Template>
-                </GridColumn>
-            </GridColumns>
-        </SfGrid>
-    </CardContent>
-</SfCard>
+<MudCard Class="mb-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Права доступа</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@items" Hover="true" Dense="true">
+            <HeaderContent>
+                <MudTh>Роль</MudTh>
+                <MudTh>Услуга</MudTh>
+                <MudTh>Отдел</MudTh>
+                <MudTh Class="text-center">Просмотр</MudTh>
+                <MudTh Class="text-center">Изменение</MudTh>
+                <MudTh Class="text-center">Утверждение</MudTh>
+                <MudTh Class="text-center">Удаление</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="item">
+                <MudTd DataLabel="Роль">@item.Role</MudTd>
+                <MudTd DataLabel="Услуга">@item.ServiceId</MudTd>
+                <MudTd DataLabel="Отдел">@item.DepartmentId</MudTd>
+                <MudTd Class="text-center" DataLabel="Просмотр">@((item.CanView) ? "✓" : "-")</MudTd>
+                <MudTd Class="text-center" DataLabel="Изменение">@((item.CanEdit) ? "✓" : "-")</MudTd>
+                <MudTd Class="text-center" DataLabel="Утверждение">@((item.CanApprove) ? "✓" : "-")</MudTd>
+                <MudTd Class="text-center" DataLabel="Удаление">@((item.CanDelete) ? "✓" : "-")</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
 
 @code {
     List<PermissionDto> items = new();
