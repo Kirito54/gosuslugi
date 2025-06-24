@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
+@using MudBlazor
 
 <MudLayout>
         <MudAppBar Color="Color.Primary">
@@ -27,6 +28,7 @@
                 <MudNavLink Href="ai">🧠 ИИ</MudNavLink>
             </MudNavMenu>
         </MudDrawer>
+        <MudPopoverProvider />
 
         <MudMainContent>
             <MudContainer Class="mt-4 px-4">
