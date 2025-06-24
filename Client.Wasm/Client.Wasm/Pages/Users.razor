@@ -5,35 +5,36 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
-<div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Пользователи</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show(new CreateUserDto()) )">Добавить пользователя</SfButton>
-            <SfGrid TItem="UserDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
-            <GridColumns>
-                <GridColumn Field=@nameof(UserDto.Id) HeaderText="ID" Width="120" />
-                <GridColumn Field=@nameof(UserDto.Email) HeaderText="Email" Width="200" />
-            <GridColumn Field=@nameof(UserDto.FullName) HeaderText="ФИО" Width="200" />
-            <GridColumn HeaderText="Роли" Width="200">
-                <Template>
-                    @string.Join(", ", (context as UserDto).Roles)
-                </Template>
-            </GridColumn>
-            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="150">
-                <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as UserDto).Id) )" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as UserDto).Id) )" />
-                </Template>
-            </GridColumn>
-            </GridColumns>
-        </SfGrid>
-        </CardContent>
-    </SfCard>
+<MudContainer MaxWidth="MaxWidth.False" Class="p-4">
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Пользователи</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="@(()=> edit.Show(new CreateUserDto()))">Добавить пользователя</MudButton>
+            <MudTable Items="@items" Hover="true" Dense="true">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>ФИО</MudTh>
+                    <MudTh>Роли</MudTh>
+                    <MudTh Class="text-center">Действия</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                    <MudTd DataLabel="ФИО">@context.FullName</MudTd>
+                    <MudTd DataLabel="Роли">@string.Join(", ", context.Roles)</MudTd>
+                    <MudTd Class="text-center" DataLabel="Действия">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(()=> edit.Load(context.Id))" />
+                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> Delete(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
     <UserEdit @ref="edit" OnSaved="LoadData" />
-</div>
+</MudContainer>
 
 @code {
     List<UserDto> items = new();
