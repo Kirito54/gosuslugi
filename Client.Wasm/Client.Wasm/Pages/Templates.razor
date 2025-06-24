@@ -6,28 +6,32 @@
 @inject NavigationManager NavigationManager
 
 <div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Шаблоны</h1>
-        </CardHeader>
-        <CardContent>
-            <SfButton CssClass="e-primary mb-3" IconCss="e-icons e-add" OnClick="@( (MouseEventArgs e) => edit.Show(new CreateTemplateDto()) )">Новый шаблон</SfButton>
-            <SfGrid TItem="TemplateDto" DataSource="@items" AllowPaging="true" Width="100%" CssClass="e-bootstrap5">
-            <GridColumns>
-                <GridColumn Field=@nameof(TemplateDto.Id) HeaderText="ID" Width="70" TextAlign="TextAlign.Center" IsPrimaryKey="true" />
-                <GridColumn Field=@nameof(TemplateDto.Name) HeaderText="Название" Width="200" />
-            <GridColumn Field=@nameof(TemplateDto.Type) HeaderText="Тип" Width="120" />
-            <GridColumn HeaderText="Действия" TextAlign="TextAlign.Center" Width="200">
-                <Template>
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-edit" OnClick="@( (MouseEventArgs e) => edit.Load((context as TemplateDto).Id) )" />
-                    <SfButton CssClass="e-flat" IconCss="e-icons e-download" OnClick="@( (MouseEventArgs e) => generator.Show((context as TemplateDto).Id) )" />
-                    <SfButton CssClass="e-flat e-danger" IconCss="e-icons e-delete" OnClick="@( (MouseEventArgs e) => Delete((context as TemplateDto).Id) )" />
-                </Template>
-            </GridColumn>
-            </GridColumns>
-        </SfGrid>
-        </CardContent>
-    </SfCard>
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Шаблоны</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="@(() => edit.Show(new CreateTemplateDto()))">Новый шаблон</MudButton>
+            <MudTable Items="@items" Hover="true">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Название</MudTh>
+                    <MudTh>Тип</MudTh>
+                    <MudTh class="text-center">Действия</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID" Align="Center">@context.Id</MudTd>
+                    <MudTd DataLabel="Название">@context.Name</MudTd>
+                    <MudTd DataLabel="Тип">@context.Type</MudTd>
+                    <MudTd DataLabel="Действия" Align="Center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => edit.Load(context.Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Download" OnClick="@(() => generator.Show(context.Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => Delete(context.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
     <TemplateEdit @ref="edit" OnSaved="LoadData" />
     <TemplateGenerate @ref="generator" />
 </div>
