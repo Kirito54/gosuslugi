@@ -5,43 +5,49 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 
-<div class="container p-4">
-    <SfCard CssClass="mb-4">
-        <CardHeader>
-            <h1>Документы</h1>
-        </CardHeader>
-        <CardContent>
+<MudContainer Class="p-4">
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">Документы</MudText>
+        </MudCardHeader>
+        <MudCardContent>
             <EditForm Model="upload" OnValidSubmit="HandleUpload">
                 <DataAnnotationsValidator />
-                <div class="mb-4 flex gap-2 items-center">
-                    <SfDropDownList TItem="DocumentType" TValue="DocumentType" @bind-Value="upload.Type" DataSource="@types" CssClass="w-40" />
-                    <SfUploader @ref="uploader" AutoUpload="false" Selected="OnFileSelected"></SfUploader>
-                    <SfButton CssClass="e-primary" Type="Submit">Загрузить</SfButton>
+                <div class="mb-4 d-flex gap-2 align-items-center">
+                    <MudSelect T="DocumentType" @bind-Value="upload.Type" Class="w-40" Dense="true">
+                        @foreach (var t in types)
+                        {
+                            <MudSelectItem Value="t">@t</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <InputFile OnChange="OnFileSelected" />
+                    <MudButton Color="Color.Primary" Type="Submit">Загрузить</MudButton>
                 </div>
             </EditForm>
 
-            <SfGrid DataSource="@docs" AllowPaging="true" CssClass="e-bootstrap5">
-                <GridPageSettings PageSize="10" />
-                <GridColumns>
-                    <GridColumn Field=@nameof(DocumentDto.OriginalName) HeaderText="Файл" Width="250" />
-                    <GridColumn Field=@nameof(DocumentDto.CreatedAt) HeaderText="Загружен" Format="d" Width="120" />
-                    <GridColumn HeaderText="" Width="120">
-                        <Template>
-                            <SfButton CssClass="e-flat" OnClick="@(() => Download((context as DocumentDto).Id))">Скачать</SfButton>
-                        </Template>
-                    </GridColumn>
-                </GridColumns>
-            </SfGrid>
-        </CardContent>
-    </SfCard>
-</div>
+            <MudTable Items="@docs" Dense="true">
+                <HeaderContent>
+                    <MudTh>Файл</MudTh>
+                    <MudTh>Загружен</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Файл">@context.OriginalName</MudTd>
+                    <MudTd DataLabel="Загружен">@context.CreatedAt.ToShortDateString()</MudTd>
+                    <MudTd>
+                        <MudButton Variant="Variant.Text" OnClick="@(() => Download(context.Id))">Скачать</MudButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
 
 @code {
     [Parameter] public Guid ownerId { get; set; }
     List<DocumentDto> docs = new();
     DocumentUploadDto upload = new();
     DocumentType[] types = Enum.GetValues<DocumentType>();
-    SfUploader? uploader;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -54,15 +60,14 @@
         {
             upload.OwnerId = ownerId;
             await ApiClient.UploadAsync(upload);
-            if (uploader != null) await uploader.ClearAllAsync();
             upload.File = null;
             docs = await ApiClient.GetByOwnerAsync(ownerId);
         }
     }
 
-    void OnFileSelected(SelectedEventArgs args)
+    void OnFileSelected(InputFileChangeEventArgs e)
     {
-        upload.File = args.FilesData.FirstOrDefault()?.RawFile as IBrowserFile;
+        upload.File = e.File;
     }
 
     async Task Download(Guid id)
