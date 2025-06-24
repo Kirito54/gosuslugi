@@ -4,33 +4,29 @@
 @inject NavigationManager NavigationManager
 @inject IServiceApiClient ApiClient
 
-<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@header">
-    <EditForm Model="model" OnValidSubmit="HandleSave">
-        <DataAnnotationsValidator />
-        <SfTab>
-            <TabItems>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Основное"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
-                    <SfTextBox TValue="string" Multiline="true" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" Rows="3" />
-                    <SfNumericTextBox TValue="int?" @bind-Value="model.ExecutionDeadlineDays" Placeholder="Срок (дней)" CssClass="mb-3 w-100" />
-                    <SfDatePicker TValue="DateTime?" @bind-Value="model.ExecutionDeadlineDate" Placeholder="Точная дата" CssClass="mb-3 w-100" />
-                </ContentTemplate>
-</TabItem>
-            </TabItems>
-        </SfTab>
-        <div class="text-right mt-3">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
-        </div>
-    </EditForm>
-</SfDialog>
+<MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">@header</MudText>
+        <EditForm Model="model" OnValidSubmit="HandleSave">
+            <DataAnnotationsValidator />
+            <MudTabs>
+                <MudTabPanel Text="Основное">
+                    <MudTextField @bind-Value="model.Name" Label="Название" Class="mb-3 w-100" />
+                    <MudTextField @bind-Value="model.Description" Label="Описание" Lines="3" Class="mb-3 w-100" />
+                    <MudNumericField T="int?" @bind-Value="model.ExecutionDeadlineDays" Label="Срок (дней)" Class="mb-3 w-100" />
+                    <MudDatePicker @bind-Date="model.ExecutionDeadlineDate" Label="Точная дата" Class="mb-3 w-100" />
+                </MudTabPanel>
+            </MudTabs>
+            <div class="text-right mt-3">
+                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    SfDialog dlg;
+    bool open;
     ServiceDto model = new();
     string header = string.Empty;
 
@@ -46,17 +42,17 @@
             Status = dto.Status
         };
         header = "Новая услуга";
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
     public async void Load(int id)
     {
         model = await ApiClient.GetByIdAsync(id);
         header = $"Редактировать услугу #{id}";
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
-    Task Hide() => dlg.HideAsync();
+    void Hide() => open = false;
 
     async Task HandleSave()
     {
@@ -80,7 +76,7 @@
                 ExecutionStages = model.ExecutionStages,
                 Status = model.Status
             });
-        await dlg.HideAsync();
+        open = false;
         if (OnSaved.HasDelegate)
         {
             await OnSaved.InvokeAsync();
