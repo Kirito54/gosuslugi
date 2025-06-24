@@ -12,24 +12,12 @@ html, body {
     color: #1f2937;
 }
 
-.login-wrapper {
-    height: 100vh;
+.login-background {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #dbeafe, #eff6ff);
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #e0eafc, #cfdef3);
-}
-
-.login-card {
-    width: 100%;
-    max-width: 28rem;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    text-align: center;
-    background: #fff;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    animation: fade-in 0.4s ease-out;
-    transition: 0.2s;
+    justify-content: center;
 }
 
 .glass-effect {
