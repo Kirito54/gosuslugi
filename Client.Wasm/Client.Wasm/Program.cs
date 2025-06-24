@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Client.Wasm;
 using Client.Wasm.Services;
-using Syncfusion.Blazor;
-using Syncfusion.Licensing;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -40,8 +39,7 @@ builder.Services.AddHttpClient<IAgentApiClient, AgentApiClient>(client =>
 });
 
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddSyncfusionBlazor();
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzkxNjM3NkAzMjM5MmUzMDJlMzAzYjMyMzkzYkJFdC9Xa21OZzBWcW1OWFIyRjFyZzFjSTZxTGtGZksxRVFQOUZ3eEI0d2s9");
+builder.Services.AddMudServices();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<CustomAuthStateProvider>();
