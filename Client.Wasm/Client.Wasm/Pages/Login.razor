@@ -3,16 +3,14 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
-<div class="login-wrapper">
-    <MudCard Class="login-card">
-        <MudCardHeader>
+<MudCardHeader>
             <div class="text-center mb-3">
                 <img src="data:image/png;base64,$logo_b64" class="login-logo" alt="Логотип" />
                 <h4 class="login-title">Вход</h4>
             </div>
-        </MudCardHeader>
+</MudCardHeader>
 
-        <MudCardContent>
+<MudCardContent>
             <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -24,15 +22,13 @@
                     Войти
                 </MudButton>
             </EditForm>
-        </MudCardContent>
+</MudCardContent>
 
-        <MudCardActions>
+<MudCardActions>
             <div class="text-center mt-3 w-100">
                 <a href="#" class="forgot-link">Забыли пароль?</a>
             </div>
-        </MudCardActions>
-    </MudCard>
-</div>
+</MudCardActions>
 
 @code {
     LoginModel loginModel = new();
