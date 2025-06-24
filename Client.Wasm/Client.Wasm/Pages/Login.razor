@@ -4,32 +4,34 @@
 @inject AuthenticationStateProvider AuthProvider
 
 <div class="login-wrapper">
-    <SfCard CssClass="login-card">
-        <CardHeader>
+    <MudCard Class="login-card">
+        <MudCardHeader>
             <div class="text-center mb-3">
                 <img src="data:image/png;base64,$logo_b64" class="login-logo" alt="Логотип" />
                 <h4 class="login-title">Вход</h4>
             </div>
-        </CardHeader>
+        </MudCardHeader>
 
-        <CardContent>
+        <MudCardContent>
             <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
-                <SfTextBox @bind-Value="loginModel.Email" Placeholder="Эл. почта" CssClass="e-input mb-3 w-100" />
-                <SfTextBox @bind-Value="loginModel.Password" Placeholder="Пароль" Type="InputType.Password" CssClass="e-input mb-3 w-100" />
+                <MudTextField @bind-Value="loginModel.Email" Placeholder="Эл. почта" Class="mb-3 w-100" />
+                <MudTextField @bind-Value="loginModel.Password" Placeholder="Пароль" InputType="InputType.Password" Class="mb-3 w-100" />
 
-                <SfButton CssClass="e-primary e-block login-button" Type="Submit" Content="Войти" />
+                <MudButton Type="Submit" Color="Color.Primary" Variant="Variant.Filled" Class="login-button" FullWidth="true">
+                    Войти
+                </MudButton>
             </EditForm>
-        </CardContent>
+        </MudCardContent>
 
-        <CardFooter>
-            <div class="text-center mt-3">
+        <MudCardActions>
+            <div class="text-center mt-3 w-100">
                 <a href="#" class="forgot-link">Забыли пароль?</a>
             </div>
-        </CardFooter>
-    </SfCard>
+        </MudCardActions>
+    </MudCard>
 </div>
 
 @code {
