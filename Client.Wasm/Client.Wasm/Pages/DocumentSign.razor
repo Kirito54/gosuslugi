@@ -3,28 +3,27 @@
 @using Client.Wasm.DTOs
 @inject IDocumentApiClient ApiClient
 @inject IJSRuntime Js
+@inject ISnackbar Snackbar
 
-<SfCard CssClass="p-6 rounded-xl shadow-lg glass-effect">
-    <CardHeader>
-        <h3 class="mb-4">Подпись документа</h3>
-    </CardHeader>
-    <CardContent>
+<MudCard Class="p-6 rounded-xl shadow-lg">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5" Class="mb-4">Подпись документа</MudText>
+    </MudCardHeader>
+    <MudCardContent>
         @if (pdfData != null)
         {
-            <SfPdfViewer DocumentPath="" DocumentBase64="@pdfData" Width="100%" Height="600px"></SfPdfViewer>
+            <!-- TODO: заменить на MudBlazor PDF viewer -->
+            <iframe src="data:application/pdf;base64,@pdfData" style="width:100%;height:600px;" />
         }
         <div class="mt-4 flex justify-end">
-            <SfButton CssClass="e-primary" OnClick="Sign">Подписать</SfButton>
+            <MudButton Color="Color.Primary" OnClick="Sign">Подписать</MudButton>
         </div>
-    </CardContent>
-</SfCard>
-
-<SfToast @ref="toast" Timeout="3000"></SfToast>
+    </MudCardContent>
+</MudCard>
 
 @code {
     [Parameter] public Guid Id { get; set; }
     string? pdfData;
-    SfToast? toast;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -39,11 +38,11 @@
             var signature = await Js.InvokeAsync<string>("signWithCryptoPro", pdfData);
             var dto = new DocumentSignatureDto { DocumentId = Id, SignatureBase64 = signature };
             await ApiClient.UploadSignatureAsync(dto);
-            await toast!.ShowAsync(new ToastModel { Content = "Документ подписан" });
+            Snackbar.Add("Документ подписан", Severity.Success);
         }
         catch (Exception ex)
         {
-            await toast!.ShowAsync(new ToastModel { Content = "Ошибка подписи: " + ex.Message, CssClass="e-danger" });
+            Snackbar.Add("Ошибка подписи: " + ex.Message, Severity.Error);
         }
     }
 }

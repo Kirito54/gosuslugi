@@ -1,16 +1,16 @@
 @page "/agent"
 @inject Client.Wasm.Services.IAgentApiClient AgentClient
 
-<SfCard CssClass="rounded-xl shadow-lg glass-effect p-6">
-    <CardHeader>
-        <h3 class="text-lg font-semibold mb-4">AI Агент</h3>
-    </CardHeader>
-    <CardContent>
+<MudCard Class="rounded-xl shadow-lg glass-effect p-6">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6" Class="mb-4">AI Агент</MudText>
+    </MudCardHeader>
+    <MudCardContent>
         <EditForm Model="@request" OnValidSubmit="Send">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <SfTextBox Multiline="true" @bind-Value="request.Text" Rows="6" Placeholder="Введите заявление или вопрос" CssClass="w-100 mb-4" />
-            <SfButton CssClass="e-primary" Type="Submit">Отправить</SfButton>
+            <MudTextField Lines="6" @bind-Value="request.Text" Placeholder="Введите заявление или вопрос" Class="w-100 mb-4" />
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="Submit">Отправить</MudButton>
         </EditForm>
         @if (!string.IsNullOrEmpty(response))
         {
@@ -18,8 +18,8 @@
                 <p>@response</p>
             </div>
         }
-    </CardContent>
-</SfCard>
+    </MudCardContent>
+</MudCard>
 
 @code {
     Client.Wasm.DTOs.AgentRequestDto request = new();
