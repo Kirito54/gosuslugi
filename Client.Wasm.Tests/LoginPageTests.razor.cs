@@ -12,6 +12,7 @@ using Blazored.LocalStorage;
 using Client.Wasm.Pages;
 using Client.Wasm.Services;
 using Client.Wasm.DTOs;
+using MudBlazor.Services;
 
 namespace Client.Wasm.Tests;
 
@@ -20,6 +21,7 @@ public class LoginPageTests : TestContext
     [Fact]
     public void Login_ShowsError_WhenPasswordMissing()
     {
+        JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new MockHttpMessageHandler();
         var http = handler.ToHttpClient();
         var storageMock = new Mock<ILocalStorageService>();
@@ -30,6 +32,7 @@ public class LoginPageTests : TestContext
         Services.AddSingleton<AuthenticationStateProvider>(new TestAuthenticationStateProvider());
         Services.AddSingleton<FakeNavigationManager>();
         Services.AddSingleton<NavigationManager>(sp => sp.GetRequiredService<FakeNavigationManager>());
+        Services.AddMudServices();
 
         var cut = RenderComponent<Login>();
 
@@ -41,6 +44,7 @@ public class LoginPageTests : TestContext
     [Fact]
     public void Login_NavigatesHome_WhenSuccess()
     {
+        JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new MockHttpMessageHandler();
         handler.When(HttpMethod.Post, "http://localhost/api/auth/login")
             .Respond("application/json", JsonSerializer.Serialize(new AuthResultDto { Token = "jwt", Expiration = DateTime.UtcNow }));
@@ -55,11 +59,12 @@ public class LoginPageTests : TestContext
         Services.AddSingleton<FakeNavigationManager>();
         Services.AddSingleton<NavigationManager>(sp => sp.GetRequiredService<FakeNavigationManager>());
 
+        Services.AddMudServices();
         var nav = Services.GetRequiredService<FakeNavigationManager>();
         var cut = RenderComponent<Login>();
 
-        cut.Find("input[placeholder='Эл. почта']").Change("a@a.com");
-        cut.Find("input[placeholder='Пароль']").Change("123456");
+        cut.FindAll("input")[0].Change("a@a.com");
+        cut.FindAll("input")[1].Change("123456");
         cut.Find("form").Submit();
 
         Assert.Equal("http://localhost/", nav.Uri);
