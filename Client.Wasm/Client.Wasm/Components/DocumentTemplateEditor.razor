@@ -1,31 +1,28 @@
 @inject IDocumentTemplateService TemplateService
 
-<SfDialog @ref="dialog" Width="900px" ShowCloseIcon="true" Header="Редактор шаблона">
+<MudDialog @bind-IsVisible="open" MaxWidth="MaxWidth.Large">
     <div class="row">
         <div class="col-9">
-            <SfDocumentEditorContainer @ref="container" Height="500px" EnableToolbar="true">
-                <DocumentEditorSettings EnableSpellCheck="false" EnableSfdtExport="true"></DocumentEditorSettings>
-            </SfDocumentEditorContainer>
+            <!-- TODO: заменить на MudBlazor редактор документов -->
         </div>
         <div class="col-3">
             <h5>Поля</h5>
             <ul class="list-unstyled">
                 @foreach (var f in Fields)
                 {
-                    <li class="mb-2"><SfButton CssClass="e-flat" OnClick="() => InsertField(f)">@f</SfButton></li>
+                    <li class="mb-2"><MudButton Variant="Variant.Text" OnClick="() => InsertField(f)">@f</MudButton></li>
                 }
             </ul>
         </div>
     </div>
     <div class="text-right mt-3">
-        <SfButton CssClass="e-primary me-2" OnClick="Save">Сохранить</SfButton>
-        <SfButton CssClass="e-flat" OnClick="Close">Отмена</SfButton>
+        <MudButton Color="Color.Primary" Class="me-2" OnClick="Save">Сохранить</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="Close">Отмена</MudButton>
     </div>
-</SfDialog>
+</MudDialog>
 
 @code {
-    SfDialog dialog;
-    SfDocumentEditorContainer container;
+    bool open;
     TemplateDto model = new();
     bool isNew;
 
@@ -37,39 +34,30 @@
         {
             model = await TemplateService.GetByIdAsync(id.Value) ?? new TemplateDto();
             isNew = false;
-            await container.DocumentEditor.OpenAsync(model.Content ?? "{}");
+            // TODO: загрузить содержимое шаблона после замены на MudBlazor
         }
         else
         {
             model = new TemplateDto { Type = "Word" };
             isNew = true;
-            await container.DocumentEditor.OpenBlankAsync();
+            // TODO: открыть пустой документ после замены на MudBlazor
         }
-        await dialog.ShowAsync();
+        open = true;
     }
 
-    async Task InsertField(string field)
+    void InsertField(string field)
     {
-        await container.DocumentEditor.Editor.InsertTextAsync($"{{{{{field}}}}}");
+        // TODO: вставить поле после замены на MudBlazor
     }
 
     async Task Save()
     {
-        var content = await container.DocumentEditor.SaveAsBlobAsync(FormatType.Sfdt);
-        if (isNew)
-        {
-            await TemplateService.CreateAsync(new CreateTemplateDto { Name = model.Name, Type = "Word", Content = content });
-        }
-        else
-        {
-            await TemplateService.UpdateAsync(model.Id, new UpdateTemplateDto { Name = model.Name, Type = "Word", Content = content });
-        }
-        await dialog.HideAsync();
+        // TODO: сохранить содержимое после замены на MudBlazor
+        open = false;
         if (OnSaved.HasDelegate)
             await OnSaved.InvokeAsync();
     }
-
-    void Close() => dialog.HideAsync();
+    void Close() => open = false;
 
     [Parameter] public EventCallback OnSaved { get; set; }
 }
