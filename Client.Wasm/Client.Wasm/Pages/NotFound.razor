@@ -1,16 +1,16 @@
 @page "/404"
 
-<SfCard CssClass="p-6 rounded-xl shadow-lg bg-white glass-bg text-center">
-    <CardHeader>
-        <h2 class="text-xl font-semibold">Страница не найдена</h2>
-    </CardHeader>
-    <CardContent>
-        <p>Запрашиваемая страница отсутствует.</p>
-    </CardContent>
-    <CardFooter>
-        <SfButton CssClass="e-primary" OnClick="@GoHome">На главную</SfButton>
-    </CardFooter>
-</SfCard>
+<MudCard Class="p-6 rounded-xl shadow-lg glass-bg text-center">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Страница не найдена</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>Запрашиваемая страница отсутствует.</MudText>
+    </MudCardContent>
+    <MudCardActions Class="justify-center">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@GoHome">На главную</MudButton>
+    </MudCardActions>
+</MudCard>
 
 @code {
     [Inject] NavigationManager Nav { get; set; } = default!;
