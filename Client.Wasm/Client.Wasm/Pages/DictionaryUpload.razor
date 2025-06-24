@@ -2,30 +2,33 @@
 @using Microsoft.AspNetCore.Components.Forms
 @inject IDictionaryApiClient ApiClient
 
-<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="Загрузить справочник">
-    <EditForm Model="model" OnValidSubmit="HandleSave">
-        <DataAnnotationsValidator />
-        <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="mb-3 w-100" />
-        <SfTextBox TValue="string" @bind-Value="model.Description" Placeholder="Описание" CssClass="mb-3 w-100" />
-        <InputFile OnChange="OnFileSelected" class="mb-3" />
-        <div class="text-right mt-3">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
-        </div>
-    </EditForm>
-</SfDialog>
+<MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">Загрузить справочник</MudText>
+        <EditForm Model="model" OnValidSubmit="HandleSave">
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="model.Name" Label="Название" Class="mb-3 w-100" />
+            <MudTextField @bind-Value="model.Description" Label="Описание" Class="mb-3 w-100" />
+            <InputFile OnChange="OnFileSelected" class="mb-3" />
+            <div class="text-right mt-3">
+                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    SfDialog? dlg;
+    bool open;
     UploadDictionaryDto model = new();
 
     public void Show()
     {
         model = new UploadDictionaryDto();
-        _ = dlg!.ShowAsync();
+        open = true;
     }
 
-    Task Hide() => dlg!.HideAsync();
+    void Hide() => open = false;
 
     void OnFileSelected(InputFileChangeEventArgs e)
     {
@@ -36,7 +39,7 @@
     async Task HandleSave()
     {
         await ApiClient.UploadAsync(model);
-        await dlg!.HideAsync();
+        Hide();
         if (OnUploaded.HasDelegate) await OnUploaded.InvokeAsync();
     }
 
