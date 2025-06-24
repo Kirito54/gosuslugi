@@ -2,30 +2,38 @@
 @using Client.Wasm.DTOs
 @inject INumberTemplateApiClient ApiClient
 
-<SfDialog @ref="dlg" Width="450px" ShowCloseIcon="true" Header="@header">
-    <EditForm Model="model" OnValidSubmit="Save">
-        <DataAnnotationsValidator />
-        <div class="mb-3">
-            <SfTextBox TValue="string" @bind-Value="model.Name" Placeholder="Название" CssClass="w-100" />
-        </div>
-        <div class="mb-3">
-            <SfTextBox TValue="string" @bind-Value="model.TargetType" Placeholder="Тип" CssClass="w-100" />
-        </div>
-        <div class="mb-3">
-            <SfTextBox TValue="string" @bind-Value="model.TemplateText" Placeholder="Шаблон" CssClass="w-100" />
-        </div>
-        <div class="mb-3">
-            <SfDropDownList TItem="ResetPolicy" TValue="ResetPolicy" DataSource="resetOptions" @bind-Value="model.ResetPolicy" Placeholder="Политика сброса" />
-        </div>
-        <div class="text-right mt-3">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
-        </div>
-    </EditForm>
-</SfDialog>
+<MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudDialogTitle>@header</MudDialogTitle>
+        <EditForm Model="model" OnValidSubmit="Save">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <MudTextField @bind-Value="model.Name" Label="Название" Class="w-100" />
+            </div>
+            <div class="mb-3">
+                <MudTextField @bind-Value="model.TargetType" Label="Тип" Class="w-100" />
+            </div>
+            <div class="mb-3">
+                <MudTextField @bind-Value="model.TemplateText" Label="Шаблон" Class="w-100" />
+            </div>
+            <div class="mb-3">
+                <MudSelect T="ResetPolicy" @bind-Value="model.ResetPolicy" Label="Политика сброса" Class="w-100">
+                    @foreach (var option in resetOptions)
+                    {
+                        <MudSelectItem Value="@option">@option</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+            <div class="text-right mt-3">
+                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    SfDialog dlg;
+    bool open;
     string header = string.Empty;
     bool isNew;
     NumberTemplateDto model = new();
@@ -36,7 +44,7 @@
         model = new NumberTemplateDto();
         header = "Новый шаблон";
         isNew = true;
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
     public async void Load(int id)
@@ -45,10 +53,10 @@
         if (t != null) model = t;
         header = $"Редактировать {t?.Name}";
         isNew = false;
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
-    Task Hide() => dlg.HideAsync();
+    void Hide() => open = false;
 
     async Task Save()
     {
@@ -56,7 +64,7 @@
             await ApiClient.CreateAsync(new CreateNumberTemplateDto { Name = model.Name, TargetType = model.TargetType, TemplateText = model.TemplateText, ResetPolicy = model.ResetPolicy });
         else
             await ApiClient.UpdateAsync(model.Id, new UpdateNumberTemplateDto { Name = model.Name, TargetType = model.TargetType, TemplateText = model.TemplateText, ResetPolicy = model.ResetPolicy });
-        await dlg.HideAsync();
+        open = false;
         if (OnSaved.HasDelegate) await OnSaved.InvokeAsync();
     }
 
