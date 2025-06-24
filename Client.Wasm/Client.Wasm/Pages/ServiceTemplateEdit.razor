@@ -3,127 +3,118 @@
 @using Client.Wasm.Helpers
 @inject IServiceTemplateApiClient ApiClient
 
-<SfDialog @ref="dlg" Width="600px" ShowCloseIcon="true" Header="@header">
-    <EditForm Model="model" OnValidSubmit="SaveTemplate">
-        <DataAnnotationsValidator />
-        <SfTab>
-            <TabItems>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Поля"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <SfGrid DataSource="@config.Fields" AllowPaging="false">
-                        <GridColumns>
-                            <GridColumn Field=@nameof(FieldConfig.Name) HeaderText="Название" Width="150" />
-                            <GridColumn Field=@nameof(FieldConfig.Type) HeaderText="Тип" Width="100" />
-                            <GridColumn Field=@nameof(FieldConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
-                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
-                                <Template Context="item">
-                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveField(item as FieldConfig))"></SfButton>
-                                </Template>
-                            </GridColumn>
-                        </GridColumns>
-                    </SfGrid>
-                    <div class="mt-2">
-                        <SfButton CssClass="e-primary" OnClick="AddField">Добавить поле</SfButton>
-                    </div>
-                </ContentTemplate>
-</TabItem>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Документы"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <SfGrid DataSource="@config.Documents" AllowPaging="false">
-                        <GridColumns>
-                            <GridColumn Field=@nameof(DocumentConfig.Name) HeaderText="Название" Width="180" />
-                            <GridColumn Field=@nameof(DocumentConfig.Required) HeaderText="Обяз." Type="ColumnType.Boolean" Width="80" />
-                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
-                                <Template Context="doc">
-                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveDocument(doc as DocumentConfig))"></SfButton>
-                                </Template>
-                            </GridColumn>
-                        </GridColumns>
-                    </SfGrid>
-                    <div class="mt-2">
-                        <SfButton CssClass="e-primary" OnClick="AddDocument">Добавить документ</SfButton>
-                    </div>
-                </ContentTemplate>
-</TabItem>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Категории"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <div class="p-3">
-                        @foreach(var cat in categories)
-                        {
-                            <SfCheckBox TChecked="bool" Label="@cat" Checked="@CategoryChecked(cat)" CheckedChanged="@(val => ToggleCategory(cat, val))" CssClass="mb-2" />
-                        }
-                    </div>
-                </ContentTemplate>
-</TabItem>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Workflow"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <SfGrid DataSource="@config.Workflow" AllowPaging="false">
-                        <GridColumns>
-                            <GridColumn Field=@nameof(WorkflowStepConfig.Name) HeaderText="Этап" Width="150" />
-                            <GridColumn Field=@nameof(WorkflowStepConfig.Role) HeaderText="Роль" Width="150" />
-                            <GridColumn Field=@nameof(WorkflowStepConfig.Order) HeaderText="Порядок" Width="80" />
-                            <GridColumn Header="" Width="60" TextAlign="TextAlign.Center">
-                                <Template Context="step">
-                                    <SfButton CssClass="e-flat" IconCss="e-icons e-delete" OnClick="@(() => RemoveStep(step as WorkflowStepConfig))"></SfButton>
-                                </Template>
-                            </GridColumn>
-                        </GridColumns>
-                    </SfGrid>
-                    <div class="mt-2">
-                        <SfButton CssClass="e-primary" OnClick="AddStep">Добавить этап</SfButton>
-                    </div>
-                </ContentTemplate>
-</TabItem>
-                <TabItem>
-    <ChildContent>
-        <TabHeader Text="Превью"></TabHeader>
-    </ChildContent>
-    <ContentTemplate>
-                    <div class="p-3">
-                        @foreach(var f in config.Fields.OrderBy(f => f.Order))
-                        {
-                            <div class="mb-3">
-                                <label>@f.Name</label>
-                                @if(f.Type == "text")
-                                {
-                                    <SfTextBox CssClass="w-100" Placeholder="@f.Name" />
-                                }
-                                else if(f.Type == "date")
-                                {
-                                    <SfDatePicker TValue="DateTime?" CssClass="w-100" />
-                                }
-                                else if(f.Type == "checkbox")
-                                {
-                                    <SfCheckBox TChecked="bool" Label="@f.Name" />
-                                }
-                            </div>
-                        }
-                    </div>
-                </ContentTemplate>
-</TabItem>
-            </TabItems>
-        </SfTab>
+<MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Medium">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">@header</MudText>
+        <EditForm Model="model" OnValidSubmit="SaveTemplate">
+            <DataAnnotationsValidator />
+        <MudTabs>
+            <MudTabPanel Text="Поля">
+                <MudTable Items="@config.Fields">
+                    <HeaderContent>
+                        <MudTh>Название</MudTh>
+                        <MudTh>Тип</MudTh>
+                        <MudTh>Обяз.</MudTh>
+                        <MudTh Class="text-center"></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Название">@context.Name</MudTd>
+                        <MudTd DataLabel="Тип">@context.Type</MudTd>
+                        <MudTd DataLabel="Обяз.">
+                            <MudCheckBox @bind-Checked="context.Required" Disabled="true" />
+                        </MudTd>
+                        <MudTd Class="text-center">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveField(context))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+                <div class="mt-2">
+                    <MudButton Color="Color.Primary" OnClick="AddField">Добавить поле</MudButton>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Документы">
+                <MudTable Items="@config.Documents">
+                    <HeaderContent>
+                        <MudTh>Название</MudTh>
+                        <MudTh>Обяз.</MudTh>
+                        <MudTh Class="text-center"></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Название">@context.Name</MudTd>
+                        <MudTd DataLabel="Обяз.">
+                            <MudCheckBox @bind-Checked="context.Required" Disabled="true" />
+                        </MudTd>
+                        <MudTd Class="text-center">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveDocument(context))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+                <div class="mt-2">
+                    <MudButton Color="Color.Primary" OnClick="AddDocument">Добавить документ</MudButton>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Категории">
+                <div class="p-3">
+                    @foreach(var cat in categories)
+                    {
+                        <MudCheckBox Label="@cat" Checked="CategoryChecked(cat)" CheckedChanged="val => ToggleCategory(cat, val)" Class="mb-2" />
+                    }
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Workflow">
+                <MudTable Items="@config.Workflow">
+                    <HeaderContent>
+                        <MudTh>Этап</MudTh>
+                        <MudTh>Роль</MudTh>
+                        <MudTh>Порядок</MudTh>
+                        <MudTh Class="text-center"></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Этап">@context.Name</MudTd>
+                        <MudTd DataLabel="Роль">@context.Role</MudTd>
+                        <MudTd DataLabel="Порядок">@context.Order</MudTd>
+                        <MudTd Class="text-center">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(()=> RemoveStep(context))" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+                <div class="mt-2">
+                    <MudButton Color="Color.Primary" OnClick="AddStep">Добавить этап</MudButton>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Превью">
+                <div class="p-3">
+                    @foreach(var f in config.Fields.OrderBy(f => f.Order))
+                    {
+                        <div class="mb-3">
+                            <label>@f.Name</label>
+                            @if(f.Type == "text")
+                            {
+                                <MudTextField Class="w-100" Placeholder="@f.Name" />
+                            }
+                            else if(f.Type == "date")
+                            {
+                                <MudDatePicker Class="w-100" />
+                            }
+                            else if(f.Type == "checkbox")
+                            {
+                                <MudCheckBox Label="@f.Name" />
+                            }
+                        </div>
+                    }
+                </div>
+            </MudTabPanel>
+        </MudTabs>
         <div class="text-right mt-3">
-            <SfButton Type="Submit" CssClass="e-primary me-2">Сохранить</SfButton>
-            <SfButton CssClass="e-flat" OnClick="Hide">Отмена</SfButton>
+            <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
         </div>
     </EditForm>
-</SfDialog>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    SfDialog dlg;
+    bool open;
     ServiceTemplateDto model = new();
     ServiceTemplateConfig config = new();
     string header = string.Empty;
@@ -136,7 +127,7 @@
         config = new ServiceTemplateConfig();
         header = "Новый шаблон";
         isNew = true;
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
     public async void Load(int id)
@@ -149,10 +140,10 @@
         }
         header = $"Редактировать {t?.ServiceName}";
         isNew = false;
-        _ = dlg.ShowAsync();
+        open = true;
     }
 
-    Task Hide() => dlg.HideAsync();
+    Task Hide() { open = false; return Task.CompletedTask; }
 
     async Task SaveTemplate()
     {
@@ -161,7 +152,7 @@
             await ApiClient.CreateAsync(new CreateServiceTemplateDto{ ServiceId = model.ServiceId, JsonConfig = model.JsonConfig, IsActive = model.IsActive });
         else
             await ApiClient.UpdateAsync(model.Id, new UpdateServiceTemplateDto{ JsonConfig = model.JsonConfig, IsActive = model.IsActive });
-        await dlg.HideAsync();
+        open = false;
         if(OnSaved.HasDelegate) await OnSaved.InvokeAsync();
     }
 
