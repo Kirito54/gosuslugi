@@ -1,9 +1,7 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 
-<MudThemeProvider Theme="@_theme" />
-
-<MudThemeProviderWrapper>
+<MudThemeProviderWrapper Theme="@_theme">
     <MudLayout>
         <MudAppBar Color="Color.Primary">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
@@ -32,6 +30,8 @@
         </MudDrawer>
 
         <MudPopoverProvider />
+        <MudSnackbarProvider />
+        <MudDialogProvider />
 
         <MudMainContent>
             <MudContainer Class="mt-4 px-4">
