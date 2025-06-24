@@ -9,7 +9,6 @@ using RichardSzalay.MockHttp;
 using System.Net.Http;
 using System.Text.Json;
 using Blazored.LocalStorage;
-using Syncfusion.Blazor;
 using Client.Wasm.Pages;
 using Client.Wasm.Services;
 using Client.Wasm.DTOs;
@@ -29,7 +28,6 @@ public class LoginPageTests : TestContext
         Services.AddSingleton(authService);
         Services.AddSingleton<IAuthService>(authService);
         Services.AddSingleton<AuthenticationStateProvider>(new TestAuthenticationStateProvider());
-        Services.AddSyncfusionBlazor();
         Services.AddSingleton<FakeNavigationManager>();
         Services.AddSingleton<NavigationManager>(sp => sp.GetRequiredService<FakeNavigationManager>());
 
@@ -54,7 +52,6 @@ public class LoginPageTests : TestContext
         Services.AddSingleton(authService);
         Services.AddSingleton<IAuthService>(authService);
         Services.AddSingleton<AuthenticationStateProvider>(new TestAuthenticationStateProvider());
-        Services.AddSyncfusionBlazor();
         Services.AddSingleton<FakeNavigationManager>();
         Services.AddSingleton<NavigationManager>(sp => sp.GetRequiredService<FakeNavigationManager>());
 

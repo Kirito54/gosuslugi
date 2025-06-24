@@ -1,6 +1,4 @@
 using System.IO;
-using Syncfusion.Blazor.Popups;
-using Syncfusion.Blazor.Notifications;
 
 namespace Client.Wasm.Services;
 

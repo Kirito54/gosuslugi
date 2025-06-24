@@ -1,38 +1,52 @@
 @inherits LayoutComponentBase
-@inject IAuthService AuthService
 @inject NavigationManager Nav
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IJSRuntime JS
 
-<CascadingAuthenticationState>
-    <div class="flex flex-col min-h-screen">
-        @if (!Nav.Uri.Contains("/login"))
-        {
-            <header>
-                <TopNav />
-            </header>
-        }
+<MudThemeProvider Theme="_theme">
+    <MudLayout>
+        <MudAppBar Color="Color.Primary">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
+            <MudText Typo="Typo.h6" Class="ml-2">Госуслуги</MudText>
+            <MudSpacer />
+            <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
+                <MudMenuItem OnClick="@(() => Nav.NavigateTo("/profile"))">Настройки профиля</MudMenuItem>
+                <MudMenuItem OnClick="@(() => Nav.NavigateTo("/logout"))">Выйти</MudMenuItem>
+            </MudMenu>
+        </MudAppBar>
 
-        <main class="container mx-auto py-4 flex-grow-1" style="max-width:1920px;">
-            <RedirectToLogin />
-            @Body
-        </main>
+        <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Responsive" Elevation="1" Class="pa-0">
+            <MudNavMenu>
+                <MudNavGroup Text="📄 Заявления">
+                    <MudNavLink Href="applications">Заявления</MudNavLink>
+                    <MudNavLink Href="registryapplications">Реестр заявлений</MudNavLink>
+                    <MudNavLink Href="registryrdzorders">Распоряжения РДЗ</MudNavLink>
+                    <MudNavLink Href="registryrdiorders">Распоряжения РДИ</MudNavLink>
+                </MudNavGroup>
+                <MudNavLink Href="documents">📑 Документы</MudNavLink>
+                <MudNavLink Href="users">👤 Пользователи и роли</MudNavLink>
+                <MudNavLink Href="settings">⚙️ Настройки</MudNavLink>
+                <MudNavLink Href="reports">📊 Отчёты</MudNavLink>
+                <MudNavLink Href="ai">🧠 ИИ</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
 
-        @if (!Nav.Uri.Contains("/login"))
-        {
-            <footer class="bg-white border-t text-center py-3 mt-auto">
-                &copy; 2025 Государственные услуги
-            </footer>
-        }
-    </div>
-</CascadingAuthenticationState>
+        <MudMainContent>
+            <MudContainer Class="mt-4 px-4">
+                @Body
+            </MudContainer>
+        </MudMainContent>
+    </MudLayout>
+</MudThemeProvider>
 
 @code {
-    private AuthenticationState? authState;
+    private bool _drawerOpen;
 
-    protected override async Task OnInitializedAsync()
+    private MudTheme _theme = new MudTheme
     {
-        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    }
+        Palette = new Palette
+        {
+            Background = "#121212"
+        }
+    };
 
+    void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 }

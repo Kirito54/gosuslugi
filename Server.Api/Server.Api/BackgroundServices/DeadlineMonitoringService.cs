@@ -40,7 +40,14 @@ public class DeadlineMonitoringService : BackgroundService
                     service.Status = "Просрочено";
                     if (email != null)
                     {
-                        await email.SendEmailAsync("admin@example.com", $"Услуга {service.Name} просрочена", $"{service.Name} просрочена");
+                        try
+                        {
+                            await email.SendEmailAsync("admin@example.com", $"Услуга {service.Name} просрочена", $"{service.Name} просрочена");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Ошибка при отправке письма пользователю: {Email}", "admin@example.com");
+                        }
                     }
                 }
                 else if (service.Status != "Просрочено")
