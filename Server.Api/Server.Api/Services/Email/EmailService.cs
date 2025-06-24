@@ -31,19 +31,10 @@ public class EmailService : IEmailService
         var port = settings.GetValue<int>("SmtpPort");
         var user = settings["SmtpUser"] ?? string.Empty;
         var pass = settings["SmtpPass"] ?? string.Empty;
-        var devTo = settings["DevTo"] ?? "dev@example.com";
-
-        if (string.IsNullOrWhiteSpace(to) || !MailboxAddress.TryParse(to, out _))
+        if (string.IsNullOrWhiteSpace(to) || !to.Contains('@'))
         {
-            _logger.LogError("Invalid email: {To}", to);
-            if (_env.IsDevelopment())
-            {
-                to = devTo;
-            }
-            else
-            {
-                return;
-            }
+            _logger.LogWarning("❌ Письмо не отправлено — некорректный email: {Email}", to);
+            return;
         }
 
         var msg = new MimeMessage();
