@@ -2,20 +2,25 @@
 @inject IPositionApiClient ApiClient
 @using Client.Wasm.DTOs
 
-<SfCard CssClass="mb-4">
-    <CardHeader>
-        <h2>Должности</h2>
-    </CardHeader>
-    <CardContent>
-        <SfGrid TValue="PositionDto" DataSource="@items" AllowPaging="true" CssClass="e-bootstrap5">
-            <GridColumns>
-                <GridColumn Field="Name" HeaderText="Название" Width="200" />
-                <GridColumn Field="DepartmentId" HeaderText="Отдел" Width="120" />
-                <GridColumn Field="StaffLimit" HeaderText="Штат" Width="100" />
-            </GridColumns>
-        </SfGrid>
-    </CardContent>
-</SfCard>
+<MudCard Class="mb-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">Должности</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@items" Hover="true" Dense="true">
+            <HeaderContent>
+                <MudTh>Название</MudTh>
+                <MudTh>Отдел</MudTh>
+                <MudTh>Штат</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Название">@context.Name</MudTd>
+                <MudTd DataLabel="Отдел">@context.DepartmentId</MudTd>
+                <MudTd DataLabel="Штат">@context.StaffLimit</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
 
 @code {
     List<PositionDto> items = new();
