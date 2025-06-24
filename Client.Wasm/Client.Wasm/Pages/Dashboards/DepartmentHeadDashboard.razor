@@ -6,33 +6,40 @@
     <h1 class="mb-4">Дашборд начальника отдела</h1>
     <div class="row g-4">
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Активные заявления</h4></CardHeader>
-                <CardContent><h2 class="display-6">@activeApps</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader>
+                    <h4>Активные заявления</h4>
+                </MudCardHeader>
+                <MudCardContent>
+                    <h2 class="display-6">@activeApps</h2>
+                </MudCardContent>
+            </MudCard>
         </div>
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Сотрудники</h4></CardHeader>
-                <CardContent><h2 class="display-6">@employees</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader>
+                    <h4>Сотрудники</h4>
+                </MudCardHeader>
+                <MudCardContent>
+                    <h2 class="display-6">@employees</h2>
+                </MudCardContent>
+            </MudCard>
         </div>
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Просроченные</h4></CardHeader>
-                <CardContent><h2 class="display-6">@overdue</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader>
+                    <h4>Просроченные</h4>
+                </MudCardHeader>
+                <MudCardContent>
+                    <h2 class="display-6">@overdue</h2>
+                </MudCardContent>
+            </MudCard>
         </div>
     </div>
 
     <div class="row g-4 mt-4">
         <div class="col-12">
-            <SfChart Title="Заявления по специалистам" PointClick="OnPointClick">
-                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
-                <ChartSeriesCollection>
-                    <ChartSeries DataSource="appsByUser" XName="User" YName="Count" Type="ChartSeriesType.Column"></ChartSeries>
-                </ChartSeriesCollection>
-            </SfChart>
+            @* TODO: заменить на MudBlazor график по специалистам *@
         </div>
     </div>
 </div>
@@ -49,11 +56,7 @@
         new UserCount("Сидоров", 17)
     };
 
-    void OnPointClick(PointEventArgs args)
-    {
-        var item = appsByUser[args.Point.Index];
-        Nav.NavigateTo($"/applications?user={item.User}");
-    }
+    // TODO: заменить на MudBlazor обработчик клика по точке графика
 
     record UserCount(string User, int Count);
 }
