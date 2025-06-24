@@ -6,33 +6,36 @@
     <h1 class="mb-4">Дашборд директора</h1>
     <div class="row g-4">
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Всего заявлений</h4></CardHeader>
-                <CardContent><h2 class="display-6">@total</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader><h4>Всего заявлений</h4></MudCardHeader>
+                <MudCardContent><h2 class="display-6">@total</h2></MudCardContent>
+            </MudCard>
         </div>
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Среднее время</h4></CardHeader>
-                <CardContent><h2 class="display-6">@avg ч.</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader><h4>Среднее время</h4></MudCardHeader>
+                <MudCardContent><h2 class="display-6">@avg ч.</h2></MudCardContent>
+            </MudCard>
         </div>
         <div class="col-md-4 col-sm-6">
-            <SfCard CssClass="rounded-xl shadow-lg glass-effect p-6 text-center">
-                <CardHeader><h4>Активные распоряжения</h4></CardHeader>
-                <CardContent><h2 class="display-6">@orders</h2></CardContent>
-            </SfCard>
+            <MudCard Class="rounded-xl shadow-lg glass-effect p-6 text-center">
+                <MudCardHeader><h4>Активные распоряжения</h4></MudCardHeader>
+                <MudCardContent><h2 class="display-6">@orders</h2></MudCardContent>
+            </MudCard>
         </div>
     </div>
 
     <div class="row g-4 mt-4">
         <div class="col-lg-12">
+            @* TODO: заменить на MudBlazor график *@
+            <!--
             <SfChart Title="Заявления по подразделениям" PointClick="OnDeptClick">
                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
                 <ChartSeriesCollection>
                     <ChartSeries DataSource="appsByDept" XName="Dept" YName="Count" Type="ChartSeriesType.Column"></ChartSeries>
                 </ChartSeriesCollection>
             </SfChart>
+            -->
         </div>
     </div>
 </div>
@@ -49,11 +52,14 @@
         new DeptCount("Отдел 3", 140)
     };
 
+    // TODO: заменить на MudBlazor обработчик клика по графику
+    /*
     void OnDeptClick(PointEventArgs args)
     {
         var item = appsByDept[args.Point.Index];
         Nav.NavigateTo($"/dashboard/department?dept={item.Dept}");
     }
+    */
 
     record DeptCount(string Dept, int Count);
 }
