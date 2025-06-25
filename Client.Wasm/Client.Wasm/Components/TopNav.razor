@@ -4,7 +4,7 @@
 <AuthorizeView>
     <Authorized>
         <MudAppBar Color="Color.Primary">
-            <MudToolbar>
+            <MudToolbar Class="justify-center">
                 <a href="/" class="d-flex align-items-center text-decoration-none me-4">
                     <span class="h3 mb-0 me-2">🏛️</span>
                     <span class="fw-semibold h5 mb-0">Государственные услуги</span>
@@ -50,7 +50,7 @@
                     <MudMenuItem Href="/ai">Модель ИИ</MudMenuItem>
                     <MudMenuItem Href="/ai/settings">Настройки ИИ</MudMenuItem>
                 </MudMenu>
-                <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Class="ms-auto">
+                <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
                     <MudMenuItem OnClick="Profile">Настройки профиля</MudMenuItem>
                     <MudMenuItem OnClick="Logout">Выход</MudMenuItem>
                 </MudMenu>
