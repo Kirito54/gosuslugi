@@ -7,11 +7,11 @@
 <CascadingAuthenticationState>
     @if (_authState?.User.Identity?.IsAuthenticated == true)
     {
-        <MudThemeProvider>
-            <MudDialogProvider>
-                <MudPopoverProvider>
-                    <MudSnackbarProvider>
-                        <MudAppBar Elevation="1">
+        <MudThemeProvider />
+        <MudDialogProvider />
+        <MudPopoverProvider />
+        <MudSnackbarProvider />
+        <MudAppBar Elevation="1">
                             <MudText Typo="Typo.h6">Госуслуги</MudText>
                             <MudSpacer />
                             <MudMenu Label="📑 Документы" StartIcon="@Icons.Material.Filled.Folder">
@@ -46,10 +46,6 @@
                         <MudFooter Class="mt-4 px-4 text-center">
                             © 2025 Госуслуги
                         </MudFooter>
-                    </MudSnackbarProvider>
-                </MudPopoverProvider>
-            </MudDialogProvider>
-        </MudThemeProvider>
     }
     else
     {
