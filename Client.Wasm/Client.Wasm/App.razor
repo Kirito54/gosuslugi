@@ -8,25 +8,14 @@
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                         <NotAuthorized>
-                            <LayoutView Layout="@typeof(LoginLayout)">
-                                <Login />
-                            </LayoutView>
+                            @NavigationManager.NavigateTo("login", true)
                         </NotAuthorized>
                     </AuthorizeRouteView>
                 </Found>
                 <NotFound>
-                    <AuthorizeView>
-                        <Authorized>
-                            <LayoutView Layout="@typeof(MainLayout)">
-                                <NotFound />
-                            </LayoutView>
-                        </Authorized>
-                        <NotAuthorized>
-                            <LayoutView Layout="@typeof(LoginLayout)">
-                                <Login />
-                            </LayoutView>
-                        </NotAuthorized>
-                    </AuthorizeView>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p>Sorry, there's nothing at this address.</p>
+                    </LayoutView>
                 </NotFound>
             </Router>
         </ChildContent>
