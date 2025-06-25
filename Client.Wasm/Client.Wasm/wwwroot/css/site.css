@@ -30,6 +30,12 @@ html, body {
     border-radius: 1rem;
 }
 
+.login-card {
+    background-color: #f0f4ff;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
 .shadow-lg {
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
