@@ -15,9 +15,18 @@
                     </AuthorizeRouteView>
                 </Found>
                 <NotFound>
-                    <LayoutView Layout="@typeof(MainLayout)">
-                        <NotFound />
-                    </LayoutView>
+                    <AuthorizeView>
+                        <Authorized>
+                            <LayoutView Layout="@typeof(MainLayout)">
+                                <NotFound />
+                            </LayoutView>
+                        </Authorized>
+                        <NotAuthorized>
+                            <LayoutView Layout="@typeof(LoginLayout)">
+                                <Login />
+                            </LayoutView>
+                        </NotAuthorized>
+                    </AuthorizeView>
                 </NotFound>
             </Router>
         </ChildContent>
