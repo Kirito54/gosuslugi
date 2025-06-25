@@ -12,10 +12,24 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <MudTextField @bind-Value="loginModel.Email" Label="Email" Class="mb-3" />
-        <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" Class="mb-3" />
+        <MudTextField Label="Email"
+                      @bind-Value="loginModel.Email"
+                      For="@(() => loginModel.Email)"
+                      Required="true"
+                      RequiredError="Введите email"
+                      Class="mb-3" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true">Войти</MudButton>
+        <MudTextField Label="Пароль"
+                      InputType="InputType.Password"
+                      @bind-Value="loginModel.Password"
+                      For="@(() => loginModel.Password)"
+                      Required="true"
+                      RequiredError="Введите пароль"
+                      Class="mb-3" />
+
+        <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">
+            Войти
+        </MudButton>
     </EditForm>
 </MudCard>
 

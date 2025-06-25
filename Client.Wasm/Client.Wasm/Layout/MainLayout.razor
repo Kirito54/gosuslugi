@@ -4,8 +4,12 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject IAuthService AuthService
 
-<AuthorizeView>
-    <Authorized>
+<CascadingAuthenticationState>
+    @{
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+    }
+    @if (authState.User.Identity?.IsAuthenticated == true)
+    {
         <MudThemeProvider>
             <MudDialogProvider>
                 <MudPopoverProvider>
@@ -49,11 +53,12 @@
                 </MudPopoverProvider>
             </MudDialogProvider>
         </MudThemeProvider>
-    </Authorized>
-    <NotAuthorized>
+    }
+    else
+    {
         @Body
-    </NotAuthorized>
-</AuthorizeView>
+    }
+</CascadingAuthenticationState>
 
 @code {
     private void GoToProfile() => Nav.NavigateTo("/profile");
