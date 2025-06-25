@@ -15,7 +15,8 @@ builder.Services.AddScoped<ErrorHandlerService>();
 builder.Services.AddScoped(sp =>
 {
     var handler = new ErrorHandlingMessageHandler(sp.GetRequiredService<ErrorHandlerService>());
-    return new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5141/") };
+    var apiBase = builder.Configuration["API_BASE_URL"] ?? "http://localhost:5141/";
+    return new HttpClient(handler) { BaseAddress = new Uri(apiBase) };
 });
 
 // Регистрация клиентских сервисов

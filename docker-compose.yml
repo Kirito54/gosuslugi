@@ -29,6 +29,8 @@ services:
       dockerfile: Client.Wasm/Dockerfile
     depends_on:
       - server
+    environment:
+      - API_BASE_URL=http://server
     ports:
       - "5002:80"
 
