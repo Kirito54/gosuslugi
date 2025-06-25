@@ -1,6 +1,7 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
+@inject IAuthService AuthService
 
 <AuthorizeView>
     <Authorized>
@@ -55,6 +56,11 @@
 
 @code {
     private void GoToProfile() => Nav.NavigateTo("/profile");
-    private void Logout() => Nav.NavigateTo("/logout");
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Nav.NavigateTo("/login", true);
+    }
 }
 
