@@ -15,6 +15,7 @@ using GovServices.Server.Services.Numbering;
 using GovServices.Server.Middleware;
 using GovServices.Server.BackgroundServices;
 using GovServices.Server.Entities;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +102,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Controllers
 builder.Services.AddControllers();
+builder.Services.AddMudServices();
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
