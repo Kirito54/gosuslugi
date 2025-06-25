@@ -5,10 +5,7 @@
 @inject IAuthService AuthService
 
 <CascadingAuthenticationState>
-    @{
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-    }
-    @if (authState.User.Identity?.IsAuthenticated == true)
+    @if (_authState?.User.Identity?.IsAuthenticated == true)
     {
         <MudThemeProvider>
             <MudDialogProvider>
@@ -61,6 +58,13 @@
 </CascadingAuthenticationState>
 
 @code {
+    private AuthenticationState? _authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _authState = await AuthProvider.GetAuthenticationStateAsync();
+    }
+
     private void GoToProfile() => Nav.NavigateTo("/profile");
 
     private async Task Logout()
