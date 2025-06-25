@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GovServices.Server.Services;
 
-    public class ApplicationService : IApplicationService
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IWorkflowService _workflowService;
-        private readonly INumberGenerator _numberGenerator;
+public class ApplicationService : IApplicationService
+{
+    private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IWorkflowService _workflowService;
+    private readonly INumberGenerator _numberGenerator;
 
     public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService, INumberGenerator numberGenerator)
     {

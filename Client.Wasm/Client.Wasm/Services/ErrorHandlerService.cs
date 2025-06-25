@@ -15,7 +15,7 @@ public class ErrorHandlerService
             Directory.CreateDirectory("logs");
             File.AppendAllText("logs/errors.log", $"{DateTime.Now:o} {ex.Message}\n");
         }
-        catch {}
+        catch { }
         OnError?.Invoke();
     }
 
