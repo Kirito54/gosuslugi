@@ -1,10 +1,10 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 
-<MudThemeProvider IsDarkMode="true">
-    <MudDialogProvider />
-    <MudPopoverProvider />
-    <MudSnackbarProvider />
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudPopoverProvider />
+<MudSnackbarProvider />
 
     <MudAppBar Elevation="1">
         <MudText Typo="Typo.h6">Госуслуги</MudText>
@@ -41,7 +41,6 @@
     <MudFooter Class="mt-4 px-4 text-center">
         © 2025 Госуслуги
     </MudFooter>
-</MudThemeProvider>
 
 @code {
     private void GoToProfile() => Nav.NavigateTo("/profile");
