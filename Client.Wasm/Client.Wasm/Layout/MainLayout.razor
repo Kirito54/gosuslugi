@@ -1,57 +1,49 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 
-<MudLayout>
-    <MudThemeProvider>
-        <MudDialogProvider>
-            <MudPopoverProvider>
-                <MudSnackbarProvider>
-                    <MudAppBar Elevation="1">
-                        <MudText Typo="Typo.h6">Госуслуги</MudText>
-                        <MudSpacer />
-                        <MudMenu Label="📑 Документы" StartIcon="@Icons.Material.Filled.Folder">
-                            <MudMenuItem Href="documents">Документы</MudMenuItem>
-                        </MudMenu>
-                        <MudMenu Label="👤 Пользователи и роли" StartIcon="@Icons.Material.Filled.People">
-                            <MudMenuItem Href="users">Пользователи</MudMenuItem>
-                            <MudMenuItem Href="roles">Роли</MudMenuItem>
-                        </MudMenu>
-                        <MudMenu Label="⚙️ Настройки" StartIcon="@Icons.Material.Filled.Settings">
-                            <MudMenuItem Href="settings">Общие</MudMenuItem>
-                        </MudMenu>
-                        <MudMenu Label="📊 Отчёты" StartIcon="@Icons.Material.Filled.BarChart">
-                            <MudMenuItem Href="reports">Отчёты</MudMenuItem>
-                        </MudMenu>
-                        <MudMenu Label="🤖 ИИ" StartIcon="@Icons.Material.Filled.SmartToy">
-                            <MudMenuItem Href="ai">ИИ</MudMenuItem>
-                        </MudMenu>
-                        <MudSpacer />
-                        <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
-                            <MudMenuItem OnClick="GoToProfile">Профиль</MudMenuItem>
-                            <MudMenuItem OnClick="Logout">Выход</MudMenuItem>
-                        </MudMenu>
-                    </MudAppBar>
+<MudThemeProvider IsDarkMode="true">
+    <MudDialogProvider />
+    <MudPopoverProvider />
+    <MudSnackbarProvider />
 
-                    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
-                    </MudDrawer>
+    <MudAppBar Elevation="1">
+        <MudText Typo="Typo.h6">Госуслуги</MudText>
+        <MudSpacer />
+        <MudMenu Label="📑 Документы" StartIcon="@Icons.Material.Filled.Folder">
+            <MudMenuItem Href="documents">Документы</MudMenuItem>
+        </MudMenu>
+        <MudMenu Label="👤 Пользователи и роли" StartIcon="@Icons.Material.Filled.People">
+            <MudMenuItem Href="users">Пользователи</MudMenuItem>
+            <MudMenuItem Href="roles">Роли</MudMenuItem>
+        </MudMenu>
+        <MudMenu Label="⚙️ Настройки" StartIcon="@Icons.Material.Filled.Settings">
+            <MudMenuItem Href="settings">Общие</MudMenuItem>
+        </MudMenu>
+        <MudMenu Label="📊 Отчёты" StartIcon="@Icons.Material.Filled.BarChart">
+            <MudMenuItem Href="reports">Отчёты</MudMenuItem>
+        </MudMenu>
+        <MudMenu Label="🤖 ИИ" StartIcon="@Icons.Material.Filled.SmartToy">
+            <MudMenuItem Href="ai">ИИ</MudMenuItem>
+        </MudMenu>
+        <MudSpacer />
+        <MudMenu Icon="@Icons.Material.Filled.AccountCircle">
+            <MudMenuItem OnClick="GoToProfile">Профиль</MudMenuItem>
+            <MudMenuItem OnClick="Logout">Выход</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
 
-                    <MudMainContent>
-                        <MudContainer Class="mt-4 px-4">
-                            @Body
-                        </MudContainer>
-                    </MudMainContent>
+    <MudMainContent>
+        <MudContainer Class="mt-4 px-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
 
-                    <MudFooter Class="mt-4 px-4 text-center">
-                        © 2025 Госуслуги
-                    </MudFooter>
-                </MudSnackbarProvider>
-            </MudPopoverProvider>
-        </MudDialogProvider>
-    </MudThemeProvider>
-</MudLayout>
+    <MudFooter Class="mt-4 px-4 text-center">
+        © 2025 Госуслуги
+    </MudFooter>
+</MudThemeProvider>
 
 @code {
-    bool _drawerOpen = false;
     private void GoToProfile() => Nav.NavigateTo("/profile");
     private void Logout() => Nav.NavigateTo("/logout");
 }
