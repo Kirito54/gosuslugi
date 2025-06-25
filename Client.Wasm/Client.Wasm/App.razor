@@ -8,7 +8,7 @@
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                         <NotAuthorized>
-                            @NavigationManager.NavigateTo("login", true)
+                            @{ NavigationManager.NavigateTo("login", true); }
                         </NotAuthorized>
                     </AuthorizeRouteView>
                 </Found>
@@ -19,7 +19,7 @@
                 </NotFound>
             </Router>
         </ChildContent>
-        <ErrorContent>
+        <ErrorContent Context="_">
             <p class="m-4 text-red-600">Произошла непредвиденная ошибка.</p>
         </ErrorContent>
     </CustomErrorBoundary>
