@@ -1,11 +1,12 @@
 @using Client.Wasm.Services
+@using MudBlazor
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 @inject AuthenticationStateProvider AuthProvider
 @inject IAuthService AuthService
 
 <CascadingAuthenticationState>
-    <MudThemeProvider />
+<MudThemeProvider Theme="_theme" />
     <MudDialogProvider />
     <MudPopoverProvider />
     <MudSnackbarProvider />
@@ -43,6 +44,26 @@
 </CascadingAuthenticationState>
 
 @code {
+    private readonly MudTheme _theme = new()
+    {
+        Palette = new Palette
+        {
+            Primary = "#e31937",
+            Secondary = "#0d4cd3"
+        },
+        LayoutProperties = new LayoutProperties
+        {
+            DefaultBorderRadius = "12px"
+        },
+        Typography = new Typography
+        {
+            Default = new Default
+            {
+                FontFamily = "PT Sans, Segoe UI, sans-serif"
+            }
+        }
+    };
+
     private AuthenticationState? _authState;
 
     protected override async Task OnInitializedAsync()

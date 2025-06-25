@@ -73,7 +73,7 @@ public class MenuService
         AddIfExists(pages, groupAi.Items, "/agent", "AI Agent");
         if (groupAi.Items.Count > 0) Groups.Add(groupAi);
 
-        Console.WriteLine($"Created menu: {string.Join(" | ", Groups.Select(g => g.Title + ":" + string.Join(',', g.Items.Select(i => i.Title)) ))}");
+        Console.WriteLine($"Created menu: {string.Join(" | ", Groups.Select(g => g.Title + ":" + string.Join(',', g.Items.Select(i => i.Title))))}");
 
         var missing = pages.Where(p => !Groups.SelectMany(g => g.Items).Any(i => i.Url == p.Route) && !p.Route.Contains("{")).Select(p => p.Route).ToList();
         if (missing.Any())

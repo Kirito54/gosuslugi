@@ -29,7 +29,7 @@ public class ZagsIntegrationServiceTests
         });
         var client = new HttpClient(handler);
         var factory = new FakeHttpClientFactory(client);
-        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string>
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
         {
             {"Zags:ApiUrl","http://test"},
             {"Zags:Login","login"},
