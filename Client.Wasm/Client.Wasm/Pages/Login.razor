@@ -1,7 +1,6 @@
 @page "/login"
-@using Client.Wasm.Services
 @layout LoginLayout
-@inject IAuthService AuthService
+@inject Client.Wasm.Services.AuthService AuthService
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
@@ -36,22 +35,16 @@
 @code {
     LoginModel loginModel = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        var state = await AuthProvider.GetAuthenticationStateAsync();
-        if (state.User.Identity?.IsAuthenticated == true)
-        {
-            Navigation.NavigateTo("/");
-        }
-    }
-
     private async Task HandleLogin()
     {
+        Console.WriteLine("HandleLogin called"); // 🔍 временная отладка
+
         var dto = new Client.Wasm.DTOs.LoginRequestDto
         {
             Email = loginModel.Email,
             Password = loginModel.Password
         };
+
         var success = await AuthService.LoginAsync(dto);
         if (success)
             Navigation.NavigateTo("/");
@@ -59,9 +52,17 @@
 
     class LoginModel
     {
-        [Required]
+        [Required(ErrorMessage = "Email обязателен")]
         public string Email { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Пароль обязателен")]
         public string Password { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        if (state.User.Identity?.IsAuthenticated == true)
+            Navigation.NavigateTo("/");
     }
 }
