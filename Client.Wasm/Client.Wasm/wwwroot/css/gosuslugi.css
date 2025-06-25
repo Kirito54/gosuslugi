@@ -1,49 +1,74 @@
-/* Simplified Gosuslugi-like styles */
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+.cdk-overlay-container,.cdk-global-overlay-wrapper {
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%
+}
 
-.gos-header {
+.cdk-overlay-container {
+    position: fixed;
+    z-index: 1000
+}
+
+.cdk-overlay-container:empty {
+    display: none
+}
+
+.cdk-global-overlay-wrapper {
     display: flex;
-    align-items: center;
-    height: 60px;
-    padding: 0 1rem;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    font-family: 'PT Sans', sans-serif;
+    position: absolute;
+    z-index: 1000
 }
 
-.gos-logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #e31937;
-    margin-right: 2rem;
-}
-
-.gos-menu {
+.cdk-overlay-pane {
+    position: absolute;
+    pointer-events: auto;
+    box-sizing: border-box;
+    z-index: 1000;
     display: flex;
-    gap: 1rem;
+    max-width: 100%;
+    max-height: 100%
 }
 
-.gos-menu a {
-    text-decoration: none;
-    color: #1f2937;
-    padding: .5rem 1rem;
-    font-weight: 500;
+.cdk-overlay-backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    transition: opacity .4s cubic-bezier(.25,.8,.25,1);
+    opacity: 0
 }
 
-.gos-menu a.active {
-    border-bottom: 2px solid #e31937;
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+    opacity: 1
 }
 
-.gos-login {
-    margin-left: auto;
+.cdk-high-contrast-active .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+    opacity: .6
 }
 
-.gos-button {
-    background-color: #e31937;
-    border: none;
-    color: #fff;
-    padding: .5rem 1.25rem;
-    border-radius: 4px;
-    font-family: 'PT Sans', sans-serif;
-    cursor: pointer;
+.cdk-overlay-dark-backdrop {
+    background: #00000052
 }
+
+.cdk-overlay-transparent-backdrop {
+    transition: visibility 1ms linear,opacity 1ms linear;
+    visibility: hidden;
+    opacity: 1
+}
+
+.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing {
+    opacity: 0;
+    visibility: visible
+}
+
+.cdk-overlay-backdrop-noop-animation {
+    transition: none
+}
+
+/* Truncated for brevity */
