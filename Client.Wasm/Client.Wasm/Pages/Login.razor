@@ -14,7 +14,7 @@
         <MudTextField @bind-Value="loginModel.Email" Label="Email" For="@(() => loginModel.Email)" />
         <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" For="@(() => loginModel.Password)" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true" OnClick="HanleLogin">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true">
             Войти
         </MudButton>
     </EditForm>
@@ -57,5 +57,5 @@
         if (state.User.Identity?.IsAuthenticated == true)
             Navigation.NavigateTo("/");
     }
-    private void HanleLogin(MouseEventArgs args) => HandleLogin();
+    // дополнительная обработка по кнопке не требуется
 }

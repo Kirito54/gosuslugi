@@ -11,26 +11,7 @@
     <MudPopoverProvider />
     <MudSnackbarProvider />
 
-    <header class="gos-header">
-        <div class="gos-logo">Госуслуги</div>
-        @if (_authState?.User.Identity?.IsAuthenticated == true)
-        {
-            <nav class="gos-menu">
-                <MudLink Href="documents">Документы</MudLink>
-                <MudLink Href="users">Пользователи</MudLink>
-                <MudLink Href="reports">Отчёты</MudLink>
-            </nav>
-            <div class="gos-login">
-                <MudButton Class="gos-button" OnClick="Logout">Выйти</MudButton>
-            </div>
-        }
-        else
-        {
-            <div class="gos-login">
-                <MudButton Class="gos-button" OnClick="GoToLogin">Войти</MudButton>
-            </div>
-        }
-    </header>
+    <TopNav />
 
     <MudMainContent>
         <MudContainer Class="mt-4 px-4">
@@ -64,19 +45,6 @@
         }
     };
 
-    private AuthenticationState? _authState;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _authState = await AuthProvider.GetAuthenticationStateAsync();
-    }
-
-    private void GoToLogin() => Nav.NavigateTo("/login", true);
-
-    private async Task Logout()
-    {
-        await AuthService.LogoutAsync();
-        Nav.NavigateTo("/login", true);
-    }
 }
 
