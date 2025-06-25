@@ -40,12 +40,17 @@ public class AuthService : IAuthService
             return false;
         }
 
-        await _authProvider.SetTokenAsync(result.Token);
+        if (string.IsNullOrWhiteSpace(result.Token))
+        {
+            return false;
+        }
+
+        await _authProvider.NotifyUserAuthentication(result.Token);
         return true;
     }
 
     public async Task LogoutAsync()
     {
-        await _authProvider.RemoveTokenAsync();
+        await _authProvider.NotifyUserLogout();
     }
 }

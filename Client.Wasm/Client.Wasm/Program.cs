@@ -20,7 +20,6 @@ builder.Services.AddScoped(sp =>
 });
 
 // Регистрация клиентских сервисов
-builder.Services.AddScoped<Client.Wasm.Services.AuthService>();
 builder.Services.AddScoped<Client.Wasm.Services.IServiceApiClient, Client.Wasm.Services.ServiceApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.IWorkflowApiClient, Client.Wasm.Services.WorkflowApiClient>();
 builder.Services.AddScoped<Client.Wasm.Services.IApplicationApiClient, Client.Wasm.Services.ApplicationApiClient>();

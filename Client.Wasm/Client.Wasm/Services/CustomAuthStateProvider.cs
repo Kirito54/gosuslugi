@@ -52,17 +52,27 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         }
     }
 
-    public async Task SetTokenAsync(string token)
+    private async Task SetTokenAsync(string token)
     {
         await _storage.SetItemAsync("authToken", token);
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
-    public async Task RemoveTokenAsync()
+    private async Task RemoveTokenAsync()
     {
         await _storage.RemoveItemAsync("authToken");
         _httpClient.DefaultRequestHeaders.Authorization = null;
+    }
+
+    public async Task NotifyUserAuthentication(string token)
+    {
+        await SetTokenAsync(token);
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
+    public async Task NotifyUserLogout()
+    {
+        await RemoveTokenAsync();
         NotifyAuthenticationStateChanged(Task.FromResult(_anonymous));
     }
 }
