@@ -7,26 +7,14 @@
 <MudCard Class="pa-6" Style="width: 400px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
     <MudText Typo="Typo.h5" Class="mb-4">Вход</MudText>
 
-    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" OnInvalidSubmit="HandleInvalidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <MudTextField Label="Email"
-                      @bind-Value="loginModel.Email"
-                      For="@(() => loginModel.Email)"
-                      Required="true"
-                      RequiredError="Введите email"
-                      Class="mb-3" />
+        <MudTextField @bind-Value="loginModel.Email" Label="Email" For="@(() => loginModel.Email)" />
+        <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" For="@(() => loginModel.Password)" />
 
-        <MudTextField Label="Пароль"
-                      InputType="InputType.Password"
-                      @bind-Value="loginModel.Password"
-                      For="@(() => loginModel.Password)"
-                      Required="true"
-                      RequiredError="Введите пароль"
-                      Class="mb-3" />
-
-        <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true" OnClick="HanleLogin">
             Войти
         </MudButton>
     </EditForm>
@@ -35,6 +23,10 @@
 @code {
     LoginModel loginModel = new();
 
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        Console.WriteLine("❌ Невалидная форма");
+    }
     private async Task HandleLogin()
     {
         Console.WriteLine("HandleLogin called"); // 🔍 временная отладка
@@ -65,4 +57,5 @@
         if (state.User.Identity?.IsAuthenticated == true)
             Navigation.NavigateTo("/");
     }
+    private void HanleLogin(MouseEventArgs args) => HandleLogin();
 }
