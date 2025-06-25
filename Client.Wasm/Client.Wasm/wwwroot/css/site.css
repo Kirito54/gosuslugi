@@ -1,5 +1,5 @@
 :root {
-    --color-primary: #2563eb;
+    --color-primary: #e31937;
     --radius: 12px;
 }
 
@@ -7,7 +7,7 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Inter", "Segoe UI", sans-serif;
+    font-family: "PT Sans", "Segoe UI", sans-serif;
     background-color: #ffffff;
     color: #1f2937;
 }
