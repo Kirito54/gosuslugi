@@ -1,0 +1,49 @@
+/* Simplified Gosuslugi-like styles */
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
+.gos-header {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 1rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-family: 'PT Sans', sans-serif;
+}
+
+.gos-logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #e31937;
+    margin-right: 2rem;
+}
+
+.gos-menu {
+    display: flex;
+    gap: 1rem;
+}
+
+.gos-menu a {
+    text-decoration: none;
+    color: #1f2937;
+    padding: .5rem 1rem;
+    font-weight: 500;
+}
+
+.gos-menu a.active {
+    border-bottom: 2px solid #e31937;
+}
+
+.gos-login {
+    margin-left: auto;
+}
+
+.gos-button {
+    background-color: #e31937;
+    border: none;
+    color: #fff;
+    padding: .5rem 1.25rem;
+    border-radius: 4px;
+    font-family: 'PT Sans', sans-serif;
+    cursor: pointer;
+}
