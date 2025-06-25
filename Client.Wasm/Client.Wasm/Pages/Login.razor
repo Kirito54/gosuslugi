@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
-<MudCard Class="pa-6" Style="width: 400px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+<MudCard Class="login-card pa-6" Style="width: 400px;">
     <MudText Typo="Typo.h5" Class="mb-4">Вход</MudText>
 
     <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" OnInvalidSubmit="HandleInvalidSubmit">
