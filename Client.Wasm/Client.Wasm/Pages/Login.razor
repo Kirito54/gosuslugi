@@ -14,7 +14,7 @@
         <MudTextField @bind-Value="loginModel.Email" Label="Email" For="@(() => loginModel.Email)" />
         <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" For="@(() => loginModel.Password)" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true" OnClick="HandleLogin">
             Войти
         </MudButton>
     </EditForm>
