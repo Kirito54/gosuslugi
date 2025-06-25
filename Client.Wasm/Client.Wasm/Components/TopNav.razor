@@ -3,19 +3,19 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudAppBar Color="Color.Primary">
-            <MudToolbar>
-                <a href="/" class="d-flex align-items-center text-decoration-none me-4">
+        <MudAppBar Color="Color.Info">
+            <MudToolBar>
+               
+               @*  <a href="/" class="d-flex align-items-center text-decoration-none me-4">
                     <span class="h3 mb-0 me-2">🏛️</span>
-                    <span class="fw-semibold h5 mb-0">Государственные услуги</span>
-                </a>
-
+                    <span class="fw-semibold h5 mb-0">АИС ГУ ДИЗО</span>
+                </a> *@
+               
                 <div class="center-menu d-none d-md-flex">
+                   @*  <MudMenu Label="🏛️ АИС ГУ ДИЗО">  </MudMenu> *@
                     <MudMenu Label="Заявления" StartIcon="@Icons.Material.Filled.Description">
-                        <MudMenuItem Href="/applications">Все заявления</MudMenuItem>
-                        <MudMenuItem Href="/registry/applications">Реестр заявлений</MudMenuItem>
-                        <MudMenuItem Href="/registry/rdz-orders">РДЗ</MudMenuItem>
-                        <MudMenuItem Href="/registry/rdi-orders">РДИ</MudMenuItem>
+                        <MudMenuItem Href="/applications">Актуаьные заявления</MudMenuItem>
+                        <MudMenuItem Href="/registry/applications">Реестр заявлений</MudMenuItem>                       
                     </MudMenu>
                     <MudMenu Label="Документы" StartIcon="@Icons.Material.Filled.Folder">
                         <MudMenuItem Href="/registry/contracts">Договоры</MudMenuItem>
@@ -84,7 +84,7 @@
                     <MudMenuItem OnClick="Profile">Настройки профиля</MudMenuItem>
                     <MudMenuItem OnClick="Logout">Выход</MudMenuItem>
                 </MudMenu>
-            </MudToolbar>
+            </MudToolBar>
         </MudAppBar>
     </Authorized>
     <NotAuthorized>

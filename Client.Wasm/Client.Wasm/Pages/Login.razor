@@ -4,14 +4,15 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
-<MudCard Class="login-card pa-6" Style="width: 400px;">
-    <MudText Typo="Typo.h5" Class="mb-4">Вход</MudText>
+<MudCard Class="login-card pa-6" Style="width: 400px; height:300px;">
+    <MudText Typo="Typo.h5"  Class="mb-4">Вход</MudText>
 
-    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" OnInvalidSubmit="HandleInvalidSubmit">
+    <EditForm Model="@loginModel"  OnValidSubmit="HandleLogin" OnInvalidSubmit="HandleInvalidSubmit">
+        
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <MudTextField @bind-Value="loginModel.Email" Label="Email" For="@(() => loginModel.Email)" />
+        <MudTextField @bind-Value="loginModel.Email"Label="Email" For="@(() => loginModel.Email)" />
         <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" For="@(() => loginModel.Password)" />
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true" OnClick="HandleLogin">
