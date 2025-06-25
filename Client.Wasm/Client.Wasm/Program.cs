@@ -40,6 +40,7 @@ builder.Services.AddHttpClient<IAgentApiClient, AgentApiClient>(client =>
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
+builder.Services.AddMudBlazorDialog();
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<CustomAuthStateProvider>();
