@@ -102,7 +102,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Controllers
 builder.Services.AddControllers();
-builder.Services.AddMudServices();
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
