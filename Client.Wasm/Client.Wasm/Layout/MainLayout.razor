@@ -1,8 +1,7 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Nav
 
-<MudThemeProvider>
-    <MudDialogProvider>
+<MudDialogProvider>
     <MudPopoverProvider>
     <MudSnackbarProvider>
         <MudAppBar Elevation="1">
@@ -33,19 +32,16 @@
             </MudMenu>
         </MudPaper>
 
-        <MudMainContent>
-            <MudContainer Class="mt-4 px-4">
-                @Body
-            </MudContainer>
-        </MudMainContent>
+        <MudContainer Class="mt-4 px-4">
+            @Body
+        </MudContainer>
 
         <MudFooter Class="mt-4 px-4">
             © 2025 Госуслуги
         </MudFooter>
     </MudSnackbarProvider>
     </MudPopoverProvider>
-    </MudDialogProvider>
-</MudThemeProvider>
+</MudDialogProvider>
 
 @code {
     private void GoToProfile() => Nav.NavigateTo("/profile");
