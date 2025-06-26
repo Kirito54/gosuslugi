@@ -24,9 +24,11 @@
             </MudTabs>
             <div class="text-right mt-3">
                 <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="Save">Сохранить</MudButton>
+                <MudButton Type="Button" Variant="Variant.Outlined" Class="me-2" OnClick="ShowPreview">Просмотр</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
             </div>
         </EditForm>
+        <DocumentResultViewer @ref="previewer" />
     </DialogContent>
 </MudDialog>
 
@@ -77,5 +79,12 @@
 
     void Hide() => open = false;
 
+    async Task ShowPreview()
+    {
+        await previewer.Show(model.Content);
+    }
+
     [Parameter] public EventCallback OnSaved { get; set; }
+
+    DocumentResultViewer previewer;
 }
