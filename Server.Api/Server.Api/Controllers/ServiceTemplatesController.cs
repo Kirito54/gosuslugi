@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using GovServices.Server.Entities;
 using GovServices.Server.Interfaces;
 using GovServices.Server.DTOs;
+using GovServices.Server.Authorization;
 
 namespace GovServices.Server.Controllers;
 
@@ -33,7 +34,7 @@ public class ServiceTemplatesController : ControllerBase
         return res == null ? NotFound() : Ok(res);
     }
 
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPost]
     public async Task<ActionResult<ServiceTemplateDto>> Create(CreateServiceTemplateDto dto)
     {
@@ -42,7 +43,7 @@ public class ServiceTemplatesController : ControllerBase
         return Ok(res);
     }
 
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateServiceTemplateDto dto)
     {
@@ -51,7 +52,7 @@ public class ServiceTemplatesController : ControllerBase
         return NoContent();
     }
 
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = RoleNames.Administrator)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

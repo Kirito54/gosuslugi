@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using System.Reflection
 @using System.Security.Claims
+@using System.Linq
 
 <AuthorizeView>
     <Authorized>
@@ -18,24 +19,37 @@
                 </div>
 
                 <div class="center-menu d-none d-md-flex">
-                    @foreach (var item in Menu.Groups.SelectMany(g => g.Items))
+                    @foreach (var group in Menu.Groups)
                     {
-                        if (CanView(item))
-                        {
-                            <MudNavLink Href="@item.Url" Match="NavLinkMatch.Prefix" Class="mx-2">
-                                @item.Title
-                            </MudNavLink>
-                        }
+                        var visible = group.Items.Where(CanView).ToList();
+                        if (visible.Count == 0)
+                            continue;
+
+                        <MudMenu Dense="true" Label="@group.Title" Class="mx-2">
+                            @foreach (var item in visible)
+                            {
+                                <MudMenuItem Href="@item.Url">@item.Title</MudMenuItem>
+                            }
+                        </MudMenu>
                     }
                 </div>
 
                 <div class="right-block d-flex align-items-center">
                     <MudMenu Icon="@Icons.Material.Filled.Menu" Class="d-md-none me-2">
-                        @foreach (var item in Menu.Groups.SelectMany(g => g.Items))
+                        @foreach (var group in Menu.Groups)
                         {
-                            if (CanView(item))
+                            var visible = group.Items.Where(CanView).ToList();
+                            if (visible.Count == 0)
+                                continue;
+
+                            <MudText Class="px-2 pt-1" Typo="Typo.subtitle2">@group.Title</MudText>
+                            @foreach (var item in visible)
                             {
                                 <MudMenuItem Href="@item.Url">@item.Title</MudMenuItem>
+                            }
+                            @if (group != Menu.Groups.Last())
+                            {
+                                <MudDivider />
                             }
                         }
                     </MudMenu>
