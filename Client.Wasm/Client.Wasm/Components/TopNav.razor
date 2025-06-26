@@ -11,7 +11,7 @@
                     <span class="fw-semibold h5 mb-0">АИС ГУ ДИЗО</span>
                 </a> *@
                
-                <div class="center-menu d-none d-md-flex">
+                @* <div class="center-menu d-none d-md-flex"> *@
                    @*  <MudMenu Label="🏛️ АИС ГУ ДИЗО">  </MudMenu> *@
                     <MudMenu Label="Заявления" StartIcon="@Icons.Material.Filled.Description">
                         <MudMenuItem Href="/applications">Актуаьные заявления</MudMenuItem>
@@ -52,7 +52,7 @@
                         <MudMenuItem Href="/ai">Модель ИИ</MudMenuItem>
                         <MudMenuItem Href="/ai/settings">Настройки ИИ</MudMenuItem>
                     </MudMenu>
-                </div>
+               @*  </div> *@
 
                 <MudMenu Icon="@Icons.Material.Filled.Menu" Class="d-md-none">
                     <MudMenuItem Href="/applications">Все заявления</MudMenuItem>
@@ -79,7 +79,7 @@
                     <MudMenuItem Href="/ai">Модель ИИ</MudMenuItem>
                     <MudMenuItem Href="/ai/settings">Настройки ИИ</MudMenuItem>
                 </MudMenu>
-
+                <MudSpacer />
                 <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Class="ms-auto">
                     <MudMenuItem OnClick="Profile">Настройки профиля</MudMenuItem>
                     <MudMenuItem OnClick="Logout">Выход</MudMenuItem>
@@ -89,9 +89,9 @@
     </Authorized>
     <NotAuthorized>
         <MudAppBar Color="Color.Primary">
-            <MudToolbar Class="justify-end">
+            <MudToolBar Class="justify-end">
                 <MudButton Color="Color.Primary" OnClick="@(() => Nav.NavigateTo("/login"))">Войти</MudButton>
-            </MudToolbar>
+            </MudToolBar>
         </MudAppBar>
     </NotAuthorized>
 </AuthorizeView>
