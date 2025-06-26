@@ -1,0 +1,32 @@
+@using Client.Wasm.DTOs
+<MudDialog @bind-Visible="Visible" MaxWidth="MaxWidth.ExtraSmall">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">@Title</MudText>
+        <MudTextField @bind-Value="Model.Name" Label="Название" Class="mb-2 w-100" />
+        <MudNumericField TValue="int" @bind-Value="Model.Sequence" Label="Порядок" Class="mb-2 w-100" />
+        <div class="text-right">
+            <MudButton Color="Color.Primary" OnClick="Save">Сохранить</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Cancel">Отмена</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [Parameter] public WorkflowStepDto Model { get; set; } = new();
+    [Parameter] public EventCallback<WorkflowStepDto> OnSave { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string Title { get; set; } = "Шаг";
+
+    async Task Save()
+    {
+        if (OnSave.HasDelegate)
+            await OnSave.InvokeAsync(Model);
+    }
+
+    async Task Cancel()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+}

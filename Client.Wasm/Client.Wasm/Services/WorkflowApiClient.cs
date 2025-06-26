@@ -13,6 +13,16 @@ public interface IWorkflowApiClient
     Task<bool> DeleteAsync(int id);
     Task<bool> CanTransitionAsync(int fromStepId, int toStepId, object? contextData);
     Task<WorkflowStepDto?> GetNextStepAsync(int currentStepId, object? contextData);
+
+    Task<List<WorkflowStepDto>> GetStepsAsync(int workflowId);
+    Task<WorkflowStepDto> CreateStepAsync(WorkflowStepDto dto);
+    Task<bool> UpdateStepAsync(WorkflowStepDto dto);
+    Task<bool> DeleteStepAsync(int id);
+
+    Task<List<WorkflowTransitionDto>> GetTransitionsAsync(int workflowId);
+    Task<WorkflowTransitionDto> CreateTransitionAsync(WorkflowTransitionDto dto);
+    Task<bool> UpdateTransitionAsync(WorkflowTransitionDto dto);
+    Task<bool> DeleteTransitionAsync(int id);
 }
 
 public class WorkflowApiClient : IWorkflowApiClient
@@ -65,5 +75,55 @@ public class WorkflowApiClient : IWorkflowApiClient
         var res = await _http.PostAsJsonAsync($"api/workflow/nextStep/{currentStepId}", contextData);
         if (!res.IsSuccessStatusCode) return null;
         return await res.Content.ReadFromJsonAsync<WorkflowStepDto>();
+    }
+
+    public async Task<List<WorkflowStepDto>> GetStepsAsync(int workflowId)
+    {
+        var res = await _http.GetFromJsonSafeAsync<List<WorkflowStepDto>>($"api/workflowsteps/byWorkflow/{workflowId}");
+        return res ?? new();
+    }
+
+    public async Task<WorkflowStepDto> CreateStepAsync(WorkflowStepDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/workflowsteps", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<WorkflowStepDto>())!;
+    }
+
+    public async Task<bool> UpdateStepAsync(WorkflowStepDto dto)
+    {
+        var res = await _http.PutAsJsonAsync($"api/workflowsteps/{dto.Id}", dto);
+        return res.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteStepAsync(int id)
+    {
+        var res = await _http.DeleteAsync($"api/workflowsteps/{id}");
+        return res.IsSuccessStatusCode;
+    }
+
+    public async Task<List<WorkflowTransitionDto>> GetTransitionsAsync(int workflowId)
+    {
+        var res = await _http.GetFromJsonSafeAsync<List<WorkflowTransitionDto>>($"api/workflowtransitions/byWorkflow/{workflowId}");
+        return res ?? new();
+    }
+
+    public async Task<WorkflowTransitionDto> CreateTransitionAsync(WorkflowTransitionDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/workflowtransitions", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<WorkflowTransitionDto>())!;
+    }
+
+    public async Task<bool> UpdateTransitionAsync(WorkflowTransitionDto dto)
+    {
+        var res = await _http.PutAsJsonAsync($"api/workflowtransitions/{dto.Id}", dto);
+        return res.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteTransitionAsync(int id)
+    {
+        var res = await _http.DeleteAsync($"api/workflowtransitions/{id}");
+        return res.IsSuccessStatusCode;
     }
 }
