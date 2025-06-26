@@ -4,9 +4,15 @@ namespace GovServices.Server.Services.RegistryApis;
 
 public class RegistryApi : IRegistryApi
 {
+    private static readonly Dictionary<string, string> Statuses = new();
+
     public Task<string?> CheckStatusAsync(string externalId)
     {
-        // TODO: implement registry interaction
-        return Task.FromResult<string?>(null);
+        return Task.FromResult(Statuses.TryGetValue(externalId, out var status) ? status : "Pending");
+    }
+
+    public static void SetStatus(string id, string status)
+    {
+        Statuses[id] = status;
     }
 }

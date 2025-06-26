@@ -3,3 +3,5 @@ uvicorn
 qdrant-client
 psycopg2-binary
 shapely
+scikit-learn
+numpy

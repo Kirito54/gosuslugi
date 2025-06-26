@@ -4,9 +4,15 @@ namespace GovServices.Server.Services.RegistryApis;
 
 public class RosreestrApi : IRegistryApi
 {
+    private static readonly Dictionary<string, string> Statuses = new();
+
     public Task<string?> CheckStatusAsync(string externalId)
     {
-        // TODO: call Rosreestr API
-        return Task.FromResult<string?>(null);
+        return Task.FromResult(Statuses.TryGetValue(externalId, out var status) ? status : "Pending");
+    }
+
+    public static void SetStatus(string id, string status)
+    {
+        Statuses[id] = status;
     }
 }

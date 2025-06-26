@@ -3,6 +3,8 @@ using GovServices.Server.Data;
 using GovServices.Server.DTOs;
 using GovServices.Server.Entities;
 using GovServices.Server.Interfaces;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
 namespace GovServices.Server.Services;
@@ -13,13 +15,15 @@ public class ApplicationService : IApplicationService
     private readonly IMapper _mapper;
     private readonly IWorkflowService _workflowService;
     private readonly INumberGenerator _numberGenerator;
+    private readonly IHttpContextAccessor _http;
 
-    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService, INumberGenerator numberGenerator)
+    public ApplicationService(ApplicationDbContext context, IMapper mapper, IWorkflowService workflowService, INumberGenerator numberGenerator, IHttpContextAccessor http)
     {
         _context = context;
         _mapper = mapper;
         _workflowService = workflowService;
         _numberGenerator = numberGenerator;
+        _http = http;
     }
 
     public async Task<List<ApplicationDto>> GetAllAsync()
@@ -88,11 +92,12 @@ public class ApplicationService : IApplicationService
         app.AssignedToUserId = dto.AssignedToUserId;
         app.UpdatedAt = DateTime.UtcNow;
 
+        var userId = _http.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         _context.ApplicationLogs.Add(new ApplicationLog
         {
             ApplicationId = id,
             Action = "Updated application",
-            UserId = "TODO",
+            UserId = userId,
             Timestamp = DateTime.UtcNow
         });
 
@@ -124,11 +129,12 @@ public class ApplicationService : IApplicationService
         app.CurrentStepId = next.Id;
         app.UpdatedAt = DateTime.UtcNow;
 
+        var userId = _http.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         _context.ApplicationLogs.Add(new ApplicationLog
         {
             ApplicationId = applicationId,
             Action = $"Advanced to {next.Name}",
-            UserId = "TODO",
+            UserId = userId,
             Timestamp = DateTime.UtcNow
         });
 

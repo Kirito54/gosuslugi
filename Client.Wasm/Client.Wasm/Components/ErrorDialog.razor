@@ -2,13 +2,25 @@
 @inject HttpClient Http
 @implements IDisposable
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudDialog @ref="dialog" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6">Произошла ошибка</MudText>
+        <MudText Class="mt-2">@_errorMessage</MudText>
+        <EditForm Model="_model" OnValidSubmit="SendReport">
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="_model.Comment" Label="Комментарий" Class="w-100 mt-3" />
+            <div class="mt-3 text-right">
+                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Отправить</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Close">Закрыть</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    // TODO: заменить на MudBlazor
     string? _errorMessage;
     readonly ReportModel _model = new();
+    MudDialog? dialog;
 
     protected override void OnInitialized()
     {
@@ -25,8 +37,7 @@
         var ex = ErrorService.GetError();
         if (ex == null) return;
         _errorMessage = ex.Message;
-        // TODO: заменить на MudBlazor
-        // await dialog!.ShowAsync();
+        await dialog!.ShowAsync();
     }
 
     private async Task SendReport()
@@ -40,12 +51,10 @@
             userId = string.Empty
         };
         await Http.PostAsJsonAsync("api/errors/report", dto);
-        // TODO: заменить на MudBlazor
-        // await dialog!.HideAsync();
+        await dialog!.HideAsync();
     }
 
-    // TODO: заменить на MudBlazor
-    // private void Close() => dialog?.HideAsync();
+    private void Close() => dialog?.HideAsync();
 
     class ReportModel
     {

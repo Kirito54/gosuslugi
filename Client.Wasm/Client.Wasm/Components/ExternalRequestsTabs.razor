@@ -3,8 +3,14 @@
 
 @if (ApplicationId != 0)
 {
-    @* TODO: заменить на MudBlazor *@
-    <div></div>
+    <MudTabs>
+        <MudTabPanel Text="Росреестр">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateRosreestr">Отправить запрос</MudButton>
+        </MudTabPanel>
+        <MudTabPanel Text="ЗАГС">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateZags">Отправить запрос</MudButton>
+        </MudTabPanel>
+    </MudTabs>
 }
 
 @code {
