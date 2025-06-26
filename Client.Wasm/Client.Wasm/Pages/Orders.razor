@@ -23,7 +23,7 @@
                 <RowTemplate>
                     <MudTd DataLabel="ID">@context.Id</MudTd>
                     <MudTd DataLabel="Номер">@context.Number</MudTd>
-                    <MudTd DataLabel="Дата">@context.Date.ToShortDateString()</MudTd>
+                    <MudTd DataLabel="Дата">@(context.Date?.ToShortDateString())</MudTd>
                     <MudTd Class="text-center" DataLabel="">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(() => edit.Load(context.Id))" />
                     </MudTd>

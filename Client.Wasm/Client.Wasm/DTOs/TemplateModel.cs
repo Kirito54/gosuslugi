@@ -6,5 +6,5 @@ public class TemplateModel
     public string ApplicantName { get; set; }
     public string ServiceName { get; set; }
     public string StepName { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
 }
