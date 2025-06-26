@@ -49,6 +49,26 @@ namespace Server.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApplicantName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RepresentativeName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RegistrarId")
+                        .HasColumnType("text");
+
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
@@ -66,6 +86,8 @@ namespace Server.Api.Migrations
                     b.HasIndex("CurrentStepId");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("RegistrarId");
 
                     b.ToTable("Applications");
                 });
@@ -1388,6 +1410,10 @@ namespace Server.Api.Migrations
                         .WithMany("AssignedApplications")
                         .HasForeignKey("AssignedToId");
 
+                    b.HasOne("GovServices.Server.Entities.ApplicationUser", "Registrar")
+                        .WithMany()
+                        .HasForeignKey("RegistrarId");
+
                     b.HasOne("GovServices.Server.Entities.WorkflowStep", "CurrentStep")
                         .WithMany()
                         .HasForeignKey("CurrentStepId")
@@ -1401,6 +1427,8 @@ namespace Server.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("AssignedTo");
+
+                    b.Navigation("Registrar");
 
                     b.Navigation("CurrentStep");
 
