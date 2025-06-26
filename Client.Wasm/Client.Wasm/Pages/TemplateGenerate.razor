@@ -4,14 +4,24 @@
 @inject ISnackbar Snackbar
 <RedirectToLogin />
 
-<MudContainer Class="mt-4">
-    <MudText Typo="Typo.h5">Генерация документа</MudText>
-    @* TODO: заменить на MudBlazor *@
-    <div></div>
-</MudContainer>
+<MudDialog @bind-Visible="dialogVisible" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">Генерация документа</MudText>
+        <EditForm Model="model">
+            <MudTextField @bind-Value="model.ApplicantName" Label="Заявитель" Class="mb-3 w-100" />
+            <MudTextField @bind-Value="model.ServiceName" Label="Услуга" Class="mb-3 w-100" />
+            <MudTextField @bind-Value="model.StepName" Label="Этап" Class="mb-3 w-100" />
+            <MudDatePicker @bind-Date="model.Date" Label="Дата" Class="mb-3 w-100" />
+            <div class="text-right">
+                <MudButton OnClick="Generate" Color="Color.Primary" Class="me-2">Создать</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    // TODO: заменить на MudBlazor
+    bool dialogVisible;
     TemplateModel model = new();
     int templateId;
 
@@ -19,9 +29,10 @@
     {
         templateId = id;
         model = new TemplateModel { Date = DateTime.Today };
-        // TODO: заменить на MudBlazor
-        // _ = dlg.ShowAsync();
+        dialogVisible = true;
     }
+
+    void Hide() => dialogVisible = false;
 
     async Task Generate()
     {
@@ -30,8 +41,7 @@
             var bytes = await ApiClient.GeneratePdfAsync(templateId, model);
             // здесь могла бы быть логика скачивания файла
             Snackbar.Add("Документ создан", Severity.Success);
-            // TODO: заменить на MudBlazor
-            // _ = dlg.HideAsync();
+            dialogVisible = false;
         }
         catch (Exception ex)
         {

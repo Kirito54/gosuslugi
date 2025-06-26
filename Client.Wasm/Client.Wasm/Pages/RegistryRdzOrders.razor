@@ -1,8 +1,23 @@
 @page "/registry/rdz-orders"
 @attribute [Authorize]
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudCard Class="glass-effect rounded-xl shadow-lg p-6">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">Реестр РДЗ приказов</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTable Items="@orders" Hover="true">
+            <HeaderContent>
+                <MudTh>ID</MudTh>
+                <MudTh>Номер</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="ID">@context.Id</MudTd>
+                <MudTd DataLabel="Номер">@context.Number</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
 
 @code {
     List<OrderRow> orders = new();

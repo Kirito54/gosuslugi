@@ -27,7 +27,10 @@
                     }
                     <MudTextField @bind-Value="newAnswer.Subject" Label="Тема" Class="form-field" />
                     <InputFile OnChange="OnFileChange" class="form-field" />
-                    <!-- TODO: заменить на MudBlazor загрузчик с прогрессом -->
+                    @if(uploadProgress > 0)
+                    {
+                        <MudProgressLinear Value="@uploadProgress" Class="my-2" />
+                    }
                     <div class="text-right">
                         <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="Save">Сохранить</MudButton>
                         <MudButton Variant="Variant.Text" OnClick="HideDialog">Отмена</MudButton>
@@ -43,6 +46,7 @@
     bool dialogVisible;
     AnswerRow newAnswer = new();
     IBrowserFile? uploadedFile;
+    int uploadProgress;
     string? errorMessage;
 
     protected override void OnInitialized()
@@ -53,7 +57,11 @@
     void ShowDialog() => dialogVisible = true;
     void HideDialog() => dialogVisible = false;
 
-    void OnFileChange(InputFileChangeEventArgs e) => uploadedFile = e.File;
+    void OnFileChange(InputFileChangeEventArgs e)
+    {
+        uploadedFile = e.File;
+        uploadProgress = 100;
+    }
 
     Task Save()
     {
