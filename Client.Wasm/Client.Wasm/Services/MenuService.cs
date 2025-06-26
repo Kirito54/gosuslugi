@@ -59,6 +59,7 @@ public class MenuService
         AddIfExists(pages, groupSettings.Items, "/service-templates", "Шаблоны услуг");
         AddIfExists(pages, groupSettings.Items, "/workflows", "Рабочие процессы");
         AddIfExists(pages, groupSettings.Items, "/document-templates", "Шаблоны документов");
+        AddIfExists(pages, groupSettings.Items, "/templates", "Шаблоны");
         AddIfExists(pages, groupSettings.Items, "/number-templates", "Шаблоны номеров");
         AddIfExists(pages, groupSettings.Items, "/dictionaries", "Справочники");
         AddIfExists(pages, groupSettings.Items, "/geoobjects", "Геообъекты");

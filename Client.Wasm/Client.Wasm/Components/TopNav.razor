@@ -93,6 +93,9 @@
         if (_user == null || !_user.Identity?.IsAuthenticated == true)
             return false;
 
+        if (_user.IsInRole("Администратор"))
+            return true;
+
         if (!string.IsNullOrWhiteSpace(attr.Roles))
         {
             var roles = attr.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
