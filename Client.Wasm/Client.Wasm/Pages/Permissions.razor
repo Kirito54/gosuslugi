@@ -42,10 +42,10 @@
             <MudTextField @bind-Value="createModel.Role" Label="Роль" Class="mb-3 w-100" />
             <MudNumericField T="int" @bind-Value="createModel.ServiceId" Label="ID услуги" Class="mb-3 w-100" />
             <MudNumericField T="int" @bind-Value="createModel.DepartmentId" Label="ID отдела" Class="mb-3 w-100" />
-            <MudCheckBox @bind-Checked="createModel.CanView" Label="Просмотр" />
-            <MudCheckBox @bind-Checked="createModel.CanEdit" Label="Изменение" />
-            <MudCheckBox @bind-Checked="createModel.CanApprove" Label="Утверждение" />
-            <MudCheckBox @bind-Checked="createModel.CanDelete" Label="Удаление" />
+            <MudCheckBox T="bool" @bind-Checked="createModel.CanView" Label="Просмотр" />
+            <MudCheckBox T="bool" @bind-Checked="createModel.CanEdit" Label="Изменение" />
+            <MudCheckBox T="bool" @bind-Checked="createModel.CanApprove" Label="Утверждение" />
+            <MudCheckBox T="bool" @bind-Checked="createModel.CanDelete" Label="Удаление" />
             <div class="text-right mt-2">
                 <MudButton Color="Color.Primary" OnClick="Create">Создать</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="()=>dialogOpen=false">Отмена</MudButton>
