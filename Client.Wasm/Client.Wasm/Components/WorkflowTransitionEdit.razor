@@ -1,0 +1,50 @@
+@using Client.Wasm.DTOs
+@using System.Threading
+<MudDialog @bind-Visible="Visible" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">@Title</MudText>
+        <MudSelect T="int" Label="От" Class="mb-2 w-100" @bind-Value="Model.FromStepId">
+            @foreach (var s in Steps)
+            {
+                <MudSelectItem Value="@s.Id">@s.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="int" Label="К" Class="mb-2 w-100" @bind-Value="Model.ToStepId">
+            @foreach (var s in Steps)
+            {
+                <MudSelectItem Value="@s.Id">@s.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudAutocomplete T="string" @bind-Value="Model.ConditionExpression" Label="Условие" Class="mb-2 w-100" Dense="true" SearchFunc="Search" />
+        <div class="text-right">
+            <MudButton Color="Color.Primary" OnClick="Save">Сохранить</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Cancel">Отмена</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [Parameter] public WorkflowTransitionDto Model { get; set; } = new();
+    [Parameter] public List<WorkflowStepDto> Steps { get; set; } = new();
+    [Parameter] public EventCallback<WorkflowTransitionDto> OnSave { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string Title { get; set; } = "Переход";
+
+    string[] Suggestions = new[] { "context.IsUrgent", "context.UserRole == \"Admin\"" };
+
+    Task<IEnumerable<string>> Search(string value, CancellationToken _)
+        => Task.FromResult(Suggestions.Where(x => x.Contains(value, StringComparison.OrdinalIgnoreCase)) as IEnumerable<string>);
+
+    async Task Save()
+    {
+        if (OnSave.HasDelegate)
+            await OnSave.InvokeAsync(Model);
+    }
+
+    async Task Cancel()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+}
