@@ -2,7 +2,7 @@
 @inject HttpClient Http
 @implements IDisposable
 
-<MudDialog @ref="dialog" MaxWidth="MaxWidth.Small">
+<MudDialog @bind-Visible="visible" MaxWidth="MaxWidth.Small">
     <DialogContent>
         <MudText Typo="Typo.h6">Произошла ошибка</MudText>
         <MudText Class="mt-2">@_errorMessage</MudText>
@@ -20,7 +20,7 @@
 @code {
     string? _errorMessage;
     readonly ReportModel _model = new();
-    MudDialog? dialog;
+    bool visible;
 
     protected override void OnInitialized()
     {
@@ -37,7 +37,7 @@
         var ex = ErrorService.GetError();
         if (ex == null) return;
         _errorMessage = ex.Message;
-        await dialog!.ShowAsync();
+        visible = true;
     }
 
     private async Task SendReport()
@@ -51,10 +51,10 @@
             userId = string.Empty
         };
         await Http.PostAsJsonAsync("api/errors/report", dto);
-        await dialog!.HideAsync();
+        visible = false;
     }
 
-    private void Close() => dialog?.HideAsync();
+    private void Close() => visible = false;
 
     class ReportModel
     {
