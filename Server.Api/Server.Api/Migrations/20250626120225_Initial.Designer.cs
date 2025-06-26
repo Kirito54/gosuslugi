@@ -10,11 +10,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Server.Api.Server.Api.Server.Api.Migrations
+namespace Server.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250623144453_SeedBaseData")]
-    partial class SeedBaseData
+    [Migration("20250626120225_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,12 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AssignedToId")
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ApplicantName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AssignedToUserId")
@@ -48,11 +53,23 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                     b.Property<int>("CurrentStepId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ExternalNumber")
+                        .HasColumnType("text");
+
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("RegistrarId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RepresentativeName")
+                        .HasColumnType("text");
+
                     b.Property<int>("ServiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Source")
                         .HasColumnType("integer");
 
                     b.Property<string>("Status")
@@ -64,9 +81,11 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedToId");
+                    b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("CurrentStepId");
+
+                    b.HasIndex("RegistrarId");
 
                     b.HasIndex("ServiceId");
 
@@ -512,6 +531,100 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                     b.ToTable("GeoObjects");
                 });
 
+            modelBuilder.Entity("GovServices.Server.Entities.Individual", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IdentificationNumber")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Individuals");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Иванов Иван Иванович",
+                            IdentificationNumber = "1111 111111",
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Петров Пётр Петрович",
+                            IdentificationNumber = "2222 222222",
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.LegalEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LegalEntities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "ООО Ромашка",
+                            TaxId = "7700000000",
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "АО Василёк",
+                            TaxId = "7800000000",
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
+                });
+
             modelBuilder.Entity("GovServices.Server.Entities.NumberTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -577,6 +690,9 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                     b.Property<int?>("ApplicationId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CopiesTo")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
@@ -586,6 +702,9 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
 
                     b.Property<string>("OrderType")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Preamble")
                         .HasColumnType("text");
 
                     b.Property<string>("SignerId")
@@ -661,6 +780,29 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                     b.HasIndex("ApplicationId");
 
                     b.ToTable("OutgoingDocuments");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PageAccess", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PageAccesses");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.PasswordChangeLog", b =>
@@ -1360,13 +1502,19 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                 {
                     b.HasOne("GovServices.Server.Entities.ApplicationUser", "AssignedTo")
                         .WithMany("AssignedApplications")
-                        .HasForeignKey("AssignedToId");
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("GovServices.Server.Entities.WorkflowStep", "CurrentStep")
                         .WithMany()
                         .HasForeignKey("CurrentStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("GovServices.Server.Entities.ApplicationUser", "Registrar")
+                        .WithMany()
+                        .HasForeignKey("RegistrarId");
 
                     b.HasOne("GovServices.Server.Entities.Service", "Service")
                         .WithMany("Applications")
@@ -1377,6 +1525,8 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                     b.Navigation("AssignedTo");
 
                     b.Navigation("CurrentStep");
+
+                    b.Navigation("Registrar");
 
                     b.Navigation("Service");
                 });
@@ -1512,6 +1662,17 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
+                });
+
+            modelBuilder.Entity("GovServices.Server.Entities.PageAccess", b =>
+                {
+                    b.HasOne("GovServices.Server.Entities.ApplicationUser", "User")
+                        .WithMany("PageAccesses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GovServices.Server.Entities.Permission", b =>
@@ -1804,6 +1965,8 @@ namespace Server.Api.Server.Api.Server.Api.Migrations
             modelBuilder.Entity("GovServices.Server.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("AssignedApplications");
+
+                    b.Navigation("PageAccesses");
 
                     b.Navigation("PermissionGroups");
                 });
