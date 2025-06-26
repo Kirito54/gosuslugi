@@ -138,6 +138,7 @@ builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IPageAccessService, PageAccessService>();
 builder.Services.AddSingleton<MinioService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 
 // Регистрация IEmailService (и реализация EmailService)
 builder.Services.AddScoped<IEmailService, EmailService>();
