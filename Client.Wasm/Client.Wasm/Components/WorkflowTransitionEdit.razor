@@ -33,8 +33,10 @@
 
     string[] Suggestions = new[] { "context.IsUrgent", "context.UserRole == \"Admin\"" };
 
-    Task<IEnumerable<string>> Search(string value, CancellationToken _)
-        => Task.FromResult(Suggestions.Where(x => x.Contains(value, StringComparison.OrdinalIgnoreCase)) as IEnumerable<string>);
+    Task<IEnumerable<string>> Search(string? value, CancellationToken _)
+        => Task.FromResult(Suggestions
+            .Where(x => string.IsNullOrEmpty(value) || x.Contains(value, StringComparison.OrdinalIgnoreCase))
+            as IEnumerable<string>);
 
     async Task Save()
     {
