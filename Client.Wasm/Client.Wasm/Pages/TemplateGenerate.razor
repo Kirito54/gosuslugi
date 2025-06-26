@@ -1,9 +1,14 @@
 @attribute [Authorize]
 @using Client.Wasm.DTOs
 @inject ITemplateApiClient ApiClient
+@inject ISnackbar Snackbar
+<RedirectToLogin />
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudContainer Class="mt-4">
+    <MudText Typo="Typo.h5">Генерация документа</MudText>
+    @* TODO: заменить на MudBlazor *@
+    <div></div>
+</MudContainer>
 
 @code {
     // TODO: заменить на MudBlazor
@@ -20,9 +25,17 @@
 
     async Task Generate()
     {
-        var bytes = await ApiClient.GeneratePdfAsync(templateId, model);
-        // здесь могла бы быть логика скачивания файла
-        // TODO: заменить на MudBlazor
-        // _ = dlg.HideAsync();
+        try
+        {
+            var bytes = await ApiClient.GeneratePdfAsync(templateId, model);
+            // здесь могла бы быть логика скачивания файла
+            Snackbar.Add("Документ создан", Severity.Success);
+            // TODO: заменить на MudBlazor
+            // _ = dlg.HideAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add("Ошибка генерации: " + ex.Message, Severity.Error);
+        }
     }
 }

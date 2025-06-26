@@ -4,12 +4,14 @@
 @using Client.Wasm.DTOs
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+<RedirectToLogin />
 
-<div class="container p-4">
-    <h1>Геообъекты</h1>
+<MudContainer Class="mt-4">
+    <MudText Typo="Typo.h5">Геообъекты</MudText>
     @* TODO: заменить на MudBlazor *@
     <div id="map" style="height:400px"></div>
-</div>
+</MudContainer>
 
 @code {
     List<GeoObjectDto> objects = new();
@@ -18,9 +20,16 @@
     {
         if (firstRender)
         {
-            objects = await ApiClient.GetAllAsync();
-            await Js.InvokeVoidAsync("initializeMap");
-            await Js.InvokeVoidAsync("addGeoObjects", objects);
+            try
+            {
+                objects = await ApiClient.GetAllAsync();
+                await Js.InvokeVoidAsync("initializeMap");
+                await Js.InvokeVoidAsync("addGeoObjects", objects);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add("Ошибка загрузки: " + ex.Message, Severity.Error);
+            }
         }
     }
 }
