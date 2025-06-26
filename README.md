@@ -6,13 +6,14 @@
 
 ## Быстрый старт
 
-1. Установите Docker и Docker Compose.
-2. Запустите сборку:
+1. Установите .NET SDK 8.0.
+2. Установите Docker и Docker Compose.
+3. Запустите сборку:
    ```bash
    docker-compose up --build
    ```
-3. Веб‑клиент будет доступен на [http://localhost:5002](http://localhost:5002).
-4. API сервера — на [http://localhost:5001](http://localhost:5001).
+4. Веб‑клиент будет доступен на [http://localhost:5002](http://localhost:5002).
+5. API сервера — на [http://localhost:5001](http://localhost:5001).
 
 ### Классификация документов
 
