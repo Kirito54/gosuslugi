@@ -3,8 +3,44 @@
 
 @if (appId != 0)
 {
-    @* TODO: заменить на MudBlazor *@
-    <div></div>
+    <MudTabs>
+        <MudTabPanel Text="По заявителю">
+            <MudTable Items="byApplicant" Hover="true" RowClick="OnRowClicked">
+                <HeaderContent>
+                    <MudTh>Номер</MudTh>
+                    <MudTh>Услуга</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Number</MudTd>
+                    <MudTd>@context.Service?.Name</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudTabPanel>
+        <MudTabPanel Text="По представителю">
+            <MudTable Items="byRepresentative" Hover="true" RowClick="OnRowClicked">
+                <HeaderContent>
+                    <MudTh>Номер</MudTh>
+                    <MudTh>Услуга</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Number</MudTd>
+                    <MudTd>@context.Service?.Name</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudTabPanel>
+        <MudTabPanel Text="По пересечению гео">
+            <MudTable Items="byGeo" Hover="true" RowClick="OnRowClicked">
+                <HeaderContent>
+                    <MudTh>Номер</MudTh>
+                    <MudTh>Услуга</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Number</MudTd>
+                    <MudTd>@context.Service?.Name</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudTabPanel>
+    </MudTabs>
 }
 
 @code {
@@ -24,9 +60,8 @@
         }
     }
 
-    // TODO: заменить на MudBlazor обработчик выбора строки
-    // void OnRowSelected(RowSelectEventArgs<ApplicationDto> args)
-    // {
-    //     Nav.NavigateTo($"/applications/details/{args.Data.Id}");
-    // }
+    void OnRowClicked(TableRowClickEventArgs<ApplicationDto> args)
+    {
+        Nav.NavigateTo($"/applications/details/{args.Item.Id}");
+    }
 }

@@ -4,6 +4,8 @@ using GovServices.Server.DTOs;
 using GovServices.Server.Entities;
 using GovServices.Server.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace GovServices.Server.Services;
 
@@ -68,12 +70,26 @@ public class WorkflowService : IWorkflowService
     public async Task<bool> CanTransitionAsync(int fromStepId, int toStepId, object? contextData)
     {
         var transition = await _context.Set<WorkflowTransition>()
+            .AsNoTracking()
             .FirstOrDefaultAsync(t => t.FromStepId == fromStepId && t.ToStepId == toStepId);
         if (transition == null)
             return false;
 
-        // TODO: вычислить transition.ConditionExpression через C# Script
-        return true;
+        if (string.IsNullOrWhiteSpace(transition.ConditionExpression))
+            return true;
+
+        var options = ScriptOptions.Default
+            .AddReferences(typeof(object).Assembly)
+            .AddImports("System");
+
+        try
+        {
+            return await CSharpScript.EvaluateAsync<bool>(transition.ConditionExpression, options, globals: contextData);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<WorkflowStepDto?> GetNextStepAsync(int currentStepId, object? contextData)

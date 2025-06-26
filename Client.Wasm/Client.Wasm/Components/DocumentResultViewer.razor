@@ -1,27 +1,30 @@
 @inject IJSRuntime JS
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudDialog @ref="dialog" MaxWidth="MaxWidth.Large">
+    <DialogContent>
+        <MudText Typo="Typo.h6">Результат документа</MudText>
+        <MudTextArea Class="w-100 mt-2" Rows="10" ReadOnly="true" @bind-Value="content" />
+        <div class="mt-3 text-right">
+            <MudButton OnClick="DownloadWord" Class="me-2">Скачать Word</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Close">Закрыть</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
 
 @code {
-    // TODO: заменить на MudBlazor
     string content = string.Empty;
+    MudDialog? dialog;
 
     public async Task Show(string sfdt)
     {
         content = sfdt;
-        // TODO: заменить на MudBlazor
-        // await container.DocumentEditor.OpenAsync(content);
-        // await dialog.ShowAsync();
+        await dialog!.ShowAsync();
     }
 
     async Task DownloadWord()
     {
-        // TODO: заменить на MudBlazor
-        // var data = await container.DocumentEditor.SaveAsBlobAsync(FormatType.Docx);
-        // await JS.InvokeVoidAsync("saveAsFile", "document.docx", data);
+        await JS.InvokeVoidAsync("saveAsFile", "document.sfdt", System.Text.Encoding.UTF8.GetBytes(content));
     }
 
-    // TODO: заменить на MudBlazor
-    // void Close() => dialog.HideAsync();
+    void Close() => dialog?.HideAsync();
 }
