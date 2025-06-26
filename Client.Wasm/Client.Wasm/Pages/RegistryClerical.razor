@@ -20,14 +20,16 @@
         <MudDialog @bind-Visible="dialogVisible" MaxWidth="MaxWidth.Small">
             <DialogContent>
                 <MudText Typo="Typo.h6" Class="mb-2">Регистрация ответа</MudText>
-                <EditForm Model="newAnswer" OnValidSubmit="Save">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
+                <EditForm Model="newAnswer">
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+                    }
                     <MudTextField @bind-Value="newAnswer.Subject" Label="Тема" Class="form-field" />
                     <InputFile OnChange="OnFileChange" class="form-field" />
                     <!-- TODO: заменить на MudBlazor загрузчик с прогрессом -->
                     <div class="text-right">
-                        <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                        <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="Save">Сохранить</MudButton>
                         <MudButton Variant="Variant.Text" OnClick="HideDialog">Отмена</MudButton>
                     </div>
                 </EditForm>
@@ -41,6 +43,7 @@
     bool dialogVisible;
     AnswerRow newAnswer = new();
     IBrowserFile? uploadedFile;
+    string? errorMessage;
 
     protected override void OnInitialized()
     {
@@ -54,6 +57,12 @@
 
     Task Save()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(newAnswer, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return Task.CompletedTask;
+        }
         dialogVisible = false;
         answers.Add(new AnswerRow { Id = answers.Count + 1, Subject = newAnswer.Subject });
         newAnswer = new();

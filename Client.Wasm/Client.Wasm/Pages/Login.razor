@@ -7,15 +7,16 @@
 <MudCard Class="login-card pa-6" Style="width: 400px; height:300px;">
     <MudText Typo="Typo.h5"  Class="mb-4">Вход</MudText>
 
-    <EditForm Model="@loginModel"  OnValidSubmit="HandleLogin" OnInvalidSubmit="HandleInvalidSubmit">
-        
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<EditForm Model="@loginModel">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+        }
 
         <MudTextField @bind-Value="loginModel.Email"Label="Email" For="@(() => loginModel.Email)" />
         <MudTextField @bind-Value="loginModel.Password" Label="Пароль" InputType="InputType.Password" For="@(() => loginModel.Password)" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Submit" FullWidth="true" OnClick="HandleLogin">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Type="Button" FullWidth="true" OnClick="HandleLogin">
             Войти
         </MudButton>
     </EditForm>
@@ -23,14 +24,15 @@
 
 @code {
     LoginModel loginModel = new();
-
-    private void HandleInvalidSubmit(EditContext context)
-    {
-        Console.WriteLine("❌ Невалидная форма");
-    }
+    string? errorMessage;
     private async Task HandleLogin()
     {
-        Console.WriteLine("HandleLogin called"); // 🔍 временная отладка
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(loginModel, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
 
         var dto = new Client.Wasm.DTOs.LoginRequestDto
         {

@@ -1,17 +1,21 @@
 @using Client.Wasm.DTOs
 @using Microsoft.AspNetCore.Components.Forms
+@using Client.Wasm.Helpers
 @inject IDictionaryApiClient ApiClient
 
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-2">Загрузить справочник</MudText>
-        <EditForm Model="model" OnValidSubmit="HandleSave">
-            <DataAnnotationsValidator />
+        <EditForm Model="model">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
             <MudTextField @bind-Value="model.Name" Label="Название" Class="mb-3 w-100" />
             <MudTextField @bind-Value="model.Description" Label="Описание" Class="mb-3 w-100" />
             <InputFile OnChange="OnFileSelected" class="mb-3" />
             <div class="text-right mt-3">
-                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="HandleSave">Сохранить</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
             </div>
         </EditForm>
@@ -21,6 +25,7 @@
 @code {
     bool open;
     UploadDictionaryDto model = new();
+    string? errorMessage;
 
     public void Show()
     {
@@ -38,6 +43,12 @@
 
     async Task HandleSave()
     {
+        errorMessage = null;
+        if (!ManualValidator.TryValidate(model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         await ApiClient.UploadAsync(model);
         Hide();
         if (OnUploaded.HasDelegate) await OnUploaded.InvokeAsync();
