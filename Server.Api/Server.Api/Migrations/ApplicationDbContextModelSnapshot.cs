@@ -577,6 +577,9 @@ namespace Server.Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Preamble")
+                        .HasColumnType("text");
+
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("text");
@@ -590,6 +593,9 @@ namespace Server.Api.Migrations
 
                     b.Property<string>("SignerUserId")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CopiesTo")
                         .HasColumnType("text");
 
                     b.Property<string>("Text")

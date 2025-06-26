@@ -50,6 +50,7 @@ public class OrderService : IOrderService
             OrderType = dto.OrderType,
             Number = number,
             Date = DateTime.UtcNow,
+            Preamble = dto.Preamble,
             Text = dto.Text,
             SignerUserId = dto.SignerUserId
         };
@@ -66,7 +67,9 @@ public class OrderService : IOrderService
         if (order == null)
             return false;
 
+        order.Preamble = dto.Preamble;
         order.Text = dto.Text;
+        order.CopiesTo = dto.CopiesTo;
         order.SignerUserId = dto.SignerUserId;
 
         await _db.SaveChangesAsync(cancellationToken);
