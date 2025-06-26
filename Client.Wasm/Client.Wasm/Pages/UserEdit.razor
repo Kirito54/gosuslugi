@@ -6,6 +6,7 @@
 @inject IUserApiClient ApiClient
 @inject IPositionApiClient PositionApi
 @inject IPermissionGroupApiClient GroupApi
+@inject IDepartmentApiClient DepartmentApi
 
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
     <DialogContent>
@@ -21,7 +22,12 @@
                     <MudTextField @bind-Value="model.LastName" Label="Фамилия" Class="mb-3 w-100" />
                     <MudTextField @bind-Value="model.FirstName" Label="Имя" Class="mb-3 w-100" />
                     <MudTextField @bind-Value="model.MiddleName" Label="Отчество" Class="mb-3 w-100" />
-                    <MudNumericField T="int" @bind-Value="model.DepartmentId" Label="ID отдела" Class="mb-3 w-100" />
+                    <MudSelect T="int" Label="Отдел" @bind-Value="model.DepartmentId" Class="mb-3 w-100">
+                        @foreach (var d in departments)
+                        {
+                            <MudSelectItem Value="@d.Id">@d.Name</MudSelectItem>
+                        }
+                    </MudSelect>
                     <MudSelect T="int" Label="Должность" @bind-Value="model.PositionId" Class="mb-3 w-100">
                         @foreach (var p in positions)
                         {
@@ -58,6 +64,7 @@
     string id = string.Empty;
     string? errorMessage;
     List<PositionDto> positions = new();
+    List<DepartmentDto> departments = new();
     List<PermissionGroupDto> groups = new();
     List<string> allRoles = new();
 
@@ -94,6 +101,7 @@
     async Task LoadDictionaries()
     {
         positions = await PositionApi.GetAllAsync();
+        departments = await DepartmentApi.GetAllAsync();
         groups = await GroupApi.GetAllAsync();
         allRoles = groups.SelectMany(g => g.Permissions).Distinct().ToList();
     }

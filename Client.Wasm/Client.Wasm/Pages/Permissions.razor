@@ -1,6 +1,8 @@
 @attribute [Authorize]
 @page "/permissions"
 @inject IPermissionApiClient ApiClient
+@inject IServiceApiClient ServiceApi
+@inject IDepartmentApiClient DepartmentApi
 @using Client.Wasm.DTOs
 
 <MudContainer MaxWidth="MaxWidth.False" Class="p-4">
@@ -23,8 +25,8 @@
                 </HeaderContent>
                 <RowTemplate Context="item">
                     <MudTd DataLabel="Роль">@item.Role</MudTd>
-                    <MudTd DataLabel="Услуга">@item.ServiceId</MudTd>
-                    <MudTd DataLabel="Отдел">@item.DepartmentId</MudTd>
+                    <MudTd DataLabel="Услуга">@services.FirstOrDefault(s => s.Id == item.ServiceId)?.Name</MudTd>
+                    <MudTd DataLabel="Отдел">@departments.FirstOrDefault(d => d.Id == item.DepartmentId)?.Name</MudTd>
                     <MudTd Class="text-center" DataLabel="Просмотр">@((item.CanView) ? "✓" : "-")</MudTd>
                     <MudTd Class="text-center" DataLabel="Изменение">@((item.CanEdit) ? "✓" : "-")</MudTd>
                     <MudTd Class="text-center" DataLabel="Утверждение">@((item.CanApprove) ? "✓" : "-")</MudTd>
@@ -40,8 +42,18 @@
         <EditForm Model="createModel">
             <MudText Typo="Typo.h6" Class="mb-2">Новое право</MudText>
             <MudTextField @bind-Value="createModel.Role" Label="Роль" Class="mb-3 w-100" />
-            <MudNumericField T="int" @bind-Value="createModel.ServiceId" Label="ID услуги" Class="mb-3 w-100" />
-            <MudNumericField T="int" @bind-Value="createModel.DepartmentId" Label="ID отдела" Class="mb-3 w-100" />
+            <MudSelect T="int" Label="Услуга" @bind-Value="createModel.ServiceId" Class="mb-3 w-100">
+                @foreach (var s in services)
+                {
+                    <MudSelectItem Value="@s.Id">@s.Name</MudSelectItem>
+                }
+            </MudSelect>
+            <MudSelect T="int" Label="Отдел" @bind-Value="createModel.DepartmentId" Class="mb-3 w-100">
+                @foreach (var d in departments)
+                {
+                    <MudSelectItem Value="@d.Id">@d.Name</MudSelectItem>
+                }
+            </MudSelect>
             <MudCheckBox T="bool" @bind-Checked="createModel.CanView" Label="Просмотр" />
             <MudCheckBox T="bool" @bind-Checked="createModel.CanEdit" Label="Изменение" />
             <MudCheckBox T="bool" @bind-Checked="createModel.CanApprove" Label="Утверждение" />
@@ -56,12 +68,16 @@
 
 @code {
     List<PermissionDto> items = new();
+    List<ServiceDto> services = new();
+    List<DepartmentDto> departments = new();
     bool dialogOpen;
     CreatePermissionDto createModel = new();
 
     protected override async Task OnInitializedAsync()
     {
         items = await ApiClient.GetAllAsync();
+        services = await ServiceApi.GetAllAsync();
+        departments = await DepartmentApi.GetAllAsync();
     }
 
     async Task Create()
