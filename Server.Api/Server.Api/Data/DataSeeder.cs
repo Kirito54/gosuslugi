@@ -178,7 +178,24 @@ namespace GovServices.Server.Data
             {
                 var generator = new NumberGenerator(context);
                 var number = await generator.GenerateAsync("Application");
-                var firstStep = context.WorkflowSteps.Where(s => s.WorkflowId == SeedData.DefaultServiceId).OrderBy(s => s.Sequence).First();
+
+                var firstStep = context.WorkflowSteps
+                    .Where(s => s.WorkflowId == SeedData.DefaultServiceId)
+                    .OrderBy(s => s.Sequence)
+                    .FirstOrDefault();
+
+                if (firstStep == null)
+                {
+                    var step1 = new WorkflowStep { WorkflowId = SeedData.DefaultServiceId, Name = "Прием", Sequence = 1 };
+                    var step2 = new WorkflowStep { WorkflowId = SeedData.DefaultServiceId, Name = "Завершено", Sequence = 2 };
+                    context.WorkflowSteps.AddRange(step1, step2);
+                    await context.SaveChangesAsync();
+
+                    context.WorkflowTransitions.Add(new WorkflowTransition { FromStepId = step1.Id, ToStepId = step2.Id });
+                    await context.SaveChangesAsync();
+
+                    firstStep = step1;
+                }
                 var application = new Application
                 {
                     Number = number,
