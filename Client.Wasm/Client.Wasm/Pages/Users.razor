@@ -11,8 +11,17 @@
             <MudText Typo="Typo.h5">Пользователи</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="@(()=> edit.Show(new CreateUserDto()))">Добавить пользователя</MudButton>
-            <MudTable Items="@items" Hover="true" Dense="true">
+            <div class="d-flex mb-3 gap-4 align-items-end">
+                <MudTextField @bind-Value="searchString" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                <MudSelect T="string" @bind-Value="selectedRole" Label="Роль" Clearable="true" Dense="true">
+                    @foreach (var role in roles)
+                    {
+                        <MudSelectItem Value="@role">@role</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" OnClick="@(()=> edit.Show(new CreateUserDto()))">Добавить пользователя</MudButton>
+            </div>
+            <MudTable Items="@filteredItems" Hover="true" Dense="true">
                 <HeaderContent>
                     <MudTh>ID</MudTh>
                     <MudTh>Email</MudTh>
@@ -39,8 +48,23 @@
 @code {
     List<UserDto> items = new();
     UserEdit edit;
+    string searchString = string.Empty;
+    string selectedRole;
+    IEnumerable<string> roles => items.SelectMany(u => u.Roles).Distinct().OrderBy(r => r);
+    IEnumerable<UserDto> filteredItems => items.Where(u =>
+            (string.IsNullOrWhiteSpace(searchString) ||
+                (!string.IsNullOrEmpty(u.Email) && u.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(u.FullName) && u.FullName.Contains(searchString, StringComparison.OrdinalIgnoreCase))) &&
+            (string.IsNullOrWhiteSpace(selectedRole) || u.Roles.Contains(selectedRole)));
 
     protected override async Task OnInitializedAsync() => await LoadData();
     async Task LoadData() => items = await ApiClient.GetAllAsync();
-    async Task Delete(string id){ if(await Js.InvokeAsync<bool>("confirm", $"Удалить пользователя {id}?")){ await ApiClient.DeleteAsync(id); await LoadData(); } }
+    async Task Delete(string id)
+    {
+        if (await Js.InvokeAsync<bool>("confirm", $"Удалить пользователя {id}?"))
+        {
+            await ApiClient.DeleteAsync(id);
+            await LoadData();
+        }
+    }
 }

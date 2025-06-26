@@ -11,8 +11,11 @@
             <MudText Typo="Typo.h5">Шаблоны документов</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="@(() => editor.Show())">Новый шаблон</MudButton>
-            <MudTable Items="@items" Hover="true" Dense="true">
+            <div class="d-flex mb-3 gap-4 align-items-end">
+                <MudTextField @bind-Value="searchString" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" OnClick="@(() => editor.Show())">Новый шаблон</MudButton>
+            </div>
+            <MudTable Items="@filteredItems" Hover="true" Dense="true">
                 <HeaderContent>
                     <MudTh>ID</MudTh>
                     <MudTh>Название</MudTh>
@@ -36,6 +39,9 @@
 @code {
     List<TemplateDto> items = new();
     DocumentTemplateEditor editor;
+    string searchString = string.Empty;
+    IEnumerable<TemplateDto> filteredItems => items.Where(t => string.IsNullOrWhiteSpace(searchString) ||
+        (!string.IsNullOrEmpty(t.Name) && t.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)));
 
     protected override async Task OnInitializedAsync() => await Load();
 

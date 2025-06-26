@@ -11,8 +11,17 @@
             <MudText Typo="Typo.h5">Услуги</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <MudButton Color="Color.Primary" Class="mb-3" OnClick="OpenNew">Добавить услугу</MudButton>
-            <MudTable Items="@services" Hover="true" Dense="true">
+            <div class="d-flex mb-3 gap-4 align-items-end">
+                <MudTextField @bind-Value="searchString" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                <MudSelect T="string" @bind-Value="selectedStatus" Label="Статус" Clearable="true" Dense="true">
+                    @foreach (var s in statuses)
+                    {
+                        <MudSelectItem Value="@s">@s</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudButton Color="Color.Primary" OnClick="OpenNew" StartIcon="@Icons.Material.Filled.Add">Добавить услугу</MudButton>
+            </div>
+            <MudTable Items="@filteredItems" Hover="true" Dense="true">
                 <HeaderContent>
                     <MudTh>ID</MudTh>
                     <MudTh>Название</MudTh>
@@ -48,6 +57,14 @@
 @code {
     List<ServiceDto> services;
     ServiceEdit editDialog;
+    string searchString = string.Empty;
+    string selectedStatus;
+    IEnumerable<string> statuses => services.Select(s => s.Status).Where(s => !string.IsNullOrEmpty(s)).Distinct().OrderBy(s => s);
+    IEnumerable<ServiceDto> filteredItems => services.Where(s =>
+            (string.IsNullOrWhiteSpace(searchString) ||
+                (!string.IsNullOrEmpty(s.Name) && s.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(s.Description) && s.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase))) &&
+            (string.IsNullOrWhiteSpace(selectedStatus) || s.Status == selectedStatus));
 
     protected override async Task OnInitializedAsync()
     {
