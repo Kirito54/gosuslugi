@@ -112,9 +112,10 @@ public class MenuService
 
     private static void AddIfExists(List<(string Route, Type Type)> pages, List<MenuItem> items, string route, string title)
     {
-        if (pages.Any(p => p.Route == route))
+        var page = pages.FirstOrDefault(p => p.Route == route);
+        if (page != default)
         {
-            items.Add(new MenuItem { Title = title, Url = route });
+            items.Add(new MenuItem { Title = title, Url = route, ComponentType = page.Type });
         }
         else
         {
@@ -132,5 +133,6 @@ public class MenuService
     {
         public string Title { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
+        public Type? ComponentType { get; set; }
     }
 }
