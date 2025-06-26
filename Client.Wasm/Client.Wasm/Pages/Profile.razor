@@ -5,6 +5,7 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 <div class="container p-4">
     <MudCard Class="mb-4">
         <MudCardHeader>
@@ -28,6 +29,15 @@
     ProfileModel model = new();
     string? errorMessage;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var saved = await LocalStorage.GetItemAsync<ProfileModel>("userProfile");
+        if (saved != null)
+        {
+            model = saved;
+        }
+    }
+
     async Task OnSave()
     {
         errorMessage = null;
@@ -36,7 +46,7 @@
             errorMessage = string.Join("\n", errors);
             return;
         }
-        // TODO: реализовать логику сохранения профиля
+        await LocalStorage.SetItemAsync("userProfile", model);
         Snackbar.Add("Профиль сохранён", Severity.Success);
     }
 

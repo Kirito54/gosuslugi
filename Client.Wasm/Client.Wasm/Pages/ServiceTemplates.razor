@@ -5,8 +5,35 @@
 @inject IJSRuntime Js
 @using Client.Wasm.DTOs
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudCard Class="glass-effect rounded-xl shadow-lg p-6 mb-4">
+    <MudCardHeader>
+        <MudText Typo="Typo.h5">Шаблоны услуг</MudText>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="NewTemplate">Новый шаблон</MudButton>
+        <MudTable Items="@templates" Hover="true">
+            <HeaderContent>
+                <MudTh>ID</MudTh>
+                <MudTh>Услуга</MudTh>
+                <MudTh>Активен</MudTh>
+                <MudTh class="text-center">Действия</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="row">
+                <MudTd DataLabel="ID">@row.Id</MudTd>
+                <MudTd DataLabel="Услуга">@row.ServiceName</MudTd>
+                <MudTd DataLabel="Активен">
+                    <MudCheckBox T="bool" Disabled="true" @bind-Checked="row.IsActive" />
+                </MudTd>
+                <MudTd DataLabel="Действия" Align="Center">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(()=>EditTemplate(row.Id))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(()=>DeleteTemplate(row.Id))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" OnClick="@(()=>ConfigureTemplate(row.Id))" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCardContent>
+</MudCard>
+<ServiceTemplateEdit @ref="editor" OnSaved="LoadData" />
 
 @code {
     List<ServiceTemplateDto> templates = new();
