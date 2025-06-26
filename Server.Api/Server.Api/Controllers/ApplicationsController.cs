@@ -16,9 +16,10 @@ public class ApplicationsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<ActionResult<List<ApplicationDto>>> GetAll()
     {
-        return Ok();
+        var apps = await _applications.GetAllAsync();
+        return Ok(apps);
     }
 
     [HttpGet("{id}")]
