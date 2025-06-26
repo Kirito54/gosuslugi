@@ -20,4 +20,18 @@ public class DepartmentsController : ControllerBase
         var items = await _service.GetAllAsync();
         return Ok(items);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<DepartmentDto>> Create(CreateDepartmentDto dto)
+    {
+        var created = await _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(Get), new { }, created);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UpdateDepartmentDto dto)
+    {
+        await _service.UpdateAsync(id, dto);
+        return NoContent();
+    }
 }
