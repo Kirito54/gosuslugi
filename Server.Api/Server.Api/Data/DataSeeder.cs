@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using GovServices.Server.Entities;
 using GovServices.Server.Authorization;
+using GovServices.Server.Services.Numbering;
 using System;
+using System.Linq;
 
 namespace GovServices.Server.Data
 {
@@ -136,6 +139,61 @@ namespace GovServices.Server.Data
                     UserId = admin.Id,
                     PermissionGroupId = fullGroup.Id
                 });
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.NumberTemplates.Any(t => t.TargetType == "Application"))
+            {
+                context.NumberTemplates.Add(new NumberTemplate
+                {
+                    Name = "Application",
+                    TargetType = "Application",
+                    TemplateText = "{{Year}}/{{Sequential:3}}",
+                    ResetPolicy = ResetPolicy.Yearly
+                });
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Workflows.Any(w => w.Id == SeedData.DefaultServiceId))
+            {
+                var workflow = new Workflow
+                {
+                    Id = SeedData.DefaultServiceId,
+                    Name = "Базовый процесс",
+                    Description = "Процесс по умолчанию"
+                };
+                context.Workflows.Add(workflow);
+                await context.SaveChangesAsync();
+
+                var step1 = new WorkflowStep { WorkflowId = workflow.Id, Name = "Прием", Sequence = 1 };
+                var step2 = new WorkflowStep { WorkflowId = workflow.Id, Name = "Завершено", Sequence = 2 };
+                context.WorkflowSteps.AddRange(step1, step2);
+                await context.SaveChangesAsync();
+
+                context.WorkflowTransitions.Add(new WorkflowTransition { FromStepId = step1.Id, ToStepId = step2.Id });
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Applications.Any())
+            {
+                var generator = new NumberGenerator(context);
+                var number = await generator.GenerateAsync("Application");
+                var firstStep = context.WorkflowSteps.Where(s => s.WorkflowId == SeedData.DefaultServiceId).OrderBy(s => s.Sequence).First();
+                var application = new Application
+                {
+                    Number = number,
+                    ServiceId = SeedData.DefaultServiceId,
+                    CurrentStepId = firstStep.Id,
+                    Status = "New",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Source = ApplicationSource.Mfc,
+                    ApplicantName = "Тестовый заявитель",
+                    Address = "г. Москва, ул. Пушкина, д. 1",
+                    RegistrarId = admin.Id,
+                    AssignedToUserId = admin.Id
+                };
+                context.Applications.Add(application);
                 await context.SaveChangesAsync();
             }
         }
