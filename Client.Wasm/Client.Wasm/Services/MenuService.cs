@@ -29,6 +29,7 @@ public class MenuService
         AddIfExists(pages, groupStatements.Items, "/registry/applications", "Реестр заявлений");
         AddIfExists(pages, groupStatements.Items, "/registry/rdz-orders", "Распоряжения РДЗ");
         AddIfExists(pages, groupStatements.Items, "/registry/rdi-orders", "Распоряжения РДИ");
+        AddIfExists(pages, groupStatements.Items, "/orders", "Приказы");
         if (groupStatements.Items.Count > 0) Groups.Add(groupStatements);
 
         var groupDocs = new MenuGroup { Title = "📑 Документы" };
@@ -60,6 +61,7 @@ public class MenuService
         AddIfExists(pages, groupSettings.Items, "/document-templates", "Шаблоны документов");
         AddIfExists(pages, groupSettings.Items, "/number-templates", "Шаблоны номеров");
         AddIfExists(pages, groupSettings.Items, "/dictionaries", "Справочники");
+        AddIfExists(pages, groupSettings.Items, "/geoobjects", "Геообъекты");
         if (groupSettings.Items.Count > 0) Groups.Add(groupSettings);
 
         var groupReports = new MenuGroup { Title = "📊 Отчёты" };
