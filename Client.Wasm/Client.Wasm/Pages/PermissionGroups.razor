@@ -1,16 +1,77 @@
 @page "/permission-groups"
 @attribute [Authorize(Roles="Администратор")]
 @inject IPermissionGroupApiClient Api
+@inject IPermissionApiClient PermApi
 @using Client.Wasm.DTOs
-@using Microsoft.AspNetCore.Authorization
 
-@* TODO: заменить на MudBlazor *@
-<div></div>
+<MudContainer MaxWidth="MaxWidth.False" Class="p-4">
+    <MudCard Class="mb-4">
+        <MudCardHeader>
+            <MudText Typo="Typo.h6">Группы прав</MudText>
+            <MudSpacer />
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="ShowCreate">Добавить</MudButton>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTable Items="@groups" Hover="true" Dense="true">
+                <HeaderContent>
+                    <MudTh>Название</MudTh>
+                    <MudTh>Права</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Название">@context.Name</MudTd>
+                    <MudTd DataLabel="Права">@string.Join(", ", context.Permissions)</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+<MudDialog @bind-Visible="dialogOpen" MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">Новая группа</MudText>
+        <EditForm Model="createModel">
+            <MudTextField @bind-Value="createModel.Name" Label="Название" Class="mb-3 w-100" />
+            <MudSelect T="int" Label="Права" @bind-SelectedValues="createModel.PermissionIds" MultiSelection="true" Class="mb-3 w-100">
+                @foreach (var p in permissions)
+                {
+                    <MudSelectItem Value="@p.Id">@p.Role</MudSelectItem>
+                }
+            </MudSelect>
+            <div class="text-right">
+                <MudButton Color="Color.Primary" OnClick="Create">Создать</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="()=>dialogOpen=false">Отмена</MudButton>
+            </div>
+        </EditForm>
+    </DialogContent>
+</MudDialog>
 
 @code {
     List<PermissionGroupDto> groups = new();
+    List<PermissionDto> permissions = new();
+    bool dialogOpen;
+    CreatePermissionGroupDto createModel = new();
+
     protected override async Task OnInitializedAsync()
     {
+        await Load();
+    }
+
+    async Task Load()
+    {
         groups = await Api.GetAllAsync();
+        permissions = await PermApi.GetAllAsync();
+    }
+
+    void ShowCreate()
+    {
+        createModel = new CreatePermissionGroupDto();
+        dialogOpen = true;
+    }
+
+    async Task Create()
+    {
+        await Api.CreateAsync(createModel);
+        dialogOpen = false;
+        await Load();
     }
 }
