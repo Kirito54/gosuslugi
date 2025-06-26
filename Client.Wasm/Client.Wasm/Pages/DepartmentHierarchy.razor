@@ -8,6 +8,7 @@
         <MudText Typo="Typo.h5">Подразделения</MudText>
     </MudCardHeader>
     <MudCardContent>
+        <MudButton Color="Color.Primary" Class="mb-3" OnClick="@(()=> editDialog.Show(new CreateDepartmentDto()))">Добавить отдел</MudButton>
         <!-- TODO: заменить на MudTreeGrid при необходимости -->
         <MudTable Items="@items" Dense="true" Hover="true">
             <HeaderContent>
@@ -22,11 +23,16 @@
     </MudCardContent>
 </MudCard>
 
+<DepartmentEdit @ref="editDialog" OnSaved="Reload" />
+
 @code {
     List<DepartmentDto> items = new();
+    DepartmentEdit? editDialog;
 
     protected override async Task OnInitializedAsync()
     {
-        items = await ApiClient.GetAllAsync();
+        await Reload();
     }
+
+    async Task Reload() => items = await ApiClient.GetAllAsync();
 }

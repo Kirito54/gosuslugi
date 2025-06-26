@@ -117,6 +117,8 @@ namespace GovServices.Server.Mappings
             CreateMap<Dictionary, DictionaryDto>();
 
             CreateMap<Department, DepartmentDto>().ReverseMap();
+            CreateMap<CreateDepartmentDto, Department>();
+            CreateMap<UpdateDepartmentDto, Department>();
             CreateMap<PositionEntity, PositionDto>().ReverseMap();
             CreateMap<CreatePositionDto, PositionEntity>();
             CreateMap<UpdatePositionDto, PositionEntity>();
