@@ -12,6 +12,12 @@
         </MudCardHeader>
         <MudCardContent>
             <MudTextField @bind-Value="searchString" Placeholder="Поиск" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="mb-3" />
+            <MudSelect T="string" @bind-Value="selectedStatus" Label="Статус" Clearable="true" Class="mb-3 ml-4" Dense="true">
+                @foreach (var status in statuses)
+                {
+                    <MudSelectItem Value="@status">@status</MudSelectItem>
+                }
+            </MudSelect>
             <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Class="mb-3" OnClick="OpenNew">Новая заявка</MudButton>
             <MudTable Items="@filteredItems" Hover="true" Dense="true">
                 <HeaderContent>
@@ -45,12 +51,14 @@
     List<ApplicationDto> items = new();
     ApplicationEdit edit;
     string searchString = string.Empty;
-    IEnumerable<ApplicationDto> filteredItems => string.IsNullOrWhiteSpace(searchString)
-        ? items
-        : items.Where(x =>
-            (x.Number != null && x.Number.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
-            (x.ServiceName != null && x.ServiceName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
-            (x.Status != null && x.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase)));
+    string selectedStatus;
+    IEnumerable<string> statuses => items.Select(i => i.Status).Where(s => !string.IsNullOrEmpty(s)).Distinct().OrderBy(s => s);
+    IEnumerable<ApplicationDto> filteredItems => items.Where(x =>
+            (string.IsNullOrWhiteSpace(searchString) ||
+                (x.Number != null && x.Number.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                (x.ServiceName != null && x.ServiceName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                (x.Status != null && x.Status.Contains(searchString, StringComparison.OrdinalIgnoreCase))) &&
+            (string.IsNullOrWhiteSpace(selectedStatus) || x.Status == selectedStatus));
 
     protected override async Task OnInitializedAsync() => await LoadData();
     async Task LoadData() => items = await ApiClient.GetAllAsync();
