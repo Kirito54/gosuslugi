@@ -7,7 +7,7 @@ namespace Client.Wasm.DTOs
         public string? MiddleName { get; set; }
         public int DepartmentId { get; set; }
         public int PositionId { get; set; }
-        public List<string> RoleIds { get; set; } = new();
-        public List<int> GroupIds { get; set; } = new();
+        public HashSet<string> RoleIds { get; set; } = new();
+        public HashSet<int> GroupIds { get; set; } = new();
     }
 }

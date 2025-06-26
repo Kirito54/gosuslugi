@@ -3,6 +3,7 @@
 @inject IPermissionGroupApiClient Api
 @inject IPermissionApiClient PermApi
 @using Client.Wasm.DTOs
+@using System.Linq
 
 <MudContainer MaxWidth="MaxWidth.False" Class="p-4">
     <MudCard Class="mb-4">
@@ -31,7 +32,7 @@
         <MudText Typo="Typo.h6" Class="mb-2">Новая группа</MudText>
         <EditForm Model="createModel">
             <MudTextField @bind-Value="createModel.Name" Label="Название" Class="mb-3 w-100" />
-            <MudSelect T="int" Label="Права" @bind-SelectedValues="createModel.PermissionIds" MultiSelection="true" Class="mb-3 w-100">
+            <MudSelect T="int" Label="Права" SelectedValues="@createModel.PermissionIds" SelectedValuesChanged="@(values => OnPermissionsChanged(values))" MultiSelection="true" Class="mb-3 w-100">
                 @foreach (var p in permissions)
                 {
                     <MudSelectItem Value="@p.Id">@p.Role</MudSelectItem>
@@ -73,5 +74,11 @@
         await Api.CreateAsync(createModel);
         dialogOpen = false;
         await Load();
+    }
+
+    Task OnPermissionsChanged(IEnumerable<int> values)
+    {
+        createModel.PermissionIds = values.ToHashSet();
+        return Task.CompletedTask;
     }
 }
