@@ -19,6 +19,7 @@ namespace GovServices.Server.Mappings
                 .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Service != null ? s.Service.Name : null))
                 .ForMember(d => d.CurrentStepName, o => o.MapFrom(s => s.CurrentStep != null ? s.CurrentStep.Name : null))
                 .ForMember(d => d.AssignedToUserName, o => o.MapFrom(s => s.AssignedTo != null ? s.AssignedTo.FullName : null))
+                .ForMember(d => d.RegistrarName, o => o.MapFrom(s => s.Registrar != null ? s.Registrar.FullName : null))
                 .ReverseMap();
 
             CreateMap<CreateApplicationDto, Application>();
