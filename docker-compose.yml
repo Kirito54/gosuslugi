@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   db:
     # Используем официальную сборку PostGIS для поддержки расширения postgis
@@ -34,7 +35,21 @@ services:
     ports:
       - "5002:80"
 
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
   # vector-db and python agent removed; document classification handled by ASP.NET API
 
 volumes:
   pgdata:
+  minio_data:
