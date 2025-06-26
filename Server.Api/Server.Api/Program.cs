@@ -129,6 +129,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOcrService, OcrService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDocumentStorageService, DocumentStorageService>();
+builder.Services.AddScoped<IDocumentClassifierService, DocumentClassifierService>();
 builder.Services.AddScoped<IDictionaryService, DictionaryService>();
 builder.Services.AddSingleton<IDictionaryCacheService, DictionaryCacheService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();

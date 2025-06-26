@@ -33,10 +33,7 @@ builder.Services.AddScoped<Client.Wasm.Services.PreloaderService>();
 builder.Services.AddScoped<Client.Wasm.Services.IDocumentTemplateService, Client.Wasm.Services.DocumentTemplateService>();
 builder.Services.AddScoped<Client.Wasm.Services.DocumentGeneratorService>();
 
-builder.Services.AddHttpClient<IAgentApiClient, AgentApiClient>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:8000/");
-});
+
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
@@ -52,8 +49,6 @@ var assembly = typeof(Program).Assembly;
 var clients = assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("ApiClient"));
 foreach (var client in clients)
 {
-    if (client == typeof(AgentApiClient))
-        continue;
     var iface = client.GetInterface($"I{client.Name}");
     if (iface != null)
     {
