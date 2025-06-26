@@ -76,11 +76,12 @@ public class UserService : IUserService
 
     public async Task<UserDto> CreateAsync(CreateUserDto dto)
     {
+        var fullName = string.Join(' ', new[] { dto.LastName, dto.FirstName, dto.MiddleName }.Where(s => !string.IsNullOrWhiteSpace(s)));
         var user = new ApplicationUser
         {
             UserName = dto.Email,
             Email = dto.Email,
-            FullName = dto.FullName,
+            FullName = fullName,
             DepartmentId = dto.DepartmentId,
             PasswordLastChangedAt = DateTime.UtcNow
         };
@@ -107,6 +108,15 @@ public class UserService : IUserService
             });
         }
 
+        _context.UserProfiles.Add(new UserProfile
+        {
+            UserId = user.Id,
+            FullName = fullName,
+            PositionId = dto.PositionId,
+            DepartmentId = dto.DepartmentId,
+            IsActive = true
+        });
+
         await _emailService.SendEmailAsync(user.Email!, "Регистрация", $"Ваш пароль: {temp}");
 
         return await GetByIdAsync(user.Id);
@@ -117,7 +127,8 @@ public class UserService : IUserService
         var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id)
                    ?? throw new KeyNotFoundException($"User {id} not found");
 
-        user.FullName = dto.FullName;
+        var fullName = string.Join(' ', new[] { dto.LastName, dto.FirstName, dto.MiddleName }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        user.FullName = fullName;
         user.DepartmentId = dto.DepartmentId;
 
         var currentRoles = await _userManager.GetRolesAsync(user);
@@ -147,6 +158,15 @@ public class UserService : IUserService
                 UserId = id,
                 PermissionGroupId = groupId
             });
+        }
+
+        var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.UserId == id);
+        if (profile != null)
+        {
+            profile.FullName = fullName;
+            profile.PositionId = dto.PositionId;
+            profile.DepartmentId = dto.DepartmentId;
+            _context.UserProfiles.Update(profile);
         }
 
         _context.Users.Update(user);

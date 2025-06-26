@@ -7,6 +7,8 @@ using Client.Wasm.Helpers;
 public interface IPermissionGroupApiClient
 {
     Task<List<PermissionGroupDto>> GetAllAsync();
+    Task<PermissionGroupDto> CreateAsync(CreatePermissionGroupDto dto);
+    Task UpdateAsync(int id, UpdatePermissionGroupDto dto);
 }
 
 public class PermissionGroupApiClient : IPermissionGroupApiClient
@@ -22,5 +24,18 @@ public class PermissionGroupApiClient : IPermissionGroupApiClient
     {
         var result = await _http.GetFromJsonSafeAsync<List<PermissionGroupDto>>("api/permissiongroups");
         return result ?? new();
+    }
+
+    public async Task<PermissionGroupDto> CreateAsync(CreatePermissionGroupDto dto)
+    {
+        var res = await _http.PostAsJsonAsync("api/permissiongroups", dto);
+        res.EnsureSuccessStatusCode();
+        return (await res.Content.ReadFromJsonAsync<PermissionGroupDto>())!;
+    }
+
+    public async Task UpdateAsync(int id, UpdatePermissionGroupDto dto)
+    {
+        var res = await _http.PutAsJsonAsync($"api/permissiongroups/{id}", dto);
+        res.EnsureSuccessStatusCode();
     }
 }

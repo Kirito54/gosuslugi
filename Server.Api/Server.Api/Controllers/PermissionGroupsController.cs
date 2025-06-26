@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GovServices.Server.Data;
+using GovServices.Server.Interfaces;
 using GovServices.Server.DTOs;
-using GovServices.Server.Entities;
-using System.Collections.Generic;
 
 namespace GovServices.Server.Controllers;
 
@@ -11,25 +8,30 @@ namespace GovServices.Server.Controllers;
 [Route("api/[controller]")]
 public class PermissionGroupsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IPermissionGroupService _service;
 
-    public PermissionGroupsController(ApplicationDbContext context)
+    public PermissionGroupsController(IPermissionGroupService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpGet]
     public async Task<IEnumerable<PermissionGroupDto>> Get()
     {
-        return await _context.PermissionGroups
-            .Include(g => g.PermissionGroupPermissions)
-                .ThenInclude(p => p.Permission)
-            .Select(g => new PermissionGroupDto
-            {
-                Id = g.Id,
-                Name = g.Name,
-                Permissions = g.PermissionGroupPermissions.Select(p => p.Permission.Name).ToList()
-            })
-            .ToListAsync();
+        return await _service.GetAllAsync();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<PermissionGroupDto>> Create(CreatePermissionGroupDto dto)
+    {
+        var created = await _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(Get), new { }, created);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, UpdatePermissionGroupDto dto)
+    {
+        await _service.UpdateAsync(id, dto);
+        return NoContent();
     }
 }

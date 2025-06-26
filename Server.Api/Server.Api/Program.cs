@@ -136,6 +136,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IPermissionGroupService, PermissionGroupService>();
 builder.Services.AddScoped<IPageAccessService, PageAccessService>();
 builder.Services.AddSingleton<MinioService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();

@@ -3,6 +3,8 @@
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 @inject IUserApiClient ApiClient
+@inject IPositionApiClient PositionApi
+@inject IPermissionGroupApiClient GroupApi
 
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
     <DialogContent>
@@ -15,12 +17,28 @@
             <MudTabs>
                 <MudTabPanel Text="Основное">
                     <MudTextField @bind-Value="model.Email" Label="Email" Class="mb-3 w-100" />
-                    <MudTextField @bind-Value="model.FullName" Label="ФИО" Class="mb-3 w-100" />
+                    <MudTextField @bind-Value="model.LastName" Label="Фамилия" Class="mb-3 w-100" />
+                    <MudTextField @bind-Value="model.FirstName" Label="Имя" Class="mb-3 w-100" />
+                    <MudTextField @bind-Value="model.MiddleName" Label="Отчество" Class="mb-3 w-100" />
                     <MudNumericField T="int" @bind-Value="model.DepartmentId" Label="ID отдела" Class="mb-3 w-100" />
-                    <MudTextField @bind-Value="roles" Label="Роли (через запятую)" Class="mb-3 w-100" />
-                </MudTabPanel>
-                <MudTabPanel Text="Дополнительно">
-                    <!-- дополнительные поля -->
+                    <MudSelect T="int" Label="Должность" @bind-Value="model.PositionId" Class="mb-3 w-100">
+                        @foreach (var p in positions)
+                        {
+                            <MudSelectItem Value="@p.Id">@p.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="string" Label="Роли" @bind-SelectedValues="model.RoleIds" MultiSelection="true" Class="mb-3 w-100">
+                        @foreach (var r in allRoles)
+                        {
+                            <MudSelectItem Value="@r">@r</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect T="int" Label="Группы прав" @bind-SelectedValues="model.GroupIds" MultiSelection="true" Class="mb-3 w-100">
+                        @foreach (var g in groups)
+                        {
+                            <MudSelectItem Value="@g.Id">@g.Name</MudSelectItem>
+                        }
+                    </MudSelect>
                 </MudTabPanel>
             </MudTabs>
             <div class="text-right mt-3">
@@ -35,14 +53,17 @@
     bool open;
     CreateUserDto model = new();
     bool isNew;
-    string hdr;
+    string hdr = string.Empty;
     string id = string.Empty;
-    string roles = string.Empty;
     string? errorMessage;
+    List<PositionDto> positions = new();
+    List<PermissionGroupDto> groups = new();
+    List<string> allRoles = new();
 
-    public void Show(CreateUserDto dto)
+    public async void Show(CreateUserDto dto)
     {
-        model = new CreateUserDto { RoleIds = new List<string>() };
+        await LoadDictionaries();
+        model = new CreateUserDto { RoleIds = new List<string>(), GroupIds = new List<int>() };
         hdr = "Новый пользователь";
         isNew = true;
         open = true;
@@ -50,13 +71,30 @@
 
     public async void Load(string userId)
     {
+        await LoadDictionaries();
         var u = await ApiClient.GetByIdAsync(userId);
         id = userId;
-        roles = string.Join(',', u.Roles);
-        model = new CreateUserDto { Email = u.Email, FullName = u.FullName, DepartmentId = 0, RoleIds = u.Roles };
+        model = new CreateUserDto
+        {
+            Email = u!.Email,
+            LastName = string.Empty,
+            FirstName = string.Empty,
+            MiddleName = string.Empty,
+            DepartmentId = 0,
+            PositionId = 0,
+            RoleIds = u.Roles,
+            GroupIds = new List<int>()
+        };
         hdr = "Редактировать пользователя";
         isNew = false;
         open = true;
+    }
+
+    async Task LoadDictionaries()
+    {
+        positions = await PositionApi.GetAllAsync();
+        groups = await GroupApi.GetAllAsync();
+        allRoles = groups.SelectMany(g => g.Permissions).Distinct().ToList();
     }
 
     async Task Save()
@@ -67,15 +105,22 @@
             errorMessage = string.Join("\n", errors);
             return;
         }
-        var list = roles.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(r => r.Trim()).ToList();
         if (isNew)
         {
-            model.RoleIds = list;
             await ApiClient.CreateAsync(model);
         }
         else
         {
-            await ApiClient.UpdateAsync(id, new UpdateUserDto { FullName = model.FullName, DepartmentId = model.DepartmentId, RoleIds = list });
+            await ApiClient.UpdateAsync(id, new UpdateUserDto
+            {
+                LastName = model.LastName,
+                FirstName = model.FirstName,
+                MiddleName = model.MiddleName,
+                DepartmentId = model.DepartmentId,
+                PositionId = model.PositionId,
+                RoleIds = model.RoleIds,
+                GroupIds = model.GroupIds
+            });
         }
         Hide();
         if (OnSaved.HasDelegate)
