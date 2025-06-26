@@ -11,12 +11,14 @@
             <MudText Typo="Typo.h5">Профиль</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <EditForm Model="model" OnValidSubmit="OnSave">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+            <EditForm Model="model">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+                }
                 <MudTextField @bind-Value="model.FullName" Placeholder="ФИО" Class="mb-3 w-100" />
                 <MudTextField @bind-Value="model.Email" Placeholder="Email" Class="mb-3 w-100" />
-                <MudButton Type="Submit" Color="Color.Primary">Сохранить</MudButton>
+                <MudButton Type="Button" Color="Color.Primary" OnClick="OnSave">Сохранить</MudButton>
             </EditForm>
         </MudCardContent>
     </MudCard>
@@ -24,9 +26,16 @@
 
 @code {
     ProfileModel model = new();
+    string? errorMessage;
 
     async Task OnSave()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         // TODO: реализовать логику сохранения профиля
         Snackbar.Add("Профиль сохранён", Severity.Success);
     }

@@ -6,11 +6,14 @@
     <DialogContent>
         <MudText Typo="Typo.h6">Произошла ошибка</MudText>
         <MudText Class="mt-2">@_errorMessage</MudText>
-        <EditForm Model="_model" OnValidSubmit="SendReport">
-            <DataAnnotationsValidator />
+        <EditForm Model="_model">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
             <MudTextField @bind-Value="_model.Comment" Label="Комментарий" Class="w-100 mt-3" />
             <div class="mt-3 text-right">
-                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Отправить</MudButton>
+                <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="SendReport">Отправить</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="Close">Закрыть</MudButton>
             </div>
         </EditForm>
@@ -21,6 +24,7 @@
     string? _errorMessage;
     readonly ReportModel _model = new();
     bool visible;
+    string? errorMessage;
 
     protected override void OnInitialized()
     {
@@ -42,6 +46,12 @@
 
     private async Task SendReport()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(_model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         var ex = ErrorService.GetError();
         if (ex == null) return;
         var dto = new {

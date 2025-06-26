@@ -6,8 +6,11 @@
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Medium">
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-2">@header</MudText>
-        <EditForm Model="model" OnValidSubmit="SaveTemplate">
-            <DataAnnotationsValidator />
+        <EditForm Model="model">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
         <MudTabs>
             <MudTabPanel Text="Поля">
                 <MudTable Items="@config.Fields">
@@ -106,7 +109,7 @@
             </MudTabPanel>
         </MudTabs>
         <div class="text-right mt-3">
-            <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+            <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="SaveTemplate">Сохранить</MudButton>
             <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
         </div>
     </EditForm>
@@ -119,6 +122,7 @@
     ServiceTemplateConfig config = new();
     string header = string.Empty;
     bool isNew;
+    string? errorMessage;
     string[] categories = new[]{"Физ. лицо","Представитель","Организация"};
 
     public void Show(int serviceId)
@@ -147,13 +151,19 @@
 
     async Task SaveTemplate()
     {
+        errorMessage = null;
+        if (!ManualValidator.TryValidate(model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         model.JsonConfig = config.ToJson();
-        if(isNew)
-            await ApiClient.CreateAsync(new CreateServiceTemplateDto{ ServiceId = model.ServiceId, JsonConfig = model.JsonConfig, IsActive = model.IsActive });
+        if (isNew)
+            await ApiClient.CreateAsync(new CreateServiceTemplateDto { ServiceId = model.ServiceId, JsonConfig = model.JsonConfig, IsActive = model.IsActive });
         else
-            await ApiClient.UpdateAsync(model.Id, new UpdateServiceTemplateDto{ JsonConfig = model.JsonConfig, IsActive = model.IsActive });
+            await ApiClient.UpdateAsync(model.Id, new UpdateServiceTemplateDto { JsonConfig = model.JsonConfig, IsActive = model.IsActive });
         open = false;
-        if(OnSaved.HasDelegate) await OnSaved.InvokeAsync();
+        if (OnSaved.HasDelegate) await OnSaved.InvokeAsync();
     }
 
     void AddField() => config.Fields.Add(new FieldConfig());

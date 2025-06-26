@@ -7,8 +7,11 @@
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-2">@header</MudText>
-        <EditForm Model="model" OnValidSubmit="Save">
-            <DataAnnotationsValidator />
+        <EditForm Model="model">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
             <MudTabs>
                 <MudTabPanel Text="Основное">
                     <MudNumericField T="int" @bind-Value="model.ServiceId" Label="ID услуги" Class="mb-3 w-100" />
@@ -19,7 +22,7 @@
                 </MudTabPanel>
             </MudTabs>
             <div class="text-right mt-3">
-                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="Save">Сохранить</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
             </div>
         </EditForm>
@@ -34,6 +37,7 @@
     string header;
     string formData = "{}";
     int editId;
+    string? errorMessage;
 
     public void Show(CreateApplicationDto dto)
     {
@@ -56,6 +60,12 @@
 
     async Task Save()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         if (isNew)
             await ApiClient.CreateAsync(new CreateApplicationDto { ServiceId = model.ServiceId, FormData = new Dictionary<string, object>() });
         else

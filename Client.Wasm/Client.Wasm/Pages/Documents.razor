@@ -11,8 +11,11 @@
             <MudText Typo="Typo.h6">Документы</MudText>
         </MudCardHeader>
         <MudCardContent>
-            <EditForm Model="upload" OnValidSubmit="HandleUpload">
-                <DataAnnotationsValidator />
+            <EditForm Model="upload">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+                }
                 <div class="mb-4 d-flex gap-2 align-items-center">
                     <MudSelect T="DocumentType" @bind-Value="upload.Type" Class="w-40" Dense="true">
                         @foreach (var t in types)
@@ -21,7 +24,7 @@
                         }
                     </MudSelect>
                     <InputFile OnChange="OnFileSelected" />
-                    <MudButton Color="Color.Primary" Type="Submit">Загрузить</MudButton>
+                    <MudButton Color="Color.Primary" Type="Button" OnClick="HandleUpload">Загрузить</MudButton>
                 </div>
             </EditForm>
 
@@ -48,6 +51,7 @@
     List<DocumentDto> docs = new();
     DocumentUploadDto upload = new();
     DocumentType[] types = Enum.GetValues<DocumentType>();
+    string? errorMessage;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -56,6 +60,12 @@
 
     async Task HandleUpload()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(upload, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         if (upload.File != null)
         {
             upload.OwnerId = ownerId;

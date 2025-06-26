@@ -7,9 +7,13 @@
         <MudText Typo="Typo.h6" Class="mb-4">AI Агент</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <EditForm Model="@request" OnValidSubmit="Send">
+        <EditForm Model="@request">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
             <MudTextField Lines="6" @bind-Value="request.Text" Placeholder="Введите заявление или вопрос" Class="w-100 mb-4" />
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="Submit">Отправить</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="Button" OnClick="Send">Отправить</MudButton>
         </EditForm>
         @if (response != null)
         {
@@ -23,9 +27,16 @@
 @code {
     Client.Wasm.DTOs.DocumentClassifyFormDto request = new();
     Client.Wasm.DTOs.DocumentClassificationResultDto? response;
+    string? errorMessage;
 
     private async Task Send()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(request, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         response = await AgentClient.AnalyzeAsync(request);
     }
 }

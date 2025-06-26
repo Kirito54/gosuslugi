@@ -7,8 +7,11 @@
 <MudDialog @bind-Visible="open" MaxWidth="MaxWidth.Small">
     <DialogContent>
         <MudText Typo="Typo.h6" Class="mb-2">@header</MudText>
-        <EditForm Model="model" OnValidSubmit="HandleSave">
-            <DataAnnotationsValidator />
+        <EditForm Model="model">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudText Color="Color.Error" Class="mb-2">@errorMessage</MudText>
+            }
             <MudTabs>
                 <MudTabPanel Text="Основное">
                     <MudTextField @bind-Value="model.Name" Label="Название" Class="mb-3 w-100" />
@@ -18,7 +21,7 @@
                 </MudTabPanel>
             </MudTabs>
             <div class="text-right mt-3">
-                <MudButton Type="Submit" Color="Color.Primary" Class="me-2">Сохранить</MudButton>
+                <MudButton Type="Button" Color="Color.Primary" Class="me-2" OnClick="HandleSave">Сохранить</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="Hide">Отмена</MudButton>
             </div>
         </EditForm>
@@ -29,6 +32,7 @@
     bool open;
     ServiceDto model = new();
     string header = string.Empty;
+    string? errorMessage;
 
     public void Show(CreateServiceDto dto)
     {
@@ -56,6 +60,12 @@
 
     async Task HandleSave()
     {
+        errorMessage = null;
+        if (!Client.Wasm.Helpers.ManualValidator.TryValidate(model, out var errors))
+        {
+            errorMessage = string.Join("\n", errors);
+            return;
+        }
         if (model.Id == 0)
             await ApiClient.CreateAsync(new CreateServiceDto
             {
