@@ -39,6 +39,7 @@ namespace GovServices.Server.Data
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
         public DbSet<PermissionGroupPermission> PermissionGroupPermissions { get; set; }
         public DbSet<UserPermissionGroup> UserPermissionGroups { get; set; }
+        public DbSet<PageAccess> PageAccesses { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }
@@ -74,6 +75,11 @@ namespace GovServices.Server.Data
                 .HasOne(pgp => pgp.Permission)
                 .WithMany(p => p.PermissionGroupPermissions)
                 .HasForeignKey(pgp => pgp.PermissionId);
+
+            builder.Entity<PageAccess>()
+                .HasOne(pa => pa.User)
+                .WithMany(u => u.PageAccesses)
+                .HasForeignKey(pa => pa.UserId);
 
             builder.Entity<Document>()
                 .HasIndex(d => new { d.OwnerId, d.Type, d.CreatedAt });

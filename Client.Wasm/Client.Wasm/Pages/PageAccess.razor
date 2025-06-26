@@ -1,0 +1,57 @@
+@page "/page-access"
+@attribute [Authorize(Roles="Администратор")]
+@inject IPageAccessApiClient Api
+@inject IUserApiClient UserApi
+@using Client.Wasm.DTOs
+
+<h3>Доступ к страницам</h3>
+
+<MudPaper Class="p-4">
+    <MudSelect T="string" Label="Пользователь" @bind-Value="selectedUserId">
+        @foreach (var user in users)
+        {
+            <MudSelectItem Value="@user.Id">@user.FullName (@user.Email)</MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudTextField Label="URL страницы" @bind-Value="newPageUrl" Class="mt-4" />
+    <MudButton OnClick="AddAccess" Disabled="@(string.IsNullOrWhiteSpace(selectedUserId) || string.IsNullOrWhiteSpace(newPageUrl))" Class="mt-2">Добавить</MudButton>
+
+    <MudTable Items="accesses.Where(a => a.UserId == selectedUserId)" Dense="true" Class="mt-4">
+        <HeaderContent>
+            <MudTh>Страница</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Страница">@context.PageUrl</MudTd>
+            <MudTd><MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveAccess(context.Id)" /></MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+@code {
+    private List<UserDto> users = new();
+    private List<PageAccessDto> accesses = new();
+    private string selectedUserId = string.Empty;
+    private string newPageUrl = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserApi.GetAllAsync();
+        accesses = await Api.GetAllAsync();
+    }
+
+    private async Task AddAccess()
+    {
+        var dto = new CreatePageAccessDto { UserId = selectedUserId, PageUrl = newPageUrl };
+        var created = await Api.CreateAsync(dto);
+        accesses.Add(created);
+        newPageUrl = string.Empty;
+    }
+
+    private async Task RemoveAccess(int id)
+    {
+        await Api.DeleteAsync(id);
+        accesses.RemoveAll(a => a.Id == id);
+    }
+}
