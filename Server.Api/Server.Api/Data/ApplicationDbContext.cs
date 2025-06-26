@@ -46,6 +46,8 @@ namespace GovServices.Server.Data
         public DbSet<NumberTemplate> NumberTemplates { get; set; }
         public DbSet<NumberTemplateCounter> NumberTemplateCounters { get; set; }
         public DbSet<ErrorReport> ErrorReports { get; set; }
+        public DbSet<Individual> Individuals { get; set; }
+        public DbSet<LegalEntity> LegalEntities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -197,6 +199,44 @@ namespace GovServices.Server.Data
                     Role = SeedData.Roles.DepartmentHead,
                     ServiceId = SeedData.DefaultServiceId,
                     CanEdit = true
+                }
+            );
+
+            builder.Entity<Individual>().HasData(
+                new Individual
+                {
+                    Id = 1,
+                    FullName = "Иванов Иван Иванович",
+                    IdentificationNumber = "1111 111111",
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt
+                },
+                new Individual
+                {
+                    Id = 2,
+                    FullName = "Петров Пётр Петрович",
+                    IdentificationNumber = "2222 222222",
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt
+                }
+            );
+
+            builder.Entity<LegalEntity>().HasData(
+                new LegalEntity
+                {
+                    Id = 1,
+                    Name = "ООО Ромашка",
+                    TaxId = "7700000000",
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt
+                },
+                new LegalEntity
+                {
+                    Id = 2,
+                    Name = "АО Василёк",
+                    TaxId = "7800000000",
+                    CreatedAt = createdAt,
+                    UpdatedAt = createdAt
                 }
             );
         }

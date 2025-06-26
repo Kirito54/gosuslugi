@@ -43,3 +43,15 @@ curl -X POST http://localhost:5001/api/classify \
 curl -X POST http://localhost:5001/api/classify \
      -F file=@passport.pdf
 ```
+
+### Реестры субъектов
+
+API предоставляет конечные точки для получения списков физических и юридических лиц.
+
+```bash
+# Физические лица
+curl http://localhost:5001/api/subjects/individuals
+
+# Юридические лица
+curl http://localhost:5001/api/subjects/legal-entities
+```
