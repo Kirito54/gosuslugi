@@ -8,27 +8,24 @@
     </MudCardHeader>
     <MudCardContent>
         <EditForm Model="@request" OnValidSubmit="Send">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
             <MudTextField Lines="6" @bind-Value="request.Text" Placeholder="Введите заявление или вопрос" Class="w-100 mb-4" />
             <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="Submit">Отправить</MudButton>
         </EditForm>
-        @if (!string.IsNullOrEmpty(response))
+        @if (response != null)
         {
             <div class="mt-4 p-6 rounded-xl shadow-lg bg-white">
-                <p>@response</p>
+                <pre>@System.Text.Json.JsonSerializer.Serialize(response, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })</pre>
             </div>
         }
     </MudCardContent>
 </MudCard>
 
 @code {
-    Client.Wasm.DTOs.AgentRequestDto request = new();
-    string? response;
+    Client.Wasm.DTOs.DocumentClassifyFormDto request = new();
+    Client.Wasm.DTOs.DocumentClassificationResultDto? response;
 
     private async Task Send()
     {
-        var res = await AgentClient.AnalyzeAsync(request);
-        response = res.Result;
+        response = await AgentClient.AnalyzeAsync(request);
     }
 }
