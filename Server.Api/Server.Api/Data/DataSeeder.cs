@@ -170,7 +170,12 @@ namespace GovServices.Server.Data
                 context.WorkflowSteps.AddRange(step1, step2);
                 await context.SaveChangesAsync();
 
-                context.WorkflowTransitions.Add(new WorkflowTransition { FromStepId = step1.Id, ToStepId = step2.Id });
+                context.WorkflowTransitions.Add(new WorkflowTransition
+                {
+                    FromStepId = step1.Id,
+                    ToStepId = step2.Id,
+                    ConditionExpression = string.Empty
+                });
                 await context.SaveChangesAsync();
             }
 
@@ -191,7 +196,12 @@ namespace GovServices.Server.Data
                     context.WorkflowSteps.AddRange(step1, step2);
                     await context.SaveChangesAsync();
 
-                    context.WorkflowTransitions.Add(new WorkflowTransition { FromStepId = step1.Id, ToStepId = step2.Id });
+                    context.WorkflowTransitions.Add(new WorkflowTransition
+                    {
+                        FromStepId = step1.Id,
+                        ToStepId = step2.Id,
+                        ConditionExpression = string.Empty
+                    });
                     await context.SaveChangesAsync();
 
                     firstStep = step1;
