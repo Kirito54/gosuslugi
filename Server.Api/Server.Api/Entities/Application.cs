@@ -4,6 +4,13 @@ namespace GovServices.Server.Entities
     {
         public int Id { get; set; }
         public string Number { get; set; }
+        public string? ExternalNumber { get; set; }
+        public string ApplicantName { get; set; } = string.Empty;
+        public string? RepresentativeName { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public ApplicationSource Source { get; set; }
+        public string? RegistrarId { get; set; }
+        public ApplicationUser? Registrar { get; set; }
         public int ServiceId { get; set; }
         public Service Service { get; set; }
         public int CurrentStepId { get; set; }

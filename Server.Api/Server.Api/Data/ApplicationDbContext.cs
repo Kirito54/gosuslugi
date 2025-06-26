@@ -52,6 +52,16 @@ namespace GovServices.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Application>()
+                .HasOne(a => a.AssignedTo)
+                .WithMany(u => u.AssignedApplications)
+                .HasForeignKey(a => a.AssignedToUserId);
+
+            builder.Entity<Application>()
+                .HasOne(a => a.Registrar)
+                .WithMany()
+                .HasForeignKey(a => a.RegistrarId);
             builder.Entity<UserPermissionGroup>()
                 .HasKey(upg => new { upg.UserId, upg.PermissionGroupId });
 
