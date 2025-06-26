@@ -1,5 +1,6 @@
 @attribute [Authorize]
 @using Client.Wasm.DTOs
+@using System.Linq
 @inject IJSRuntime Js
 @inject NavigationManager NavigationManager
 @inject IUserApiClient ApiClient
@@ -27,13 +28,13 @@
                             <MudSelectItem Value="@p.Id">@p.Name</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect T="string" Label="Роли" @bind-SelectedValues="model.RoleIds" MultiSelection="true" Class="mb-3 w-100">
+                    <MudSelect T="string" Label="Роли" SelectedValues="@model.RoleIds" SelectedValuesChanged="@(values => OnRolesChanged(values))" MultiSelection="true" Class="mb-3 w-100">
                         @foreach (var r in allRoles)
                         {
                             <MudSelectItem Value="@r">@r</MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect T="int" Label="Группы прав" @bind-SelectedValues="model.GroupIds" MultiSelection="true" Class="mb-3 w-100">
+                    <MudSelect T="int" Label="Группы прав" SelectedValues="@model.GroupIds" SelectedValuesChanged="@(values => OnGroupsChanged(values))" MultiSelection="true" Class="mb-3 w-100">
                         @foreach (var g in groups)
                         {
                             <MudSelectItem Value="@g.Id">@g.Name</MudSelectItem>
@@ -63,7 +64,7 @@
     public async void Show(CreateUserDto dto)
     {
         await LoadDictionaries();
-        model = new CreateUserDto { RoleIds = new List<string>(), GroupIds = new List<int>() };
+        model = new CreateUserDto { RoleIds = new HashSet<string>(), GroupIds = new HashSet<int>() };
         hdr = "Новый пользователь";
         isNew = true;
         open = true;
@@ -82,8 +83,8 @@
             MiddleName = string.Empty,
             DepartmentId = 0,
             PositionId = 0,
-            RoleIds = u.Roles,
-            GroupIds = new List<int>()
+            RoleIds = u.Roles.ToHashSet(),
+            GroupIds = new HashSet<int>()
         };
         hdr = "Редактировать пользователя";
         isNew = false;
@@ -127,6 +128,18 @@
         {
             await OnSaved.InvokeAsync();
         }
+    }
+
+    Task OnRolesChanged(IEnumerable<string> values)
+    {
+        model.RoleIds = values.ToHashSet();
+        return Task.CompletedTask;
+    }
+
+    Task OnGroupsChanged(IEnumerable<int> values)
+    {
+        model.GroupIds = values.ToHashSet();
+        return Task.CompletedTask;
     }
 
     void Hide() => open = false;
