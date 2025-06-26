@@ -50,6 +50,7 @@ public class MenuService
         var groupRights = new MenuGroup { Title = "🔐 Права" };
         AddIfExists(pages, groupRights.Items, "/permissions", "Права доступа");
         AddIfExists(pages, groupRights.Items, "/permission-groups", "Группы прав");
+        AddIfExists(pages, groupRights.Items, "/page-access", "Доступ к страницам");
         if (groupRights.Items.Count > 0) Groups.Add(groupRights);
 
         var groupSettings = new MenuGroup { Title = "⚙️ Настройки" };

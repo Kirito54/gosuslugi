@@ -9,5 +9,6 @@ namespace GovServices.Server.Entities
         public DateTime PasswordLastChangedAt { get; set; }
         public ICollection<Application> AssignedApplications { get; set; }
         public ICollection<UserPermissionGroup> PermissionGroups { get; set; }
+        public ICollection<PageAccess> PageAccesses { get; set; } = new List<PageAccess>();
     }
 }

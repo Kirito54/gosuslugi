@@ -126,6 +126,8 @@ namespace GovServices.Server.Mappings
             CreateMap<Permission, PermissionDto>().ReverseMap();
             CreateMap<CreatePermissionDto, Permission>();
             CreateMap<UpdatePermissionDto, Permission>();
+            CreateMap<PageAccess, PageAccessDto>().ReverseMap();
+            CreateMap<CreatePageAccessDto, PageAccess>();
         }
 
         private static List<ExecutionStage>? DeserializeStages(string? json)
