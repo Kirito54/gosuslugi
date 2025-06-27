@@ -15,17 +15,79 @@
     {
         <MudTabs>
             <MudTabPanel Text="Основное">
-                <MudCard Class="mb-3">
-                    <MudCardHeader>
-                        <MudText Typo="Typo.h6">@app.Number</MudText>
-                    </MudCardHeader>
-                    <MudCardContent>
-                        <p><b>Услуга:</b> @app.ServiceName</p>
-                        <p><b>Статус:</b> @app.Status</p>
-                        <p><b>Создана:</b> @app.CreatedAt.ToShortDateString()</p>
-                        <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
-                    </MudCardContent>
-                </MudCard>
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">ФИО заявителя</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.ApplicantName
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Номер внутренний</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.Number
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Номер внешний</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.ExternalNumber
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Услуга</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.ServiceName
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Даты</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                <p><b>Создана:</b> @app.CreatedAt.ToShortDateString()</p>
+                                <p><b>Обновлена:</b> @app.UpdatedAt.ToShortDateString()</p>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Адрес</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.Address
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudCard Class="mb-3">
+                            <MudCardHeader>
+                                <MudText Typo="Typo.h6">Источник</MudText>
+                            </MudCardHeader>
+                            <MudCardContent>
+                                @app.Source
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
             </MudTabPanel>
             <MudTabPanel Text="Документы">
                 <MudCard Class="mb-3">
